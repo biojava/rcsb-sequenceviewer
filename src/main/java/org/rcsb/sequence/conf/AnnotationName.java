@@ -19,8 +19,9 @@ import org.rcsb.sequence.model.Sequence;
  * @author mulvaney
  *
  */
-public class AnnotationName implements Serializable{
+public class AnnotationName implements Serializable, Comparable<AnnotationName>{
 
+	
 	/**
 	 * 
 	 */
@@ -31,7 +32,6 @@ public class AnnotationName implements Serializable{
 	private  Reference reference;
 	private  Class<? extends AnnotationGroup<?>> annotationGroupClass;
 	private  Set<PolymerType> applicablePolymerTypes;
-
 
 
 	public AnnotationName(AnnotationClassification ac, 
@@ -50,16 +50,6 @@ public class AnnotationName implements Serializable{
 		this.applicablePolymerTypes = applicablePolymerTypes;
 	}
 
-
-	public static final Collection<AnnotationName> DEFAULT_ANNOTATIONS_TO_VIEW;
-	static {
-		Set<AnnotationName> foo = new LinkedHashSet<AnnotationName>();
-		for(AnnotationClassification ac : AnnotationClassification.DEFAULT_CLASSIFICATIONS_TO_VIEW)
-		{
-			foo.add(ac.getDefaultAnnotation());
-		}      
-		DEFAULT_ANNOTATIONS_TO_VIEW = Collections.unmodifiableCollection(foo);
-	}
 
 	public AnnotationClassification getClassification() {
 		return classification;
@@ -98,5 +88,20 @@ public class AnnotationName implements Serializable{
 			e.printStackTrace();
 			throw new RuntimeException("Could not instantiate AnnotationGroup " + this.annotationGroupClass.getSimpleName());
 		}
+	}
+	
+	
+	public int compareTo(AnnotationName other) {
+		if ( this.equals(other))
+			return 0;
+			
+		if ( this.name != null && other.name != null){
+			return name.compareTo(other.name);
+		}
+		if ( this.name == null && other.name != null)
+			return -1;
+		if ( this.name != null && other.name == null)
+			return 1;
+		return 0;
 	}
 }

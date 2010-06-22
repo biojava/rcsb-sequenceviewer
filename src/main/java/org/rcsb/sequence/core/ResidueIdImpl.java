@@ -38,12 +38,12 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
       this.equivalentResidues = new EquivalentResidues(true);
    }
    
-   ResidueIdImpl(ResidueIdImpl residueToCopy, ResidueNumberScheme rns, Integer newSeqId)
+   public ResidueIdImpl(ResidueIdImpl residueToCopy, ResidueNumberScheme rns, Integer newSeqId)
    {
       this(residueToCopy, rns, null, newSeqId);
    }
    
-   ResidueIdImpl(ResidueIdImpl residueToCopy, ResidueNumberScheme rns, String newMonId, Integer newSeqId)
+   public ResidueIdImpl(ResidueIdImpl residueToCopy, ResidueNumberScheme rns, String newMonId, Integer newSeqId)
    {
       if(rns == residueToCopy.getResidueNumberScheme())
       {
@@ -213,7 +213,7 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
       return equivalentResidues.get(rns);
    }
    
-   void addEquivalentResidue(ResidueNumberScheme rns, ResidueIdImpl rid)
+   public void addEquivalentResidue(ResidueNumberScheme rns, ResidueIdImpl rid)
    {
       if(rns == null || rid == null) throw new NullPointerException();
       if(equivalentResidues == Collections.EMPTY_MAP)

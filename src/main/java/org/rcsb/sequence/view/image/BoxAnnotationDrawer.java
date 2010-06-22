@@ -1,13 +1,21 @@
 package org.rcsb.sequence.view.image;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Composite;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.geom.RoundRectangle2D;
 
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.ColorUtils;
 import org.rcsb.sequence.util.ResourceManager;
 import org.rcsb.sequence.view.html.ColorUtil;
 
@@ -30,6 +38,9 @@ public class BoxAnnotationDrawer<T> extends AbstractAnnotationDrawer<T> {
 	{
 		
 		//PdbLogger.warn("drawing annotation " + annotation);
+		
+		
+		
 		g2.setColor( ColorUtil.getArbitraryColor(annotation) );
 
 		g2.setRenderingHint(
@@ -50,15 +61,42 @@ public class BoxAnnotationDrawer<T> extends AbstractAnnotationDrawer<T> {
 		final int rectXmin = startIsNotStart ? xMin + fontWidth/2 : xMin;
 		final int rectXmax = endIsNotEnd     ? xMax - fontWidth/2 : xMax;
 
-		g2.fillRoundRect(rectXmin, yMin, rectXmax - rectXmin, yMax - yMin, fontWidth, fontWidth);
+		Color coreColor = ColorUtil.getArbitraryColor(annotation);
+		Color light     = ColorUtils.lighter(coreColor, 0.7);
 		
-		// make sure the RoundRect does not overlap the Turncated symbol...
+		int lineHeight = yMax - yMin;
+
+		Paint origPaint = g2.getPaint();
+		GradientPaint gradient = new GradientPaint(0, yMin  ,  light, 0 , yMax - lineHeight/2 , coreColor,true);
+		g2.setPaint(gradient); 
+		
+		RoundRectangle2D rec = new RoundRectangle2D.Float(rectXmin, yMin, rectXmax - rectXmin, yMax - yMin,fontWidth,fontWidth);
+
+		g2.fill(rec);
+		
+		g2.setPaint(origPaint);
+		g2.setColor(coreColor);
+		//g2.drawLine(rectXmin, yMin, rectXmax, yMin);
+		//g2.drawRoundRect(rectXmin, yMin, rectXmax - rectXmin, yMax - yMin,fontWidth,fontWidth);
+		
+		Stroke stroke = new BasicStroke(1.0f);
+		g2.setStroke(stroke);
+		g2.draw(rec);
+		g2.setPaint(gradient);
+		
+		// make sure the RoundRect does not overlap the Truncated symbol...
 		if(startIsNotStart)
 		{
-			g2.fillPolygon( generateTruncatedSymbol(xMin, yMin, xMax, yMax, true,  NUM_PEAKS, fontWidth) );
+				
+			Polygon trunk = generateTruncatedSymbol(xMin, yMin, xMax, yMax, true,  NUM_PEAKS, fontWidth) ;
+			g2.fillPolygon( trunk);
+			
+			
+			
 		}
 		if(endIsNotEnd)
 		{
+			
 			g2.fillPolygon( generateTruncatedSymbol(xMin, yMin, xMax, yMax, false, NUM_PEAKS, fontWidth) );
 		}
 

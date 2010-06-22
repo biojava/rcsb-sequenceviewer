@@ -8,12 +8,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.model.AnnotationGroup;
+import org.rcsb.sequence.model.Chain;
+import org.rcsb.sequence.model.PolymerType;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
@@ -81,6 +85,8 @@ public abstract class AbstractSequence implements Sequence, Serializable
 	}
 
 	public Collection<AnnotationGroup<?>> getAvailableAnnotationGroups() {
+		ensureAnnotated();
+		System.out.println("AbstractSequence: getAvailableAnnotationGroups " + getAnnotationGroupMap().size());
 		
 		return Collections.unmodifiableCollection(getAnnotationGroupMap().values());
 	}
@@ -111,12 +117,18 @@ public abstract class AbstractSequence implements Sequence, Serializable
 	@SuppressWarnings("unchecked")
 	public Collection<AnnotationGroup<?>> getAnnotationGroupsWithData() {
 		
-		return CollectionUtils.select(getAvailableAnnotationGroups(),
+		Collection<AnnotationGroup<?>> annos = CollectionUtils.select(getAvailableAnnotationGroups(),
 				new Predicate() {
 			public boolean evaluate(Object arg0) {
 				return arg0 instanceof AnnotationGroup && ((AnnotationGroup)arg0).hasData();
 			}
 		});
+		
+		
+		for (AnnotationGroup<?> anno: annos){
+			System.out.println("AbstractSequence: annotationgroup has data:" + anno.getName().getName());
+		}
+		return annos;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -388,6 +400,104 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		}
 		//System.out.println("AbstractSequence getSequenceString " + result.toString() + " size: " + residues.size());
 		return result.toString();
+	}
+
+
+	/**
+	 * Create an ordered, doubly-linked set of ResidueIds from a String sequence
+	 * @param sequenceString
+	 * @param polymerType
+	 * @param rns
+	 * @param c
+	 * @return
+	 */
+	protected static Set<ResidueId> sequenceStringToResidueIds(String sequenceString, PolymerType polymerType, ResidueNumberScheme rns, Chain c, int indexStart)
+	{
+		if(sequenceString == null || rns == null) throw new NullPointerException();
+		Set<ResidueId> result = new LinkedHashSet<ResidueId>();
+		char[] chars = sequenceString.toCharArray();
+		char res;
+		String monId = "";
+		int indexOfOpenBracket = -1;
+		int dif;
+		int resCount = indexStart;
+		boolean bracketIsOpen = false;
+		ResidueIdImpl prev = (ResidueIdImpl) ResidueIdImpl.BEGINNING_OF_CHAIN, resId;
+
+		// for each character
+		for(int i = 0; i < chars.length; i++)
+		{
+			// if it's an open bracket then we have a full mon_id coming up
+			if((res = chars[i]) == '(')
+			{
+				bracketIsOpen = true;
+				indexOfOpenBracket = i;
+			}
+			// or, if a bracket has been opened but not closed
+			else if(bracketIsOpen)
+			{
+				// so long as there have been fewer than three characters between the opening of the bracket and now
+				if((dif = i - indexOfOpenBracket - 1) < 3)
+				{
+					// if it's not a close bracket, add to the mon_id
+					if(res != ')')
+					{
+						monId += res;
+					}
+					// otherwise we have a full mon_id and we should add it to the result set
+					else
+					{
+						bracketIsOpen = false;
+						resId = createResidueId(rns, c, resCount++, monId, prev);
+						result.add(resId);
+						prev = resId;
+						monId = "";
+					}
+				}
+				// if there have been three already, then this had better be a close bracket
+				else if(dif == 3 && res == ')')
+				{
+					bracketIsOpen = false;
+					resId = createResidueId(rns, c, resCount++, monId, prev);
+					result.add(resId);
+					prev = resId;
+					monId = "";
+				}
+				// otherwise something is amiss
+				else
+				{
+					assert dif > 3 || (dif == 3 && res != '(');
+					throw new RuntimeException("Ligand name > 3 characters found");
+				}
+			}
+			// otherwise this is just a standard residue
+			else
+			{
+				resId = createResidueId(rns, c, resCount++, res, polymerType, prev);
+				result.add(resId);
+				prev = resId;
+			}
+		}
+		return result;
+	}
+	
+	private static ResidueIdImpl createResidueId(ResidueNumberScheme rns, Chain c, int seqId, String monId, ResidueIdImpl prev)
+	{
+		return createResidueId(rns, c, seqId, ResidueProvider.getResidue(monId), prev);
+	}
+
+	private static ResidueIdImpl createResidueId(ResidueNumberScheme rns, Chain c, int seqId, Character oneLettercode, PolymerType pt, ResidueIdImpl prev)
+	{
+		return createResidueId(rns, c, seqId, ResidueProvider.getResidue(pt, oneLettercode), prev);
+	}
+
+	
+	private static ResidueIdImpl createResidueId(ResidueNumberScheme rns, Chain c, int seqId, ResidueInfo rinfo, ResidueIdImpl prev)
+	{
+		ResidueIdImpl resId = new ResidueIdImpl(rns, c, seqId, rinfo);
+		resId.setPrevious(prev);
+		prev.setNext(resId);
+		return resId;
 	}
 
 	

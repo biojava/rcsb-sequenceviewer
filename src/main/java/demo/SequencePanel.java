@@ -65,9 +65,9 @@ public class SequencePanel {
 		
 		ViewParameters params = new ViewParameters();
 		
-		params.setAnnotations(AnnotationRegistry.getAllAnnotations());
-		params.setDesiredTopRulerRns(ResidueNumberScheme.ATOM);
-		params.setDesiredBottomRulerRns(ResidueNumberScheme.SEQRES);
+		//params.setAnnotations(AnnotationRegistry.getAllAnnotations());
+		//params.setDesiredTopRulerRns(ResidueNumberScheme.ATOM);
+		//params.setDesiredBottomRulerRns(ResidueNumberScheme.SEQRES);
 		
 		System.out.println("supported annotations: " + params.getAnnotations().size());
 		

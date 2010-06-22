@@ -1,5 +1,6 @@
 package org.rcsb.sequence.core;
 
+import org.rcsb.sequence.model.PolymerType;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueInfoFactory;
 
@@ -24,5 +25,12 @@ public class ResidueProvider {
 		if ( factory == null)
 			throw new RuntimeException("Did not provide a ResidueInfoFactory!");
 		return factory.getResidue(monId);
+	}
+
+
+	public static ResidueInfo  getResidue(PolymerType pt, Character oneLettercode) {
+		if ( factory == null)
+			throw new RuntimeException("Did not provide a ResidueInfoFactory!");
+		return factory.getResidue( pt,  oneLettercode);
 	}
 }

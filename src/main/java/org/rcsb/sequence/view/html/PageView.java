@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -15,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.rcsb.sequence.conf.Annotation2Jmol;
+import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.model.AnnotationGroup;
@@ -38,6 +40,7 @@ public class PageView implements Serializable {
    
    protected final ViewParameters params;
    
+
    public PageView(int page, ViewParameters params)
    {
       this.chains = new TreeSet<Chain>(params.getChainSortStrategy().comparator);
@@ -279,6 +282,9 @@ public class PageView implements Serializable {
             json.put("all", annotationOrder);
             //PdbLogger.debug("Data about the order and visibility of annotations added to JSON: " + annotationOrder.length() + " data items");
          }
+         
+         
+         System.out.println(json.toString());
    
          //PdbLogger.debug("Generated JSON");
          //return PdbLogger.isDebugOn() ? json.toString(2) : json.toString();
@@ -286,7 +292,7 @@ public class PageView implements Serializable {
       }
       catch(Exception e)
       {
-         System.err.println("Exception generating JSON." +  e.getMessage());
+         System.err.println("Exception generating JSON. " +  e.getMessage());
          e.printStackTrace();
          return "{\"failure\": true}";
       }
@@ -333,7 +339,7 @@ public class PageView implements Serializable {
    
    private MapOfCollections<AnnotationName, Sequence> getAvailableAnnotationsNotDisplayed()
    {
-      //PdbLogger.debug("In getAvailableAnnotationsNotDisplayed");
+      
       if(availableAnnotationsNotDisplayed == null || chainViews.values() != getChainViews())
       {
          availableAnnotationsNotDisplayed = new MapOfCollections<AnnotationName, Sequence>(TreeMap.class, ArrayList.class);
@@ -347,7 +353,7 @@ public class PageView implements Serializable {
          }
       }
 
-     // PdbLogger.debug("Leaving getAvailableAnnotationsNotDisplayed");
+      System.out.println("Leaving getAvailableAnnotationsNotDisplayed " + availableAnnotationsNotDisplayed.size() + " " + availableAnnotationsNotDisplayed.keySet());
       return availableAnnotationsNotDisplayed;
    }
    

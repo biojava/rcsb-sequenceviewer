@@ -1,7 +1,14 @@
 package org.rcsb.sequence.view.image;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -186,10 +193,56 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 
 	}
 
+	/** Draws the TEXT of the annotation...
+	 * 
+	 * @param g2
+	 * @param label
+	 * @param x
+	 * @param y
+	 */
 	protected void renderLabel(Graphics2D g2, String label, int x, int y)
 	{
+		
+		 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                 RenderingHints.VALUE_ANTIALIAS_ON);
+		 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+		
 		g2.setColor(Color.black);
-		g2.drawString(label, x, y);
+		//Font font = new Font("Ariel", Font.PLAIN, );
+		Font font = g2.getFont();
+	
+		FontRenderContext frc = g2.getFontRenderContext();
+        TextLayout textLayout = new TextLayout(label, font, frc);
+        Color textColor = Color.black;
+        Color outlineColor = Color.white;
+        
+        
+        // outline
+        AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+        Shape outline = textLayout.getOutline(at);
+        g2.setStroke(new BasicStroke(3f));
+
+        g2.fill(outline);
+        g2.setPaint(outlineColor);
+        g2.draw(outline);
+        
+ 
+        // Text can be plain text if effect is 0 in colorText.
+       
+        g2.setPaint(textColor);
+        textLayout.draw(g2, x, y);
+
+        //g2.drawString(label, x, y +1);
+        
+        
+        
+        
+        
+        
+
+
 	}
 
 	abstract protected void drawSpaceBetweenAnnotations(Graphics2D g2, int sequenceLength, int xMin, int yMin, int xMax, int yMax);

@@ -32,10 +32,10 @@ public class SegmentedSequenceImpl extends AbstractSequence implements Segmented
    
    boolean isDestroyed = false;
    
-   SegmentedSequenceImpl(Sequence sequence, ResidueNumberScheme residueNumberScheme, int fragmentLength)
+   public SegmentedSequenceImpl(Sequence sequence, ResidueNumberScheme residueNumberScheme, int fragmentLength)
    {
       super(sequence.getSequenceString());
-      System.out.println("Segmenting " + sequence.getChainId() + " into frags of len " + fragmentLength);
+      //System.out.println("Segmenting " + sequence.getChainId() + " into frags of len " + fragmentLength);
       if(sequence == null || residueNumberScheme == null)
       {
          throw new NullPointerException();
@@ -45,7 +45,7 @@ public class SegmentedSequenceImpl extends AbstractSequence implements Segmented
       this.backingSequence = sequence;
       
       reInitFragmentLists();
-      System.out.println("done segmenting " + sequence.getChainId() +" " +  fragmentLength);
+      //System.out.println("done segmenting " + sequence.getChainId() +" " +  fragmentLength);
    }
    
    public void destroy(){

@@ -1,11 +1,12 @@
 package org.rcsb.sequence.view.html;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -67,7 +68,8 @@ public class ChainView implements Serializable {
    {
       System.err.println("In ChainView constructor for " + segmentedSequence.getChainId());
       System.err.println("segments: " + segmentedSequence.getSegmentCount());
-      System.err.println(segmentedSequence.getSegmentLength());
+      System.err.println("params: " + params);
+      
       this.params = params;
       this.backingData = segmentedSequence;
       
@@ -86,10 +88,20 @@ public class ChainView implements Serializable {
       Set<AnnotationSummaryCell<?>> strs = new LinkedHashSet<AnnotationSummaryCell<?>>();
       Set<AnnotationName> someAnnotationsToView = new LinkedHashSet<AnnotationName>();
       Collection<AnnotationName> lst = params.getAnnotations();
+      if ( lst == null)
+    	  lst = new ArrayList<AnnotationName>();
       for(AnnotationName an : lst)
       {
     	  
-       
+    	  if ( an == null) {
+    		  System.err.println("got NULL instead of annotation name!");
+    		  continue;
+    	  }
+    	 System.out.println("checking annotation: " + an.getName() ) ;
+    	 System.out.println("backingdata: " + backingData);
+    	 System.out.println("assignment: " + this.backingData.getAnnotationGroup(an.getAnnotationClass()));
+    	 
+    	  
     	  if( ((ag = this.backingData.getAnnotationGroup(an.getAnnotationClass())) == null || !ag.hasData()) 
                && params.isShowNextBestAnnotationIfPossible() ) // should we look for the next best?
          {
@@ -100,7 +112,9 @@ public class ChainView implements Serializable {
             	an = ag.getName();
             }
          }
-         System.out.println("testing if ag should be displayed " + ag + " an: " + an.getAnnotationClass());
+       
+    	  System.out.println("testing if ag should be displayed " + ag + " an: " + an.getAnnotationClass());
+    	  
          if(ag != null && ag.hasData())
          {
             someAnnotationsToView.add(an);
@@ -115,7 +129,10 @@ public class ChainView implements Serializable {
       this.annotationSummaryCells = Collections.unmodifiableCollection(strs);
       this.annotationsToView = Collections.unmodifiableCollection(someAnnotationsToView);
       
-      System.err.println("This chain will display the following annotations: " + annotationsToView);
+      System.err.println("This chain will display the following annotations: ");
+      for ( AnnotationName anno: annotationsToView ) {
+    	  System.err.println("anno:" + anno.getName());
+      }
       
       this.chain = this.backingData.getFirstResidue().getChain();
    }
@@ -186,7 +203,9 @@ public class ChainView implements Serializable {
       {
          this.otherAnnotationsAvailable = new TreeSet<AnnotationName>();
          
-         for(AnnotationGroup<?> ag : this.chain.getAnnotationGroupsWithData())
+          Collection<AnnotationGroup<?>> dataAnnos = this.chain.getAnnotationGroupsWithData();
+          System.out.println("ChainView: got annotations with data:" + dataAnnos.size());
+         for(AnnotationGroup<?> ag : dataAnnos )
          {
             this.otherAnnotationsAvailable.add(ag.getName());
          }
@@ -194,9 +213,16 @@ public class ChainView implements Serializable {
          // remove those that are already displayed
          this.otherAnnotationsAvailable.removeAll(this.annotationsToView);
          
+         //TODO: find a different way to filter things that can get displayed!
+         // uncommenting for now AP
+         //System.out.println("ChainView beforeretain: " + otherAnnotationsAvailable.size());
          // only keep those that can be rendered
-         this.otherAnnotationsAvailable.retainAll(Annotation2Html.ANNOTATION_TO_RENDERER_MAP.keySet());
+         //this.otherAnnotationsAvailable.retainAll(Annotation2Html.ANNOTATION_TO_RENDERER_MAP.keySet());
+         //System.out.println("ChainView after retain: " + otherAnnotationsAvailable.size());
       }
+      
+      System.out.println("ChainView: getOtherAnnotationsAvailable " + otherAnnotationsAvailable.size());
+      System.out.println("ChainView: annotationsToView: " + annotationsToView.size());
       return this.otherAnnotationsAvailable;
    }
    

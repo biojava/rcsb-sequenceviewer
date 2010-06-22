@@ -316,6 +316,7 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
      */
     public void constructAnnotations() throws Exception
     {
+    	System.err.println("ABSTRACT ANNOTATIONGROUP: CONSTRUCTING ANNOTATIONS " + getName().getName() + " status:" +status);
        if(status == underConstruction)
        {
     	   System.out.println("contructAnnotations() has been called circularly!");

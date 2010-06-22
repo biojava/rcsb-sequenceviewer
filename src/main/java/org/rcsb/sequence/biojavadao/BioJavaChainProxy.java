@@ -1,7 +1,7 @@
 package org.rcsb.sequence.biojavadao;
 
 
-
+import static org.rcsb.sequence.model.PolymerType.PROTEIN_ONLY;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,17 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
-import org.biojava.bio.structure.AminoAcid;
-import org.biojava.bio.structure.AminoAcidImpl;
 import org.biojava.bio.structure.Compound;
 import org.biojava.bio.structure.Group;
 
 import org.biojava.bio.structure.PDBResidueNumber;
-import org.biojava.bio.structure.SSBond;
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.StructureTools;
-import org.biojava.bio.structure.io.PDBFileParser;
+
 import org.biojava.bio.structure.io.mmcif.model.ChemComp;
 
 import org.rcsb.sequence.conf.AnnotationClassification;
@@ -35,6 +31,7 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SequenceCollection;
+
 
 public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 
@@ -93,7 +90,6 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 	 */
 	private static final long serialVersionUID = -4278708896903643020L;
 	org.biojava.bio.structure.Chain bj = null;
-
 
 
 	public void setBJChain(org.biojava.bio.structure.Chain bj){
@@ -304,6 +300,24 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 			e.printStackTrace();
 		}
 		addAnnotationGroup(disulfg);
+		
+		
+		AnnotationName scop = new AnnotationName(
+				AnnotationClassification.strdom,
+				TestAnnotationGroup.annotationName,
+				"Structural Classification Of Proteins",
+				new Reference(7723011L),
+				TestAnnotationGroup.class,
+				PROTEIN_ONLY
+		);
+		AnnotationRegistry.registerAnnotation(scop);
+		TestAnnotationGroup test = new TestAnnotationGroup(this,AnnotationClassification.strdom,scop);
+		try {
+			test.constructAnnotations();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		addAnnotationGroup(test);
 		
 	}
 

@@ -59,6 +59,8 @@ public class SequenceCollectionView implements Serializable {
 	  
       this(SequenceCollectionProvider.get(structureId), new ViewParameters());
       
+      
+      
       if ( DEBUG)
 		   System.out.println("SequenceCollectionView: " + structureId);
 	   
@@ -72,7 +74,7 @@ public class SequenceCollectionView implements Serializable {
    public SequenceCollectionView(SequenceCollection sequenceCollection, ViewParameters viewParams)
    {
 	   
-	  
+	 
 	   
 	   if ( sequenceCollection == null) {
 		   String message = "SequenceCollectionView got null for sequenceCollection." ;
@@ -130,6 +132,9 @@ public class SequenceCollectionView implements Serializable {
       // filter according to the specified predicate
       CollectionUtils.filter(theChains, params.getChainViewStrategy().predicate);
       
+      //for (Chain c : theChains){
+    //	  c.ensureAnnotated();
+      //}
 
       // set!
       sortedChains = Collections.unmodifiableSortedSet(theChains);

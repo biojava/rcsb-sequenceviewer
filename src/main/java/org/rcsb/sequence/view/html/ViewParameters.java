@@ -2,11 +2,15 @@ package org.rcsb.sequence.view.html;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 
+import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.model.ResidueNumberScheme;
@@ -69,7 +73,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private static final ChainViewStrategy   DEFAULT_CHAIN_VIEW_STRATEGY   = ChainViewStrategy.all;
 	private static final ChainSortStrategy   DEFAULT_CHAIN_SORT_STRATEGY   = ChainSortStrategy.chainTypeThenPdbChainId;
 
-	private static final Collection<AnnotationName> DEFAULT_DISABLED_ANNOTATIONS = Collections.emptySet();
+	//private static final Collection<AnnotationName> DEFAULT_DISABLED_ANNOTATIONS = Collections.emptySet();
 	private static final float DEFAULT_FRAGMENT_BUFFER = 1.8f; // size of gap between fragments relative to font width
 	private static final boolean DEFAULT_SHOW_JMOL   = false; // do not show Jmol by default
 	private static final boolean DEFAULT_STICKY_JMOL = true; // Jmol is fixed by default
@@ -82,8 +86,8 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private boolean showDbRefRulerIfPossible         = DEFAULT_SHOW_DBREF_RULER;
 	private boolean showNextBestAnnotationIfPossible = DEFAULT_SHOW_NEXTBEST_AN;
 
-	private Collection<AnnotationName> disabledAnnotations = DEFAULT_DISABLED_ANNOTATIONS;
-	private Collection<AnnotationName> annotationsToView = AnnotationName.DEFAULT_ANNOTATIONS_TO_VIEW;
+	private Collection<AnnotationName> disabledAnnotations = null;
+	private Collection<AnnotationName> annotationsToView   = DEFAULT_ANNOTATIONS_TO_VIEW;
 
 	private int fontSize       = FONT_SIZE_DEFAULT;
 	private int fragmentLength = FRAGMENT_LENGTH_DEFAULT;
@@ -102,6 +106,19 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private int jmolWidth      = DEFAULT_JMOL_WIDTH;
 	private int jmolHeight     = DEFAULT_JMOL_HEIGHT;
 	
+	
+	public static final Collection<AnnotationName> DEFAULT_ANNOTATIONS_TO_VIEW;
+
+	static {
+		Set<AnnotationName> foo = new LinkedHashSet<AnnotationName>();
+		for(AnnotationClassification ac : AnnotationClassification.DEFAULT_CLASSIFICATIONS_TO_VIEW)
+		{
+			System.out.println("SETTING DEFAULT ANNOTATION FOR " + ac.getName() + "  " + ac.getDefaultAnnotation());
+			if ( ac.getDefaultAnnotation() != null)
+				foo.add(ac.getDefaultAnnotation());
+		}      
+		DEFAULT_ANNOTATIONS_TO_VIEW = Collections.unmodifiableCollection(foo);
+	}
 	
 	/**
 	 * Is Jmol to be displayed?
@@ -221,6 +238,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	{
 		annotationsToView = new TreeSet<AnnotationName>(); // we will explicitly state all annotations
 
+		checkDisabledAnnotations();
 		String[] ans = an.split(",");
 		AnnotationName aAn;
 
@@ -232,11 +250,23 @@ public final class ViewParameters implements Serializable, Cloneable {
 		}
 	}
 
+	private void checkDisabledAnnotations(){
+		if ( disabledAnnotations == null) {
+			disabledAnnotations = new ArrayList<AnnotationName>();
+			
+			for (AnnotationName anno : AnnotationRegistry.getAllAnnotations()){
+				if (! annotationsToView.contains(anno)) {
+					disabledAnnotations.add(anno);
+				}
+			}
+		}
+	}
 	/**
 	 * Get a collection of explicitly disabled {@link AnnotationName}s.
 	 * @return
 	 */
 	public Collection<AnnotationName> getDisabledAnnotations() {
+		checkDisabledAnnotations();
 		return disabledAnnotations;
 	}
 
@@ -255,7 +285,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	 */
 	public void setDisabledAnnotationsStr(String an)
 	{
-		if(annotationsToView == AnnotationName.DEFAULT_ANNOTATIONS_TO_VIEW)
+		if(annotationsToView == DEFAULT_ANNOTATIONS_TO_VIEW)
 		{
 			annotationsToView = Collections.emptySet();
 		}
@@ -692,6 +722,8 @@ public final class ViewParameters implements Serializable, Cloneable {
 	@Override
 	protected Object clone() throws CloneNotSupportedException 
 	{
+		checkDisabledAnnotations();
+		
 		ViewParameters cloned = (ViewParameters) super.clone();
 
 		cloned.annotationsToView = new TreeSet<AnnotationName>(annotationsToView);
