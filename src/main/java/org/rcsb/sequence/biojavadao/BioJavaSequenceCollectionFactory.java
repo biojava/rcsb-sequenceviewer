@@ -37,16 +37,9 @@ SequenceCollectionFactory {
 		cache.setFileParsingParams(params);		
 		cache.setAutoFetch(true);
 		
-		
-		
-
 		try {
 			Structure structure = cache.getStructure(structureId);
-			GroupIterator iter =new  GroupIterator(structure);
-			while (iter.hasNext()){
-				Group g = iter.next();
-				System.out.println(g.getProperties());
-			}
+	
 			BioJavaSequenceCollection collection = new BioJavaSequenceCollection();
 			collection.setStructure(structure);
 

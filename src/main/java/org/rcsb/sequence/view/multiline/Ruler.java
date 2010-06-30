@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 public interface Ruler extends Drawer {
 

@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.oneline;
 
 import static org.rcsb.sequence.model.ResidueNumberScheme.DBREF;
 
@@ -16,6 +16,9 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.util.ResourceManager;
+import org.rcsb.sequence.view.multiline.AbstractDrawer;
+import org.rcsb.sequence.view.multiline.ImageMapData;
+import org.rcsb.sequence.view.multiline.SequenceImageIF;
 
 
 /** A drawer that represents a sequence as a simple line.

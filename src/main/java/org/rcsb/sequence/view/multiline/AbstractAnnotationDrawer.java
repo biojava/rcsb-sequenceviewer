@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -141,7 +141,9 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 			}
 			else
 			{
+			
 				drawAnnotationFragment(g2, apr.annotation, apr.xMin, yOffset + apr.yMin, apr.xMax, yOffset + apr.yMax, apr.startTruncated, apr.endTruncated);
+			
 			}
 		}
 	}
@@ -394,6 +396,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 
 				for(Annotation a : annotations)
 				{
+													
 					startTruncated = a.isBeginningTruncated();
 					endTruncated   = a.isEndTruncated();
 
@@ -450,6 +453,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 							++counter;
 						}
 						//               renderSpaceBetweenAnnotations(g2, counter, xPos, xPos += counter * fontWidth);
+						
 						annotationPixelRanges.add(new AnnotationPixelRange(xPos, xPos += counter * fontWidth, yMin, yMax, counter));
 						lastResidueAnnotated = chainResAnnStart.getPrevious();
 					}
@@ -499,6 +503,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 							// can only render an annotation fragment if it's large enough
 							if(counter > 0)
 							{
+								
 								annotationPixelRanges.add(new AnnotationPixelRange(xPos, xPos += counter * fontWidth, yMin, yMax, startTruncated || !isFirst, ridIt.hasNext() || endTruncated, a));
 								isFirst = false;
 							}
@@ -516,6 +521,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 					// and then render the last bit
 					if(counter > 0)
 					{
+						
 						annotationPixelRanges.add(new AnnotationPixelRange(xPos, xPos += counter * fontWidth, yMin, yMax, counter, startTruncated || !isFirst, endTruncated, a));
 					}
 				}
@@ -523,6 +529,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 				int numResLeft = (imageWidth - xPos) / fontWidth;
 				if(numResLeft > 0) // if there's
 				{
+					
 					annotationPixelRanges.add(new AnnotationPixelRange(xPos, imageWidth - 1, yMin, yMax, numResLeft));
 				}
 

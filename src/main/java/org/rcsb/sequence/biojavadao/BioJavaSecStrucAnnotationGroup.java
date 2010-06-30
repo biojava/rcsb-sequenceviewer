@@ -87,7 +87,7 @@ extends AbstractAnnotationGroup<Character>{
 
 	private void addElement(int prevStart, int prevEnd, String prevSecStr) {
 		
-		System.out.println("adding sec struct" + prevStart + " " + prevEnd + " " + prevSecStr);
+		//System.out.println("adding sec struct" + prevStart + " " + prevEnd + " " + prevSecStr);
 		
 		ResidueId start = getResidueId(prevStart);
 		ResidueId end   = getResidueId(prevEnd);

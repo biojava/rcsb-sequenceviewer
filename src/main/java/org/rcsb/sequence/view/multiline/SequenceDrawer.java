@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
 import static org.rcsb.sequence.model.ResidueNumberScheme.DBREF;

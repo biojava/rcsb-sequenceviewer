@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -8,6 +8,7 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.Collections;
@@ -28,23 +29,32 @@ import org.rcsb.sequence.view.html.ColorUtil;
 
 public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character> {
 
+	// Calibrate the stroke size
+	// (fontWidth of 8 gives a stroke size of 3)
+	protected final float strokeSize;
+	protected final double xPeriod;
+	
 	private static final double RELATIVE_HEIGHT = 1.8;
+	
+	private SecondaryStructureValue previousSsv = SecondaryStructureValue.empty;
+	private boolean previousHelixEndedWithCurveGoingUp = false;
+	
+	protected static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
+	
+	
 	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<Character>> annotationGroupClass) {
+		this(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
+	}
+
+	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<Character>> annotationGroupClass, int annotationHeight) {
 		super(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
 
 		final int fontWidth = image.getFontWidth();
 		this.strokeSize = STROKE_TO_FONT_WIDTH_RATIO * fontWidth;
 		this.xPeriod = fontWidth / 2;
+
 	}
-
-	private SecondaryStructureValue previousSsv = SecondaryStructureValue.empty;
-	private boolean previousHelixEndedWithCurveGoingUp = false;
-
-	// Calibrate the stroke size
-	// (fontWidth of 8 gives a stroke size of 3)
-	private final float strokeSize;
-	private final double xPeriod;
-	private static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F);  
+	 
 
 	//   @Override
 	//   protected void initBounds() {
@@ -74,6 +84,8 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 			AnnotationValue<Character> annotation, int sequenceLength, int xMin, int yMin, int xMax,
 			int yMax, boolean startIsNotStart, boolean endIsNotEnd) {
 
+	
+		
 		// we will cast to the concrete class because it is an enum and we can switch on it
 		SecondaryStructureValue ssv = (SecondaryStructureValue)annotation; // we know this'll work because of canRenderAnnotation()... right?
 
@@ -206,12 +218,14 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 			SecondaryStructureValue ssv,
 			int xMin, int yMin, int xMax, int yMax, boolean endIsNotEnd)
 	{      
+				
 		// Change to default Strand color
 		Color ssColor = SST_TO_COLOR_MAP.get(ssv) ;
-		g2.setColor(ssColor);
+		//g2.setColor(ssColor);
 
-		final int fontWidth = getImage().getFontWidth();
-
+		//final int fontWidth = getImage().getFontWidth();
+		//int fontWidth = getAnnotationHeight() - 4;
+		int fontWidth = (yMax - yMin)/2 ;
 		int yHeight = fontWidth;
 		int yStart = (yMax - yMin)/2 - yHeight/2 + yMin;
 		int yCenter = (yMax - yMin)/2 + yMin;
@@ -223,27 +237,34 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 		arrowHead.addPoint(xMax, yCenter);
 		arrowHead.addPoint(xMax - fontWidth, yCenter - yHeight);
 
-
-		Color light = ColorUtils.lighter(ssColor, 0.2);
+		Color light = ColorUtils.lighter(ssColor, 0.7);
 		int lineHeight = yMax - yMin;
 		Paint origPaint = g2.getPaint();
-		GradientPaint gradient = new GradientPaint(0, yMin  ,  ssColor, 0 , yMax - lineHeight/2 , light,true);
+		GradientPaint gradient = new GradientPaint(0, yMin  ,  ssColor, 0 , yMax - lineHeight/2 , light, true);
 		g2.setPaint(gradient); 
 
 		Rectangle strandBody;
-
+		Stroke stroke = new BasicStroke(1.0f);
+		g2.setStroke(stroke);
 		// Draw arrow head iff strand ends on current line
-		if (endIsNotEnd)
+		if (endIsNotEnd) 
 			strandBody = new Rectangle(xMin, yStart, xWidth, yHeight);
+		
 		else {
 			strandBody = new Rectangle(xMin, yStart, xWidth - fontWidth, yHeight);
 			g2.fill(arrowHead);
+			g2.draw(arrowHead);
 		}
-
-		// Draw strand arrow body
+	
+		// 	Draw strand arrow body
 		g2.fill(strandBody);
+	
 		
+		g2.setColor(ssColor);
 		
+		g2.draw(strandBody);
+		
+	
 	
 
 	}

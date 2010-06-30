@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.html;
+package org.rcsb.sequence.view.oneline;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,32 +13,28 @@ import java.util.TreeSet;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
+import org.rcsb.sequence.core.AnnotationDrawMapper;
+
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Chain;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.core.AnnotationDrawMapper;
-
+import org.rcsb.sequence.view.html.AnnotationSummaryCell;
+import org.rcsb.sequence.view.html.ViewParameters;
 import org.rcsb.sequence.view.multiline.Annotation2MultiLineDrawer;
 import org.rcsb.sequence.view.multiline.SequenceImage;
+import org.rcsb.sequence.view.multiline.SequenceImageIF;
 import org.rcsb.sequence.view.multiline.SequenceSummaryImage;
 
-public class ChainView implements Serializable {
-	// this class should contain all presentation data for a whole chain.
+public class OneLineView implements Serializable{
 
-	// this class should be designed with the fact that it'll be accessed via OGNL from a webwork jsp
-	// kept in mind
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4610160761984929732L;
 
-	// essentially that'll be an ArrayList of FragmentView objects (we can use integers to map
-	// to ChainFragment objects). 
 
-	// overall presentation data:
-	// number of fragments
-	// kind of polymer
-	// chain statistics, etc
-
-	private static final long serialVersionUID = 1L;
 
 	private final Collection<AnnotationSummaryCell<?>> annotationSummaryCells;
 	private final Collection<AnnotationName> annotationsToView;
@@ -47,26 +42,24 @@ public class ChainView implements Serializable {
 	private final Chain chain;
 	private final ViewParameters params;
 
-	private SequenceImage 		sequenceImage 			= null;
-	private SequenceSummaryImage sequenceSummaryImage 	= null;
 	AnnotationDrawMapper annotationDrawMapper ;
-	public ChainView(Sequence sequence, ViewParameters params)
+	
+	private SequenceImage 		sequenceImage 			= null;
+	
+
+	public OneLineView(Sequence sequence, ViewParameters params)
 	{
-		this(sequence.getSegmentedSequence(params.getFragmentLength(), getBestRns(sequence, params.getDesiredSequenceRns())), params);
-		
+		this(sequence.getSegmentedSequence(sequence.getSequenceLength(), getBestRns(sequence, params.getDesiredSequenceRns())), params);
 	}
 
 
-	public ChainView(SegmentedSequence segmentedSequence, ViewParameters params)
+	public OneLineView(SegmentedSequence segmentedSequence, ViewParameters params)
 	{
-		System.err.println("In ChainView constructor for " + segmentedSequence.getChainId());
-		System.err.println("segments: " + segmentedSequence.getSegmentCount());
-		System.err.println("params: " + params);
+
 
 		this.params = params;
 		this.backingData = segmentedSequence;
-		annotationDrawMapper = new Annotation2MultiLineDrawer();
-		
+		this.annotationDrawMapper = new Annotation2SingleLineDrawer();
 		
 		/*
 		 * At this point, we should instantiate a collection of annotations that we are ACTUALLY GOING TO DISPLAY
@@ -86,8 +79,10 @@ public class ChainView implements Serializable {
 		if ( lst == null)
 			lst = new ArrayList<AnnotationName>();
 
-
+		annotationDrawMapper = new Annotation2SingleLineDrawer();
+		
 		annotationDrawMapper.ensureInitialized();
+
 		for(AnnotationName an : lst)
 		{
 
@@ -95,9 +90,6 @@ public class ChainView implements Serializable {
 				System.err.println("got NULL instead of annotation name!");
 				continue;
 			}
-			System.out.println("checking annotation: " + an.getName() ) ;
-			System.out.println("backingdata: " + backingData);
-			System.out.println("assignment: " + this.backingData.getAnnotationGroup(an.getAnnotationClass()));
 
 
 			if( ((ag = this.backingData.getAnnotationGroup(an.getAnnotationClass())) == null || !ag.hasData()) 
@@ -111,7 +103,7 @@ public class ChainView implements Serializable {
 				}
 			}
 
-			System.out.println("testing if ag should be displayed " + ag + " an: " + an.getAnnotationClass());
+			//System.out.println("testing if ag should be displayed " + ag + " an: " + an.getAnnotationClass());
 
 			if(ag != null && ag.hasData())
 			{
@@ -127,13 +119,10 @@ public class ChainView implements Serializable {
 		this.annotationSummaryCells = Collections.unmodifiableCollection(strs);
 		this.annotationsToView = Collections.unmodifiableCollection(someAnnotationsToView);
 
-		System.err.println("This chain will display the following annotations: ");
-		for ( AnnotationName anno: annotationsToView ) {
-			System.err.println("anno:" + anno.getName());
-		}
 
 		this.chain = this.backingData.getFirstResidue().getChain();
 	}
+
 
 	private static ResidueNumberScheme getBestRns(Sequence s, ResidueNumberScheme rns)
 	{
@@ -145,7 +134,6 @@ public class ChainView implements Serializable {
 		}
 		return result;
 	}
-
 
 	public AnnotationGroup<?> getReplacementAnnotationGroupIfPossible(AnnotationName an)
 	{
@@ -166,18 +154,13 @@ public class ChainView implements Serializable {
 		return this.backingData.getSegmentCount();
 	}
 
-	public SequenceSummaryImage getSequenceSummaryImage(){
-		if ( sequenceSummaryImage == null) {
-			this.sequenceSummaryImage = new SequenceSummaryImage(backingData, annotationsToView, params.getDesiredBottomRulerRns(), params.getDesiredTopRulerRns(), params.getFontSize(), params.getFragmentBuffer(), params.getNumCharsInKey());
-		}
-		return sequenceSummaryImage;
-	}
+
 
 	public SequenceImage getSequenceImage() {
-		//	   System.out.println("chainview: getSequenceImage " + sequenceImage );
-		//	   System.out.println("params: " +params);
-		//	   System.out.println("backinData: " + backingData);
-		//	   System.out.println("annotationsToView: " + annotationsToView);
+		System.out.println("chainview: getSequenceImage " + sequenceImage );
+		System.out.println("params: " +params);
+		System.out.println("backinData: " + backingData);
+		System.out.println("annotationsToView: " + annotationsToView);
 
 		if(sequenceImage == null)
 		{
@@ -215,7 +198,7 @@ public class ChainView implements Serializable {
 			this.otherAnnotationsAvailable = new TreeSet<AnnotationName>();
 
 			Collection<AnnotationGroup<?>> dataAnnos = this.chain.getAnnotationGroupsWithData();
-			System.out.println("ChainView: got annotations with data:" + dataAnnos.size());
+			System.out.println("OneLineView: got annotations with data:" + dataAnnos.size());
 			for(AnnotationGroup<?> ag : dataAnnos )
 			{
 				this.otherAnnotationsAvailable.add(ag.getName());
@@ -226,14 +209,13 @@ public class ChainView implements Serializable {
 
 			//TODO: find a different way to filter things that can get displayed!
 			// uncommenting for now AP
-			//System.out.println("ChainView beforeretain: " + otherAnnotationsAvailable.size());
+			//System.out.println("OneLineView beforeretain: " + otherAnnotationsAvailable.size());
 			// only keep those that can be rendered
 			//this.otherAnnotationsAvailable.retainAll(Annotation2Html.ANNOTATION_TO_RENDERER_MAP.keySet());
-			//System.out.println("ChainView after retain: " + otherAnnotationsAvailable.size());
+			//System.out.println("OneLineView after retain: " + otherAnnotationsAvailable.size());
 		}
 
-		System.out.println("ChainView: getOtherAnnotationsAvailable " + otherAnnotationsAvailable.size());
-		System.out.println("ChainView: annotationsToView: " + annotationsToView.size());
+
 		return this.otherAnnotationsAvailable;
 	}
 
@@ -269,7 +251,6 @@ public class ChainView implements Serializable {
 	public Collection<AnnotationName> getAnnotationsToView() {
 		return annotationsToView;
 	}
-
 
 	public void setAnnotationDrawMapper(AnnotationDrawMapper a2h) {
 		annotationDrawMapper = a2h;

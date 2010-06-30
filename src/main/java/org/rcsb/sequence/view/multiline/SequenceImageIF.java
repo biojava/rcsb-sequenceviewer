@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.Font;
 import java.awt.FontMetrics;

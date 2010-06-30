@@ -22,10 +22,12 @@ import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Chain;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.conf.Annotation2Html;
+import org.rcsb.sequence.core.AnnotationDrawMapper;
+
 import org.rcsb.sequence.util.MapOfCollections;
-import org.rcsb.sequence.view.image.ImageMapData;
-import org.rcsb.sequence.view.image.SequenceImage;
+import org.rcsb.sequence.view.multiline.Annotation2MultiLineDrawer;
+import org.rcsb.sequence.view.multiline.ImageMapData;
+import org.rcsb.sequence.view.multiline.SequenceImage;
 
 
 public class PageView implements Serializable {
@@ -151,7 +153,14 @@ public class PageView implements Serializable {
          
          // do we want the complete thing, or just data for a specific annotation?
          Collection<AnnotationName> allDisplayed = isDelta ? singleton : getAllAnnotationsDisplayed();
-          
+         
+         AnnotationDrawMapper annotationDrawMapper = new Annotation2MultiLineDrawer();
+         annotationDrawMapper.ensureInitialized();
+//         if (chainViews != null && chainViews.size() > 0 ){
+//        	 annotationDrawMapper = chainViews.get(0).getAnnotationDrawMapper();
+//    	  
+//         }
+         
          for(AnnotationName an : allDisplayed)
          {
             JSONObject anJson = new JSONObject();
@@ -228,10 +237,10 @@ public class PageView implements Serializable {
             for(final AnnotationName an : cv.getAnnotationsToView())
             {
                AnnotationGroup<?> ag = cv.getChain().getAnnotationGroup(an.getAnnotationClass());
-               if(ag != null && Annotation2Html.hasSummaryTableRow(ag.getName().getName()) && (!isDelta || an == theAnnotation))
+               if(ag != null && annotationDrawMapper.hasSummaryTableRow(ag.getName().getName()) && (!isDelta || an == theAnnotation))
                {
                   JSONObject annotationObj = new JSONObject();
-                  AnnotationSummaryCell<?> summary = Annotation2Html.createSummaryTableRowInstance(ag);
+                  AnnotationSummaryCell<?> summary = annotationDrawMapper.createSummaryTableRowInstance(ag);
                   if(summary.hasData())
                   {
                      chainObj.put(an.getName(), annotationObj);

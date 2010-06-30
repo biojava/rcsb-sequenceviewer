@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -20,6 +20,8 @@ import java.util.Set;
 
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
+import org.rcsb.sequence.core.AnnotationDrawMapper;
+
 import org.rcsb.sequence.core.DisulfideAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 
@@ -27,7 +29,6 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.conf.Annotation2Html;
 import org.rcsb.sequence.util.MapOfCollections;
 
 /**
@@ -40,6 +41,8 @@ public class SequenceImage extends AbstractSequenceImage
 {
 	private final int disulphideYPosNudgePx;
 
+	 AnnotationDrawMapper annotationDrawMapper ;
+	
 	/**
 	 * Constructor for creating images of a {@link SegmentedSequence}. Each <tt>SequenceSegment</tt> in the
 	 * <tt>SegmentedSequence</tt> is treated as an individual sequence and stacked.
@@ -53,9 +56,9 @@ public class SequenceImage extends AbstractSequenceImage
 	 * @param numCharsInKey
 	 */
 	public SequenceImage(SegmentedSequence sequence, Collection<AnnotationName> annotationsToView, ResidueNumberScheme rnsOfBottomRuler,
-			ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey)
+			ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey,AnnotationDrawMapper annotationDrawMapper)
 	{
-		this(sequence.getSequenceSegments(), annotationsToView, rnsOfBottomRuler, rnsOfTopRuler, fontSize, fragmentBuffer, numCharsInKey);
+		this(sequence.getSequenceSegments(), annotationsToView, rnsOfBottomRuler, rnsOfTopRuler, fontSize, fragmentBuffer, numCharsInKey,annotationDrawMapper);
 	}
 
 	/**
@@ -73,20 +76,29 @@ public class SequenceImage extends AbstractSequenceImage
 	 * @see Sequence#getSegmentedSequence(int, ResidueNumberScheme)
 	 */
 	public SequenceImage(Sequence sequence, Collection<AnnotationName> annotationsToView, ResidueNumberScheme rnsOfBottomRuler,
-			ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey)
+			ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey,AnnotationDrawMapper annotationDrawMapper)
 	{
-		this(Collections.singletonList(sequence), annotationsToView, rnsOfBottomRuler, rnsOfTopRuler, fontSize, fragmentBuffer, numCharsInKey);
+		this(Collections.singletonList(sequence), annotationsToView, rnsOfBottomRuler, rnsOfTopRuler, fontSize, fragmentBuffer, numCharsInKey,annotationDrawMapper);
 	}
 
+	public SequenceImage(SegmentedSequence sequence, Collection<AnnotationName> annotationsToView, ResidueNumberScheme rnsOfBottomRuler,
+			int fontSize, float fragmentBuffer, int numCharsInKey,AnnotationDrawMapper annotationDrawMapper)
+	{
+		this(sequence, annotationsToView, rnsOfBottomRuler, null, fontSize, fragmentBuffer, numCharsInKey,annotationDrawMapper);
+	}
+	
 	public SequenceImage(List<? extends Sequence> sequences, Collection<AnnotationName> annotationsToView,
-			ResidueNumberScheme rnsOfBottomRuler, ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey)
+			ResidueNumberScheme rnsOfBottomRuler, ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey, AnnotationDrawMapper annotationDrawMapper)
 	{
 
+		this.annotationDrawMapper = annotationDrawMapper;
+		
 		initImage(sequences, fontSize, fragmentBuffer, numCharsInKey);
 
 		int yOffset = 0;
 		SequenceDrawer sequenceDrawer = null;
-
+		
+		 annotationDrawMapper.ensureInitialized();
 		// this drawer does nothing except take up vertical space. it is
 		// inserted between sequence segments to create a buffer between
 		// them
@@ -102,7 +114,7 @@ public class SequenceImage extends AbstractSequenceImage
 				if (annotationsToView.contains(an))
 				{
 
-					yOffset += addRenderable(Annotation2Html.createAnnotationRenderer(this, an, s), an.getName());
+					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
 				}
 			}
 
@@ -149,11 +161,7 @@ public class SequenceImage extends AbstractSequenceImage
 		return r.getImageHeightPx();
 	}
 
-	public SequenceImage(SegmentedSequence sequence, Collection<AnnotationName> annotationsToView, ResidueNumberScheme rnsOfBottomRuler,
-			int fontSize, float fragmentBuffer, int numCharsInKey)
-	{
-		this(sequence, annotationsToView, rnsOfBottomRuler, null, fontSize, fragmentBuffer, numCharsInKey);
-	}
+	
 
 
 	public BufferedImage getBufferedImage(){
@@ -371,5 +379,15 @@ public class SequenceImage extends AbstractSequenceImage
 	{
 		return an == null ? 0 : getHeightPx(an.getName());
 	}
+
+	public AnnotationDrawMapper getAnnotationDrawMapper() {
+		return annotationDrawMapper;
+	}
+
+	public void setAnnotationDrawMapper(AnnotationDrawMapper annotationDrawMapper) {
+		this.annotationDrawMapper = annotationDrawMapper;
+	}
+	
+	
 
 }

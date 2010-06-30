@@ -3,9 +3,7 @@ package org.rcsb.sequence.conf;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+
 import java.util.Set;
 
 import org.rcsb.sequence.model.AnnotationGroup;

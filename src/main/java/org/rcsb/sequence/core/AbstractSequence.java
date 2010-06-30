@@ -53,7 +53,9 @@ public abstract class AbstractSequence implements Sequence, Serializable
 	 *  
 	 */
 	public void destroy(){
-	   //PDBWW-1753
+	   
+		
+		//PDBWW-1753
 	   
 	   Collection<AnnotationGroup<?>> annotations = getAvailableAnnotationGroups();
 	   for (AnnotationGroup<?> group: annotations){

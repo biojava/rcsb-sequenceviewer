@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,6 +13,7 @@ import org.rcsb.sequence.core.SequenceSegmentImpl;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.view.oneline.SequenceLineDrawer;
 
 public class SequenceSummaryImage extends AbstractSequenceImage
 {

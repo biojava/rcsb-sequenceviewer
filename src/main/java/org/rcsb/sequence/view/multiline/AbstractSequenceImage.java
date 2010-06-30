@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.image;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -131,7 +131,7 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
 	 * @param key the name of the drawer
 	 * @return the height required by drawer
 	 */
-	abstract  int addRenderable(Drawer r, String key);
+	public abstract  int addRenderable(Drawer r, String key);
 
 
 	public int getFontSize() {

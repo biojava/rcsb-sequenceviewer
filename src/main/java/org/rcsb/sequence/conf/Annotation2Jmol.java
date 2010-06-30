@@ -31,7 +31,7 @@ public class Annotation2Jmol {
       // enable this to map secstruc to jmol
       // warning: bulidng up the image map take a lot of time, so don;t enable this
       // until we have found a better solution to create the image map
-      //a2jMap.put(secstr, AnnotationJsonObject.class);
+      a2jMap.put(secstr, AnnotationJsonObject.class);
       
       ANNOTATION_CLASSIFICATION_TO_JSON_DATA_MAP = Collections.unmodifiableMap(a2jMap);
    }
