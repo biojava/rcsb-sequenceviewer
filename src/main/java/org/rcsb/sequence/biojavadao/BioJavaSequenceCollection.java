@@ -15,8 +15,6 @@ import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.SequenceCollection;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class BioJavaSequenceCollection implements SequenceCollection {
 	Structure s;
 	
@@ -119,13 +117,13 @@ public class BioJavaSequenceCollection implements SequenceCollection {
 	
 	public Map<PolymerType, Collection<Chain>> getPolymerTypeChainMap() {
 		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		return null;
 	}
 
 	public SegmentedSequence getSegmentedSequence(ResidueNumberScheme rns,
 			String chainId, int fragmentLength) {
 		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		return null;
 		
 	}
 
