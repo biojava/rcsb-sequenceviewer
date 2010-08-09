@@ -123,8 +123,6 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
    private ResidueId next     = END_OF_CHAIN;
    private ResidueId previous = BEGINNING_OF_CHAIN;
    
-   
-   
 	/**
 	 * Getter of the property <tt>residueNumberScheme</tt>
 	 * @return  Returns the residueNumberScheme.

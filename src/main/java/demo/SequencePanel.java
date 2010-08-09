@@ -41,11 +41,12 @@ public class SequencePanel {
 	
 	public static void main(String[] args){
 
-		String pdbId = "1cdg";
+//		String pdbId = "1cdg";
+		String pdbId = "1A6L";
 		String chainId = "A";
 
 		// define where PDB files are stored...
-		System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
+		//System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
 		System.setProperty(InputStreamProvider.CACHE_PROPERTY, "true");
 		 
 		SequencePanel panel = new SequencePanel();		
@@ -85,11 +86,11 @@ public class SequencePanel {
 	
 		// register the anntation mapper for th emulti line view
 		
-		Annotation2MultiLineDrawer a2h = new Annotation2MultiLineDrawer();
+//		Annotation2MultiLineDrawer a2h = new Annotation2MultiLineDrawer();
 		
 				
 		ChainView view = new ChainView(s, params);
-		view.setAnnotationDrawMapper(a2h);
+//		view.setAnnotationDrawMapper(a2h);
 		
 		SequenceImage image = view.getSequenceImage();
 

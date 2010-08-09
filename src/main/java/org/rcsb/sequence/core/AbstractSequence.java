@@ -24,6 +24,7 @@ import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.ResidueUtils;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
 
 
 
@@ -113,6 +114,21 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		return null;
 		
 		
+	}
+	
+	public CrosslinkAnnotationGroup getCrosslinkAnnotationGroup() {
+		ensureAnnotated();
+		
+//		for (Class ag : annotationGroupMap.keySet()) {
+//			Class[] interfaces = ag.getInterfaces();
+//			for ( Class interf : interfaces){
+//				if ( interf.equals(CrosslinkAnnotationGroup.class)) {
+//					return (CrosslinkAnnotationGroup) getAnnotationGroupMap().get(ag);
+//				}
+//			}
+//		}
+//		return null; 
+		return (CrosslinkAnnotationGroup)annotationGroupMap.get(CrosslinkAnnotationGroup.class);
 	}
 
 

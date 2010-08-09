@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.biojava3.protmod.structure.ModifiedCompound;
 
 import org.rcsb.sequence.core.DisulfideAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
@@ -19,13 +20,18 @@ import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
 import org.rcsb.sequence.util.ResourceManager;
 
 public class SequenceDrawer extends AbstractDrawer<Object> {
 
-   private DisulfideAnnotationGroup disulphides = null;
-   private boolean hasDisulphides = false;
-   private Map<ResidueId, Point> disulphidePositions = Collections.emptyMap();
+//   private DisulfideAnnotationGroup disulphides = null;
+//   private boolean hasDisulphides = false;
+//   private Map<ResidueId, Point> disulphidePositions = Collections.emptyMap();
+   
+   private CrosslinkAnnotationGroup crosslinks = null;
+   private boolean hasCrosslinks = false;
+   private Map<ResidueId, Point> crosslinkPositions = Collections.emptyMap();
    
    private final ResidueNumberScheme rns;
    
@@ -67,12 +73,13 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
 
       setImageHeight(image.getFontHeight());
       
-      disulphides = sequence.getDisulfideAnnotationGroup();
+//      disulphides = sequence.getDisulfideAnnotationGroup();
+      crosslinks = sequence.getCrosslinkAnnotationGroup();
       
-      if(disulphides != null && disulphides.getAnnotations().size() > 0)
+      if(crosslinks != null && crosslinks.getAnnotations().size() > 0)
       {
-         hasDisulphides = true;
-         disulphidePositions = new HashMap<ResidueId, Point>();
+         hasCrosslinks = true;
+         crosslinkPositions = new HashMap<ResidueId, Point>();
       }
       
       charSize = new HashMap<Character, Integer>();
@@ -128,7 +135,7 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
                
                // do map entries for each resiude
                int startPx = imageWidthOffset, endPx = startPx + resWid;
-               Annotation<ResidueId> disulphide = null;
+               Annotation<ModifiedCompound> crosslink = null;
                for( ResidueId rid : sequence.getResidueIds() )
                {
                   if(endPx > maxPos)
@@ -150,18 +157,20 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
                   
                   formatResidue(description, rid);
                   
-                  if(hasDisulphides && (disulphide = disulphides.getAnnotation(rid)) != null)
+                  if(hasCrosslinks && (crosslink = crosslinks.getAnnotation(rid)) != null)
                   {
-                     ResidueId disulphidePartner = disulphide.getAnnotationValue().value().getEquivalentResidueId(rnsOfSeq);
-                     if(disulphidePartner != null)
-                     {
-                        description.append(" disulphide bond with ");
-                        formatResidue(description, disulphidePartner);
-                        if(!rid.getChain().equals(disulphidePartner.getChain()))
-                        {
-                           description.append(" on chain ").append(disulphidePartner.getChain().getChainId());
-                        }
-                     }
+//                     ResidueId disulphidePartner = crosslink.getAnnotationValue().value().getEquivalentResidueId(rnsOfSeq);
+//                     if(disulphidePartner != null)
+//                     {
+//                        description.append(" disulphide bond with ");
+//                        formatResidue(description, disulphidePartner);
+//                        if(!rid.getChain().equals(disulphidePartner.getChain()))
+//                        {
+//                           description.append(" on chain ").append(disulphidePartner.getChain().getChainId());
+//                        }
+//                     }
+                	  ModifiedCompound mc = crosslink.getAnnotationValue().value();
+                	  description.append(mc);
                   }
              
                   if ( rid.getResidueInfo().isNonstandard()){ 
@@ -188,7 +197,7 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
                      description.append(" (no structural data available)");
                   }
                   
-                  addImageMapDataEntry(new Entry(startPx, endPx, description.toString(), disulphide == null ? null : disulphide)); // for now
+                  addImageMapDataEntry(new Entry(startPx, endPx, description.toString(), crosslink == null ? null : crosslink)); // for now
                   //addImageMapDataEntry(new Entry(startPx, endPx, "xxxxx", disulphide == null ? null : disulphide));
                   startPx += resWid;
                   endPx   += resWid;
@@ -251,12 +260,11 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       
       for(ResidueId r : getSequence().getResidueIds())
       {
-       // disulphide first
-         if(hasDisulphides && disulphides != null && disulphides.getAnnotation(r) != null)
+         if(hasCrosslinks && crosslinks != null && crosslinks.getAnnotation(r) != null)
          {
             g2.setColor(disulphideColor);
             g2.fillOval(xPos, yOffset + (imageHeight * 1/10), fontWidth, imageHeight * 8/10);
-            disulphidePositions.put(r, new Point(xPos + (fontWidth/2), yOffset + (imageHeight/2)));
+            crosslinkPositions.put(r.getEquivalentResidueId(ATOM), new Point(xPos + (fontWidth/2), yOffset + (imageHeight/2)));
          }
          
          g2.setColor(r.hasStructuralData() ? residueWithStructure : residueNoStructure);
@@ -318,8 +326,8 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       }
    }
 
-   public Map<ResidueId, Point> getDisulphidePositions() {
-      return disulphidePositions;
+   public Map<ResidueId, Point> getCrosslinkPositions() {
+      return crosslinkPositions;
    }
    
    protected ResidueNumberScheme getResidueNumberScheme()

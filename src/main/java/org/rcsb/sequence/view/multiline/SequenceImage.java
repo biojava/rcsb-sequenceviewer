@@ -18,18 +18,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.biojava3.protmod.structure.ModifiedCompound;
+import org.biojava3.protmod.structure.StructureGroup;
+
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
 
-import org.rcsb.sequence.core.DisulfideAnnotationGroup;
+//import org.rcsb.sequence.core.DisulfideAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
 import org.rcsb.sequence.util.MapOfCollections;
+import org.rcsb.sequence.util.ResidueTools;
 
 /**
  * <tt>SequenceImage</tt> is responsible for creating a png bitmap image for a given {@link Sequence},
@@ -111,6 +116,8 @@ public class SequenceImage extends AbstractSequenceImage
 
 				if ( an.getName().equals("disulphide"))
 					continue;
+				if ( an.getName().equals("crosslink"))
+					continue;
 				if (annotationsToView.contains(an))
 				{
 
@@ -174,7 +181,7 @@ public class SequenceImage extends AbstractSequenceImage
 		g2.setBackground(Color.white);
 		g2.clearRect(0, 0, imageWidth, imageHeight);
 
-		Map<ResidueId, Point> disulphideHalves = new HashMap<ResidueId, Point>();
+		Map<ResidueId, Point> crosslinkPoints = new HashMap<ResidueId, Point>();
 
 		int yOffset = 0;
 
@@ -188,11 +195,11 @@ public class SequenceImage extends AbstractSequenceImage
 			// once we're done with this loop
 			if (r instanceof SequenceDrawer)
 			{
-				disulphideHalves.putAll(((SequenceDrawer) r).getDisulphidePositions());
+				crosslinkPoints.putAll(((SequenceDrawer) r).getCrosslinkPositions());
 			}
 		}
 
-		renderDisulphides(g2, disulphideHalves, disulphideYPosNudgePx);
+		renderCrosslinks(g2, crosslinkPoints, disulphideYPosNudgePx);
 		return result;
 	}
 	/**
@@ -216,17 +223,17 @@ public class SequenceImage extends AbstractSequenceImage
 	 * This method is a kludge to allow the green dotted lines to connect disulphides together. This can't be done within
 	 * the Drawer framework because the disulphide partner might be on a different Drawer.
 	 */
-	private void renderDisulphides(Graphics2D g2, Map<ResidueId, Point> disulphideHalves, final int yNudgeValue)
+	private void renderCrosslinks(Graphics2D g2, Map<ResidueId, Point> crosslinkPoints, final int yNudgeValue)
 	{
-		List<Annotation<ResidueId>> disulphides = new ArrayList<Annotation<ResidueId>>();
-		for (Sequence s : sequences)
-		{
-			DisulfideAnnotationGroup dag = s.getDisulfideAnnotationGroup();
-			if (dag != null && dag.hasData())
-			{
-				disulphides.addAll(dag.getAnnotations());
-			}
-		}
+//		List<Annotation<ModifiedCompound>> crosslinks = new ArrayList<Annotation<ModifiedCompound>>();
+//		for (Sequence s : sequences)
+//		{
+//			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
+//			if (clag != null && clag.hasData())
+//			{
+//				crosslinks.addAll(clag.getAnnotations());
+//			}
+//		}
 
 		ResidueId ra, rb;
 		Point pa, pb;
@@ -241,59 +248,77 @@ public class SequenceImage extends AbstractSequenceImage
 		int prevYPos = 0, yNudge = 0;
 		boolean lineGoesAbove = true;
 
-		for (Annotation<ResidueId> d : disulphides)
+		//for (Annotation<ModifiedCompound> mca : crosslinks)
+		for (Sequence s : sequences)
 		{
-			ra = d.getSequence().getFirstResidue();
-			rb = d.getAnnotationValue().value();
-
-			pa = disulphideHalves.remove(ra); // remove them so we don't draw the same line forwards and backwards
-			pb = disulphideHalves.remove(rb);
-
-			int y1, y2;
-
-			if (pa == null || pb == null) continue;
-
-			// if both cysteines are on the same line we need to
-			// a. decide (based on if there are other disulphides on the same line)
-			// whether to put the connecting line above or below the sequence
-			// b. nudge the points accordingly
-			if (pa.y == pb.y)
-			{
-				if (lineGoesAbove)
-				{
-					yNudge = -1 * yNudgeValue;
+			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
+			if (clag == null || !clag.hasData())
+				continue;
+			
+			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
+				List<ResidueId> residues = clag.getInvolvedResidues(crosslink);
+				int n = residues.size();
+				if (n < 2) {
+					System.err.println("There should be more than or equal to two residues in a crosslink.");
+					continue;
 				}
-				else
-				{
-					yNudge = yNudgeValue;
+				
+				ra = residues.get(0);
+				pa = crosslinkPoints.remove(ra); // remove them so we don't draw the same line forwards and backwards
+
+				for (int i=1; i<n; i++) {
+					rb = residues.get(i);
+					pb = crosslinkPoints.remove(rb);
+
+					int y1, y2;
+
+					if (pa == null || pb == null) continue;
+
+					// if both cysteines are on the same line we need to
+					// a. decide (based on if there are other disulphides on the same line)
+					// whether to put the connecting line above or below the sequence
+					// b. nudge the points accordingly
+					if (pa.y == pb.y)
+					{
+						if (lineGoesAbove)
+						{
+							yNudge = -1 * yNudgeValue;
+						}
+						else
+						{
+							yNudge = yNudgeValue;
+						}
+						y1 = pa.y + yNudge;
+						y2 = y1 + yNudge; // this is a bit of a hack
+
+						bond = new CubicCurve2D.Double(pa.x, y1, pa.x, y2, pb.x, y2, pb.x, y1);
+
+						lineGoesAbove = pa.y == prevYPos && !lineGoesAbove; // invert for next time on same line
+						prevYPos = pa.y;
+					}
+					else
+					{
+
+						if (pa.y > pb.y)
+						{
+							y1 = pa.y - yNudgeValue;
+							y2 = pb.y + yNudgeValue;
+						}
+						else
+						{
+
+							y1 = pa.y + yNudgeValue;
+							y2 = pb.y - yNudgeValue;
+						}
+
+						bond = new Line2D.Double(pa.x, y1, pb.x, y2);
+					}
+
+					g2.draw(bond);
+					
+					pa = pb;
 				}
-				y1 = pa.y + yNudge;
-				y2 = y1 + yNudge; // this is a bit of a hack
-
-				bond = new CubicCurve2D.Double(pa.x, y1, pa.x, y2, pb.x, y2, pb.x, y1);
-
-				lineGoesAbove = pa.y == prevYPos && !lineGoesAbove; // invert for next time on same line
-				prevYPos = pa.y;
 			}
-			else
-			{
-
-				if (pa.y > pb.y)
-				{
-					y1 = pa.y - yNudgeValue;
-					y2 = pb.y + yNudgeValue;
-				}
-				else
-				{
-
-					y1 = pa.y + yNudgeValue;
-					y2 = pb.y - yNudgeValue;
-				}
-
-				bond = new Line2D.Double(pa.x, y1, pb.x, y2);
-			}
-
-			g2.draw(bond);
 		}
 	}
 

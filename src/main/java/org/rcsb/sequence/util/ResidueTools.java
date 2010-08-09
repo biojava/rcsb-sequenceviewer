@@ -1,11 +1,17 @@
 package org.rcsb.sequence.util;
 
+import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
+import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.rcsb.sequence.model.ResidueId;
+import org.rcsb.sequence.model.Sequence;
 
 public class ResidueTools {
 	  /**
@@ -129,4 +135,12 @@ public class ResidueTools {
 	   public static final List<String> getStdMonIds() {
 		      return STD_MON_IDS;
 		   }
+	   
+	   public static ResidueId getResidueId(Integer id, Sequence chain)
+		{
+			ResidueId result = chain.getResidueId(SEQRES, id);
+			if(result != null) result = result.getEquivalentResidueId(ATOM);
+			if(result == null) System.err.println("Can't find mmcif residue " + id + " on chain " + chain);
+			return result;
+		}
 }

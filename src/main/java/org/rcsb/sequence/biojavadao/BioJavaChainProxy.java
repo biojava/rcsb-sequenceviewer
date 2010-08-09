@@ -31,6 +31,7 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SequenceCollection;
+import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
 
 
 public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
@@ -269,39 +270,64 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		}
 		addAnnotationGroup(secanno);
 		
+		// crosslink
 		
-		
+		AnnotationClassification clac = AnnotationClassification.structuralFeature;
+		Reference clref = new Reference(-1L);
 
-		// disulfid bridges..
-
-		AnnotationClassification ac = AnnotationClassification.structuralFeature;
-		Reference ssref = new Reference(-1L);
-
-		AnnotationName ssName = new AnnotationName(
-				ac,
-				BioJavaDisulfideAnnotationGroup.annotationName, 
-				"Disulphide Bonds", 
-				ssref, 
-				BioJavaDisulfideAnnotationGroup.class, 
+		AnnotationName clName = new AnnotationName(
+				clac,
+				CrosslinkAnnotationGroup.annotationName, 
+				"Crosslinks", 
+				clref, 
+				CrosslinkAnnotationGroup.class,
 				PolymerType.PROTEIN_ONLY);
-
-
-		AnnotationRegistry.registerAnnotation(ssName);
 		
-		BioJavaDisulfideAnnotationGroup disulfg =
-			new BioJavaDisulfideAnnotationGroup(
+		AnnotationRegistry.registerAnnotation(clName);
+		
+		CrosslinkAnnotationGroup clag =
+			new CrosslinkAnnotationGroup(
 					this,
-					ac, 
-					ssName);
+					clac,
+					clName);
 		
 		try {
-			disulfg.constructAnnotations();
-		} catch (Exception e){
+			clag.constructAnnotations();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		addAnnotationGroup(disulfg);
+		addAnnotationGroup(clag);
+
+//		// disulfid bridges..
+//
+//		AnnotationClassification ac = AnnotationClassification.structuralFeature;
+//		Reference ssref = new Reference(-1L);
+//
+//		AnnotationName ssName = new AnnotationName(
+//				ac,
+//				BioJavaDisulfideAnnotationGroup.annotationName, 
+//				"Disulphide Bonds", 
+//				ssref, 
+//				BioJavaDisulfideAnnotationGroup.class, 
+//				PolymerType.PROTEIN_ONLY);
+//
+//
+//		AnnotationRegistry.registerAnnotation(ssName);
+//		
+//		BioJavaDisulfideAnnotationGroup disulfg =
+//			new BioJavaDisulfideAnnotationGroup(
+//					this,
+//					ac, 
+//					ssName);
+//		
+//		try {
+//			disulfg.constructAnnotations();
+//		} catch (Exception e){
+//			e.printStackTrace();
+//		}
+//		addAnnotationGroup(disulfg);
 		
-		
+		// test		
 		AnnotationName scop = new AnnotationName(
 				AnnotationClassification.strdom,
 				TestAnnotationGroup.annotationName,
