@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 import org.biojava3.protmod.structure.StructureGroup;
 
@@ -242,11 +243,13 @@ public class SequenceImage extends AbstractSequenceImage
 		                                                                                                                       { relativeThickness }, 0.0f);
 		Shape bond;
 
-		g2.setColor(Color.GREEN);
+		//g2.setColor(Color.GREEN);
 		g2.setStroke(dashed);
 
 		int prevYPos = 0, yNudge = 0;
 		boolean lineGoesAbove = true;
+		
+		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
 
 		//for (Annotation<ModifiedCompound> mca : crosslinks)
 		for (Sequence s : sequences)
@@ -256,12 +259,20 @@ public class SequenceImage extends AbstractSequenceImage
 				continue;
 			
 			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
+				ProteinModification mod = crosslink.getModification();
+				Color color = mapModColor.get(mod);
+				if (color==null) {
+					color = colors[mapModColor.size()%colors.length];
+					mapModColor.put(mod, color);
+				}
+				g2.setColor(color);
+				
 				List<ResidueId> residues = clag.getInvolvedResidues(crosslink);
 				int n = residues.size();
-				if (n < 2) {
-					System.err.println("There should be more than or equal to two residues in a crosslink.");
-					continue;
-				}
+//				if (n < 2) {
+//					System.err.println("There should be more than or equal to two residues in a crosslink.");
+//					continue;
+//				}
 				
 				ra = residues.get(0);
 				pa = crosslinkPoints.remove(ra); // remove them so we don't draw the same line forwards and backwards
@@ -321,6 +332,16 @@ public class SequenceImage extends AbstractSequenceImage
 			}
 		}
 	}
+	
+	private static Color[] colors = new Color[] {
+		Color.green,
+		Color.red,
+		Color.blue,
+		Color.orange,
+		Color.yellow,
+		Color.pink,
+		Color.gray
+	};
 
 	/**
 	 * Get the height of the image in pixels

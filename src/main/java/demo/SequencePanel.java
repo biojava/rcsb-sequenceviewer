@@ -43,6 +43,7 @@ public class SequencePanel {
 
 //		String pdbId = "1cdg";
 		String pdbId = "1A6L";
+//		String pdbId = "1G7K";
 		String chainId = "A";
 
 		// define where PDB files are stored...
