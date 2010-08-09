@@ -258,7 +258,7 @@ public class SequenceImage extends AbstractSequenceImage
 			if (clag == null || !clag.hasData())
 				continue;
 			
-			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
+			for (ModifiedCompound crosslink : clag.getPTMs()) {
 				ProteinModification mod = crosslink.getModification();
 				Color color = mapModColor.get(mod);
 				if (color==null) {

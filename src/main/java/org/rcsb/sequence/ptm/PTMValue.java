@@ -30,23 +30,20 @@ import org.biojava3.protmod.structure.ModifiedCompound;
 
 import org.rcsb.sequence.core.AbstractAnnotationValue;
 
-public class CrosslinkValue 
+public class PTMValue 
 extends AbstractAnnotationValue<ModifiedCompound>
 implements Serializable {
+   private static final long serialVersionUID = 6085028925723776780L;
    
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 4075350521307278791L;
-   public final ModifiedCompound modComp;
+   private final ModifiedCompound modComp;
    
-   public CrosslinkValue(final ModifiedCompound modComp)
+   public PTMValue(final ModifiedCompound modComp)
    {
       this.modComp = modComp;
    }
    
    public String getDescription() {
-      return "Crosslink:\n" + modComp.toString();
+      return "Protein modification:\n" + modComp.toString();
    }
 
    public Character toCharacter() {
