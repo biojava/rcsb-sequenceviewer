@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.core.DisulfideAnnotationGroup;
-import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
+import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 
 /**
  * <p>A <tt>Sequence</tt> may be a complete polymer chain in a structure or a contiguous fragment of a chain.
@@ -169,15 +169,15 @@ public interface Sequence
     * 
     *
     * @return a DisulfidAnnotationGroup
-    * @deprecated use #getCrossLinkAnnotationGroup for all crosslinks
+    * @deprecated use #getPTMAnnotationGroup for all crosslinks
     */
    public  DisulfideAnnotationGroup  getDisulfideAnnotationGroup();
    
    /**
-    * Crosslinks are a special type of annotations and they can be accessed via this method
+    * Post-translation modifications (PTM) are a special type of annotations and they can be accessed via this method
     * @return
     */
-   public CrosslinkAnnotationGroup getCrosslinkAnnotationGroup();
+   public PTMAnnotationGroup getPTMAnnotationGroup();
    
    /**
     * Checks whether a particular {@link AnnotationGroup} annotates this sequence

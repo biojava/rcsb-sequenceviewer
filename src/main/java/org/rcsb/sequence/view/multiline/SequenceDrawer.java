@@ -19,7 +19,7 @@ import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
+import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 import org.rcsb.sequence.util.ResourceManager;
 
 public class SequenceDrawer extends AbstractDrawer<Object> {
@@ -28,7 +28,7 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
 //   private boolean hasDisulphides = false;
 //   private Map<ResidueId, Point> disulphidePositions = Collections.emptyMap();
    
-   private CrosslinkAnnotationGroup crosslinks = null;
+   private PTMAnnotationGroup crosslinks = null;
    private boolean hasCrosslinks = false;
    private Map<ResidueId, Point> crosslinkPositions = Collections.emptyMap();
    
@@ -73,9 +73,10 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       setImageHeight(image.getFontHeight());
       
 //      disulphides = sequence.getDisulfideAnnotationGroup();
-      crosslinks = sequence.getCrosslinkAnnotationGroup();
+      crosslinks = sequence.getPTMAnnotationGroup();
       
-      if(crosslinks != null && crosslinks.getAnnotations().size() > 0)
+      if(crosslinks != null && crosslinks.getAnnotations().size() > 0
+    		  && crosslinks.hasCrosslinks())
       {
          hasCrosslinks = true;
          crosslinkPositions = new HashMap<ResidueId, Point>();
@@ -169,7 +170,8 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
 //                        }
 //                     }
                 	  ModifiedCompound mc = crosslink.getAnnotationValue().value();
-                	  description.append(mc);
+                	  if (mc.getModification().getCategory().isCrossLink())                	  
+                		  description.append(mc);
                   }
              
                   if ( rid.getResidueInfo().isNonstandard()){ 
@@ -261,9 +263,12 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       {
          if(hasCrosslinks && crosslinks != null && crosslinks.getAnnotation(r) != null)
          {
-            g2.setColor(disulphideColor);
-            g2.fillOval(xPos, yOffset + (imageHeight * 1/10), fontWidth, imageHeight * 8/10);
-            crosslinkPositions.put(r.getEquivalentResidueId(ATOM), new Point(xPos + (fontWidth/2), yOffset + (imageHeight/2)));
+        	 Annotation<ModifiedCompound> crosslink = crosslinks.getAnnotation(r);
+        	 if (crosslink.getAnnotationValue().value().getModification().getCategory().isCrossLink()) {
+                 //g2.setColor(disulphideColor);
+                 //g2.fillOval(xPos, yOffset + (imageHeight * 1/10), fontWidth, imageHeight * 8/10);
+                 crosslinkPositions.put(r.getEquivalentResidueId(ATOM), new Point(xPos + (fontWidth/2), yOffset + (imageHeight/2)));
+        	 }
          }
          
          g2.setColor(r.hasStructuralData() ? residueWithStructure : residueNoStructure);

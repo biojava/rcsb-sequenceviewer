@@ -31,8 +31,7 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SequenceCollection;
-import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
-import org.rcsb.sequence.ptm.ModResAnnotationGroup;
+import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 
 
 public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
@@ -278,16 +277,16 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 
 		AnnotationName mrName = new AnnotationName(
 				mrac,
-				ModResAnnotationGroup.annotationName, 
+				PTMAnnotationGroup.annotationName, 
 				"ModRes", 
 				mrref, 
-				ModResAnnotationGroup.class,
+				PTMAnnotationGroup.class,
 				PolymerType.PROTEIN_ONLY);
 		
 		AnnotationRegistry.registerAnnotation(mrName);
 		
-		ModResAnnotationGroup mrag =
-			new ModResAnnotationGroup(
+		PTMAnnotationGroup mrag =
+			new PTMAnnotationGroup(
 					this,
 					mrac,
 					mrName);
@@ -299,34 +298,6 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		}
 		addAnnotationGroup(mrag);
 		
-		// crosslink
-		
-		AnnotationClassification clac = AnnotationClassification.modres;
-		Reference clref = new Reference(-1L);
-
-		AnnotationName clName = new AnnotationName(
-				clac,
-				CrosslinkAnnotationGroup.annotationName, 
-				"Crosslinks", 
-				clref, 
-				CrosslinkAnnotationGroup.class,
-				PolymerType.PROTEIN_ONLY);
-		
-		AnnotationRegistry.registerAnnotation(clName);
-		
-		CrosslinkAnnotationGroup clag =
-			new CrosslinkAnnotationGroup(
-					this,
-					clac,
-					clName);
-		
-		try {
-			clag.constructAnnotations();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		addAnnotationGroup(clag);
-
 //		// disulfid bridges..
 //
 //		AnnotationClassification ac = AnnotationClassification.structuralFeature;

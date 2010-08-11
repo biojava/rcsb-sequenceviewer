@@ -24,21 +24,10 @@
 
 package org.rcsb.sequence.ptm;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.QuadCurve2D;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.biojava3.protmod.ProteinModification;

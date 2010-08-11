@@ -28,7 +28,7 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
+import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 import org.rcsb.sequence.ptm.ModResDrawer;
 import org.rcsb.sequence.util.MapOfCollections;
 
@@ -225,11 +225,11 @@ public class SequenceImage extends AbstractSequenceImage
 		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
 		for (Sequence s : sequences)
 		{
-			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
+			PTMAnnotationGroup clag = s.getPTMAnnotationGroup();
 			if (clag == null || !clag.hasData())
 				continue;
 			
-			for (ModifiedCompound crosslink : clag.getPTMs()) {
+			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
 				ProteinModification mod = crosslink.getModification();
 				
 				if (!mapModColor.containsKey(mod)) {
@@ -268,11 +268,11 @@ public class SequenceImage extends AbstractSequenceImage
 
 		for (Sequence s : sequences)
 		{
-			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
+			PTMAnnotationGroup clag = s.getPTMAnnotationGroup();
 			if (clag == null || !clag.hasData())
 				continue;
 			
-			for (ModifiedCompound crosslink : clag.getPTMs()) {
+			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
 				ProteinModification mod = crosslink.getModification();
 				
 				setDashed(g2, crosslink);

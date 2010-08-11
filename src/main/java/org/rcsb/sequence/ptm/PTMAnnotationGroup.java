@@ -45,7 +45,6 @@ import org.rcsb.sequence.core.AbstractAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.util.ResidueTools;
 
 import static org.rcsb.sequence.conf.AnnotationClassification.modres;
 import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
@@ -58,14 +57,20 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 	private BioJavaChainProxy proxy ;
 	private Set<ProteinModification> protMods;
 	
+	public static final String annotationName = "modres"; 
+	
 	public PTMAnnotationGroup(BioJavaChainProxy chain,AnnotationClassification ac, 
-			AnnotationName name, Set<ProteinModification> protMods){
+			AnnotationName name){
 		super(ac, name, SEQRES, chain);
 		this.proxy = chain;
+		this.protMods = null;
+	}
+	
+	public void setProtMods(Set<ProteinModification> protMods) {
 		this.protMods = protMods;
 	}
 	
-	public PTMAnnotationGroup(Sequence sequence, String annotationName){
+	public PTMAnnotationGroup(Sequence sequence){
 	    super(modres, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
 	}
 	
@@ -80,7 +85,7 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 		
 		final ProteinModificationIdentifier ptmIdentifier = new ProteinModificationIdentifier();
 		ptmIdentifier.setRecordAdditionalAttachments(false);
-		ptmIdentifier.identify(bj, protMods);
+		ptmIdentifier.identify(bj, protMods!=null ? protMods : ProteinModification.allModifications());
 		Set<ModifiedCompound> modComps = ptmIdentifier.getIdentifiedModifiedCompound();
 		for (ModifiedCompound mc : modComps) {
 			PTMValue cv = new PTMValue(mc);
@@ -95,16 +100,35 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 	}
 	
 	public Set<ModifiedCompound> getPTMs() {
-		Set<ModifiedCompound> crosslinks = new HashSet<ModifiedCompound>();
-		for (Annotation<ModifiedCompound> mca : getAnnotations()) {
-			crosslinks.add(mca.getAnnotationValue().value());
-		}
-		return crosslinks;
+		return getPTMs(false);
 	}
 	
-	public List<ResidueId> getInvolvedResidues(ModifiedCompound crosslink) {
+	public Set<ModifiedCompound> getCrosslinks() {
+		return getPTMs(true);
+	}
+	
+	private Set<ModifiedCompound> getPTMs(boolean crosslinkOnly) {
+		Set<ModifiedCompound> ptms = new HashSet<ModifiedCompound>();
+		for (Annotation<ModifiedCompound> mca : getAnnotations()) {
+			ModifiedCompound mc = mca.getAnnotationValue().value();
+			if (!crosslinkOnly || mc.getModification().getCategory().isCrossLink())
+				ptms.add(mc);
+		}
+		return ptms;
+	}
+	
+	public boolean hasCrosslinks() {
+		for (Annotation<ModifiedCompound> mca : getAnnotations()) {
+			ModifiedCompound mc = mca.getAnnotationValue().value();
+			if (mc.getModification().getCategory().isCrossLink())
+				return true;
+		}
+		return false;
+	}
+	
+	public List<ResidueId> getInvolvedResidues(ModifiedCompound ptm) {
 		List<ResidueId> result = new ArrayList<ResidueId>();
-		Set<StructureGroup> groups = crosslink.getGroups();
+		Set<StructureGroup> groups = ptm.getGroups();
 		for (StructureGroup group : groups) {
 			if (group.isAminoAcid()) {
 				ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
