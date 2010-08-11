@@ -9,7 +9,6 @@ import java.awt.Shape;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,14 +19,10 @@ import java.util.Set;
 
 import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
-import org.biojava3.protmod.structure.StructureGroup;
 
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
-
-//import org.rcsb.sequence.core.DisulfideAnnotationGroup;
-import org.rcsb.sequence.model.Annotation;
 
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
@@ -35,7 +30,6 @@ import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
 import org.rcsb.sequence.util.MapOfCollections;
-import org.rcsb.sequence.util.ResidueTools;
 
 /**
  * <tt>SequenceImage</tt> is responsible for creating a png bitmap image for a given {@link Sequence},
@@ -226,32 +220,15 @@ public class SequenceImage extends AbstractSequenceImage
 	 */
 	private void renderCrosslinks(Graphics2D g2, Map<ResidueId, Point> crosslinkPoints, final int yNudgeValue)
 	{
-//		List<Annotation<ModifiedCompound>> crosslinks = new ArrayList<Annotation<ModifiedCompound>>();
-//		for (Sequence s : sequences)
-//		{
-//			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
-//			if (clag != null && clag.hasData())
-//			{
-//				crosslinks.addAll(clag.getAnnotations());
-//			}
-//		}
-
 		ResidueId ra, rb;
 		Point pa, pb;
-		final float relativeThickness = getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS;
-		BasicStroke dashed = new BasicStroke(relativeThickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]
-		                                                                                                                       { relativeThickness }, 0.0f);
 		Shape bond;
-
-		//g2.setColor(Color.GREEN);
-		g2.setStroke(dashed);
 
 		int prevYPos = 0, yNudge = 0;
 		boolean lineGoesAbove = true;
 		
 		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
 
-		//for (Annotation<ModifiedCompound> mca : crosslinks)
 		for (Sequence s : sequences)
 		{
 			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
@@ -260,6 +237,9 @@ public class SequenceImage extends AbstractSequenceImage
 			
 			for (ModifiedCompound crosslink : clag.getPTMs()) {
 				ProteinModification mod = crosslink.getModification();
+				
+				setDashed(g2, crosslink);
+				
 				Color color = mapModColor.get(mod);
 				if (color==null) {
 					color = colors[mapModColor.size()%colors.length];
@@ -269,10 +249,6 @@ public class SequenceImage extends AbstractSequenceImage
 				
 				List<ResidueId> residues = clag.getInvolvedResidues(crosslink);
 				int n = residues.size();
-//				if (n < 2) {
-//					System.err.println("There should be more than or equal to two residues in a crosslink.");
-//					continue;
-//				}
 				
 				ra = residues.get(0);
 				pa = crosslinkPoints.remove(ra); // remove them so we don't draw the same line forwards and backwards
@@ -331,6 +307,82 @@ public class SequenceImage extends AbstractSequenceImage
 				}
 			}
 		}
+	}
+	
+	private void setDashed(Graphics2D g2, ModifiedCompound crosslink) {
+		final float relativeThickness = getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS;
+		float[] dashed;
+		switch (crosslink.getModification().getCategory()) {
+		case CROSS_LINK_2:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					};
+			break;
+		case CROSS_LINK_3:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					}
+			;
+			break;
+		case CROSS_LINK_4:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					}
+			;
+			break;
+		case CROSS_LINK_5:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					}
+			;
+			break;
+		case CROSS_LINK_6:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					}
+			;
+			break;
+		case CROSS_LINK_7:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					}
+			;
+			break;
+		default:
+			dashed = new float[] {relativeThickness};
+		}
+		
+		BasicStroke dashedStroke = new BasicStroke(relativeThickness, BasicStroke.CAP_BUTT, 
+				BasicStroke.JOIN_MITER, 10.0f, dashed, 0.0f);
+		g2.setStroke(dashedStroke);
+		
 	}
 	
 	private static Color[] colors = new Color[] {

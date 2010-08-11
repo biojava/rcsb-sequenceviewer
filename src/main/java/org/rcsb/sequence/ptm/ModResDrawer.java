@@ -29,11 +29,13 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,8 +48,6 @@ import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.util.ColorUtils;
-import org.rcsb.sequence.view.html.ColorUtil;
 import org.rcsb.sequence.view.multiline.AbstractAnnotationDrawer;
 import org.rcsb.sequence.view.multiline.SequenceImage;
 
@@ -61,9 +61,6 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	protected final double xPeriod;
 	
 	private static final double RELATIVE_HEIGHT = 1.0;
-	
-	//private SecondaryStructureValue previousSsv = SecondaryStructureValue.empty;
-	private boolean previousHelixEndedWithCurveGoingUp = false;
 	
 	protected static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
 	
@@ -80,25 +77,11 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		this.xPeriod = fontWidth / 2;
 
 	}
-	 
-
-	//   @Override
-	//   protected void initBounds() {
-	//      super.initBounds();
-	//      
-	//      
-	//   }
 
 	@Override
 	protected boolean displayLabel() {
 		return false;
 	}
-
-	//   @SuppressWarnings("cast")
-	//   @Override
-	//   protected int initImageHeight() {
-	//      return ;
-	//   }
 
 	@Override
 	public boolean canDrawAnnotation(AnnotationName anAnnotationName) {
@@ -109,69 +92,90 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	protected void drawAnnotationFragment(Graphics2D g2,
 			AnnotationValue<ModifiedCompound> annotation, int sequenceLength, int xMin, int yMin, int xMax,
 			int yMax, boolean startIsNotStart, boolean endIsNotEnd) {
-
-	
-		
-		// we will cast to the concrete class because it is an enum and we can switch on it
-//		PTMValue ssv = (PTMValue)annotation; // we know this'll work because of canRenderAnnotation()... right?
-
-		drawStrandFragment(g2, xMin, yMin, xMax, yMax, endIsNotEnd);
+		ModifiedCompound mc = annotation.value();
+		switch (mc.getModification().getCategory()) {
+		case CROSS_LINK_1:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 1);
+			break;
+		case CROSS_LINK_2:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 2);
+			break;
+		case CROSS_LINK_3:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 3);
+			break;
+		case CROSS_LINK_4:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 4);
+			break;
+		case CROSS_LINK_5:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 5);
+			break;
+		case CROSS_LINK_6:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 6);
+			break;
+		case CROSS_LINK_7:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 7);
+			break;
+		default:
+			drawModRes(g2, xMin, yMin, xMax, yMax);
+		}
 	}
 
-	protected void drawStrandFragment(Graphics2D g2,
-			int xMin, int yMin, int xMax, int yMax, boolean endIsNotEnd)
-	{      
-				
-		// Change to default Strand color
-		Color ssColor = Color.black;
-		//g2.setColor(ssColor);
-
-		//final int fontWidth = getImage().getFontWidth();
-		//int fontWidth = getAnnotationHeight() - 4;
-		int fontWidth = (yMax - yMin)/2 ;
-		int yHeight = fontWidth;
-		int yStart = (yMax - yMin)/2 - yHeight/2 + yMin;
-		int yCenter = (yMax - yMin)/2 + yMin;
-		int xWidth = xMax - xMin;
-
-		// Create the head of the strand arrow
-		Polygon arrowHead = new Polygon();
-		arrowHead.addPoint(xMax - fontWidth, yCenter + yHeight);
-		arrowHead.addPoint(xMax, yCenter);
-		arrowHead.addPoint(xMax - fontWidth, yCenter - yHeight);
-
-		Color light = ColorUtils.lighter(ssColor, 0.7);
-		int lineHeight = yMax - yMin;
-		Paint origPaint = g2.getPaint();
-		GradientPaint gradient = new GradientPaint(0, yMin  ,  ssColor, 0 , yMax - lineHeight/2 , light, true);
-		g2.setPaint(gradient); 
-
-		Rectangle strandBody;
-		Stroke stroke = new BasicStroke(1.0f);
-		g2.setStroke(stroke);
-		// Draw arrow head iff strand ends on current line
-		if (endIsNotEnd) 
-			strandBody = new Rectangle(xMin, yStart, xWidth, yHeight);
-		
-		else {
-			strandBody = new Rectangle(xMin, yStart, xWidth - fontWidth, yHeight);
-			g2.fill(arrowHead);
-			g2.draw(arrowHead);
-		}
-	
-		// 	Draw strand arrow body
-		g2.fill(strandBody);
-	
-		
+	protected void drawModRes(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)
+	{
+		Color ssColor = Color.green;
 		g2.setColor(ssColor);
 		
-		g2.draw(strandBody);
+		int xCenter = (xMin + xMax) / 2;
+		int yCenter = (yMin + yMax) / 2;
+		double radius = (yMax - yMin) / 2.0;
 		
+		Polygon polygon = getPolygon(xCenter, yCenter, radius, 3, Math.PI/2);
+		g2.fill(polygon);
+		g2.draw(polygon);
+	}
 	
+	protected void drawCrossLink(Graphics2D g2, int xMin, int yMin, int xMax, int yMax, int nRes)
+	{
+		Color ssColor = Color.green;
+		g2.setColor(ssColor);
+		
+		int xCenter = (xMin + xMax) / 2;
+		int yCenter = (yMin + yMax) / 2;
+		double radius = (yMax - yMin) / 2.0;
+		
+		Polygon polygon = getPolygon(xCenter, yCenter, radius, nRes);
+		g2.fill(polygon);
+		g2.draw(polygon);
+	}
 	
-
+	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint) {
+		return getPolygon(xCenter, yCenter, radius, nPoint, Double.NaN);
+	}
+	
+	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint, double startAngle) {
+		if (nPoint==1)
+			return new Polygon(new int[]{xCenter}, new int[]{yCenter}, 1);
+		
+		if (Double.isNaN(startAngle))
+			startAngle = nPoint%2==0 ? Math.PI/nPoint : -Math.PI/2;
+		
+		int[] x = new int[nPoint];
+		int[] y = new int[nPoint];
+		
+		for (int i=0; i<nPoint; i++) {
+			double angle = startAngle + i * 2 * Math.PI / nPoint;
+			x[i] = (int) (xCenter + radius * Math.cos(angle));
+			y[i] = (int) (yCenter + radius * Math.sin(angle));
+		}
+		
+		return new Polygon(x, y, nPoint);
 	}
 
+	@Override
+	protected void drawSpaceBetweenAnnotations(Graphics2D g2, int sequenceLength,
+			int xMin, int yMin, int xMax, int yMax) {
+		renderLine(g2, xMin, yMin, xMax, yMax);
+	}
 
 	private void renderLine(Graphics2D g2,
 			int xMin, int yMin, int xMax, int yMax)
@@ -187,11 +191,4 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		Rectangle rect = new Rectangle(xMin, yStart, xWidth, yHeight);
 		g2.fill(rect);
 	}
-
-	@Override
-	protected void drawSpaceBetweenAnnotations(Graphics2D g2, int sequenceLength,
-			int xMin, int yMin, int xMax, int yMax) {
-		renderLine(g2, xMin, yMin, xMax, yMax);
-	}
-
 }

@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.biojava3.protmod.structure.ModifiedCompound;
 
-import org.rcsb.sequence.core.DisulfideAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 
 import org.rcsb.sequence.model.ResidueId;
