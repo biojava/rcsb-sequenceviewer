@@ -32,6 +32,7 @@ import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SequenceCollection;
 import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
+import org.rcsb.sequence.ptm.ModResAnnotationGroup;
 
 
 public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
@@ -270,9 +271,37 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		}
 		addAnnotationGroup(secanno);
 		
+		// modres
+
+		AnnotationClassification mrac = AnnotationClassification.modres;
+		Reference mrref = new Reference(-1L);
+
+		AnnotationName mrName = new AnnotationName(
+				mrac,
+				ModResAnnotationGroup.annotationName, 
+				"ModRes", 
+				mrref, 
+				ModResAnnotationGroup.class,
+				PolymerType.PROTEIN_ONLY);
+		
+		AnnotationRegistry.registerAnnotation(mrName);
+		
+		ModResAnnotationGroup mrag =
+			new ModResAnnotationGroup(
+					this,
+					mrac,
+					mrName);
+		
+		try {
+			mrag.constructAnnotations();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		addAnnotationGroup(mrag);
+		
 		// crosslink
 		
-		AnnotationClassification clac = AnnotationClassification.structuralFeature;
+		AnnotationClassification clac = AnnotationClassification.modres;
 		Reference clref = new Reference(-1L);
 
 		AnnotationName clName = new AnnotationName(

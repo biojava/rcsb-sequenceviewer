@@ -509,7 +509,8 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
       
       // if they're pdb, it's possible that they are correct except that the residue ids are screwy
       // so try to do the comparison using equivalent mmcif residues
-      if(residueNumberScheme == ResidueNumberScheme.ATOM)
+      if(residueNumberScheme == ResidueNumberScheme.ATOM ||
+    		  aThat.getResidueNumberScheme() == ResidueNumberScheme.ATOM)
       {
          ResidueId cifThis = this.getEquivalentResidueId(ResidueNumberScheme.SEQRES);
          ResidueId cifThat = aThat.getEquivalentResidueId(ResidueNumberScheme.SEQRES);

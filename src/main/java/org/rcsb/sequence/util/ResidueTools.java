@@ -135,12 +135,4 @@ public class ResidueTools {
 	   public static final List<String> getStdMonIds() {
 		      return STD_MON_IDS;
 		   }
-	   
-	   public static ResidueId getResidueId(Integer id, Sequence chain)
-		{
-			ResidueId result = chain.getResidueId(SEQRES, id);
-			if(result != null) result = result.getEquivalentResidueId(ATOM);
-			if(result == null) System.err.println("Can't find mmcif residue " + id + " on chain " + chain);
-			return result;
-		}
 }

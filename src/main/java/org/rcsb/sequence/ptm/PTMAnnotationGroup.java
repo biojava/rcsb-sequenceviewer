@@ -32,7 +32,6 @@ import java.util.HashSet;
 
 import org.biojava.bio.structure.Chain;
 
-import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 import org.biojava3.protmod.structure.ProteinModificationIdentifier;
@@ -48,7 +47,8 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.util.ResidueTools;
 
-import static org.rcsb.sequence.conf.AnnotationClassification.structuralFeature;
+import static org.rcsb.sequence.conf.AnnotationClassification.modres;
+import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
 public class PTMAnnotationGroup
@@ -66,7 +66,7 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 	}
 	
 	public PTMAnnotationGroup(Sequence sequence, String annotationName){
-	    super(structuralFeature, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
+	    super(modres, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
 	}
 	
 	@Override
@@ -81,13 +81,13 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 		final ProteinModificationIdentifier ptmIdentifier = new ProteinModificationIdentifier();
 		ptmIdentifier.setRecordAdditionalAttachments(false);
 		ptmIdentifier.identify(bj, protMods);
-		Set<ModifiedCompound> crossLinks = ptmIdentifier.getIdentifiedModifiedCompound();
-		for (ModifiedCompound cl : crossLinks) {
-			PTMValue cv = new PTMValue(cl);
-			Set<StructureGroup> groups = cl.getGroups();
+		Set<ModifiedCompound> modComps = ptmIdentifier.getIdentifiedModifiedCompound();
+		for (ModifiedCompound mc : modComps) {
+			PTMValue cv = new PTMValue(mc);
+			Set<StructureGroup> groups = mc.getGroups();
 			for (StructureGroup group : groups) {
 				if (group.isAminoAcid()) {
-					ResidueId resId = ResidueTools.getResidueId(group.getResidueNumber(),chain);
+					ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
 					addAnnotation(cv, resId);
 				}
 			}
@@ -106,8 +106,10 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 		List<ResidueId> result = new ArrayList<ResidueId>();
 		Set<StructureGroup> groups = crosslink.getGroups();
 		for (StructureGroup group : groups) {
-			if (group.isAminoAcid())
-				result.add(ResidueTools.getResidueId(group.getResidueNumber(), chain));
+			if (group.isAminoAcid()) {
+				ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
+				result.add(resId);
+			}
 		}
 		Collections.sort(result);
 		return result;

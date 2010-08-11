@@ -12,6 +12,8 @@ import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.ptm.ModResDrawer;
+import org.rcsb.sequence.ptm.ModResSummary;
 import org.rcsb.sequence.view.html.AnnotationSummaryCell;
 import org.rcsb.sequence.view.html.CSASummary;
 import org.rcsb.sequence.view.html.DomainSummary;
@@ -94,6 +96,10 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 			else if ( an.getName().equals("ligcr")){
 				a2rMap.put("ligcr", BoxAnnotationDrawer.class);
 				a2sMap.put("ligcr", LigCRSummary.class);
+			}
+			else if ( an.getName().equals("modres")) {
+				a2rMap.put("modres", ModResDrawer.class);
+				a2sMap.put("modres", ModResSummary.class);
 			}
 		}
 		

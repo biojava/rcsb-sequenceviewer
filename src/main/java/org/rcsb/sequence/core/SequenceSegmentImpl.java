@@ -40,6 +40,7 @@ public class SequenceSegmentImpl extends AbstractSequence implements SequenceSeg
       this.backingSequence = sequence;
       this.lowerBound = lowerBound;
       this.upperBound = upperBound;
+      
       this.rns = lowerBound.getResidueNumberScheme();
       
       this.fragmentNumber = fragmentIdx;

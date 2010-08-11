@@ -24,7 +24,10 @@ public enum AnnotationClassification implements Serializable{
          "Function is assigned to the structure or a portion of it"),
    
    seqdom("domain assignment from sequence",
-         "The structure is divided into domains using information derived from multiple sequence alignment");
+         "The structure is divided into domains using information derived from multiple sequence alignment"),
+   
+   modres("protein modification",
+		 "Identification of protein modifications in a structure");
    
    AnnotationClassification(String name, String description)
    {
@@ -71,6 +74,7 @@ public enum AnnotationClassification implements Serializable{
       Collection<AnnotationClassification> foo = new LinkedList<AnnotationClassification>();
       foo.add(strdom);
       foo.add(secstr);
+      foo.add(modres);
       DEFAULT_CLASSIFICATIONS_TO_VIEW = Collections.unmodifiableCollection(foo);
    }
 }

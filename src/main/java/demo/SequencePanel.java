@@ -41,9 +41,11 @@ public class SequencePanel {
 	
 	public static void main(String[] args){
 
-//		String pdbId = "1cdg";
-		String pdbId = "1A6L";
-//		String pdbId = "1G7K";
+//		String pdbId = "1cdg"; // crosslink2
+		String pdbId = "1A6L"; // crosslink3,4
+//		String pdbId = "1G7K"; // crosslink1
+//		String pdbId = "3HN3"; // attachment
+//		String pdbId = "3MVJ"; // mod. res.
 		String chainId = "A";
 
 		// define where PDB files are stored...
@@ -83,6 +85,8 @@ public class SequencePanel {
 		s.ensureAnnotated();
 		
 		ViewParameters params = new ViewParameters();
+		
+//		params.setDesiredSequenceRns(ResidueNumberScheme.ATOM);
 		
 	
 		// register the anntation mapper for th emulti line view

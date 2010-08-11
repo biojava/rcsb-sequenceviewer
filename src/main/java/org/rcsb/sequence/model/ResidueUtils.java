@@ -183,8 +183,10 @@ public class ResidueUtils {
     	  return true;
     	  //throw new RuntimeException("ResidueUtils: Found two equal but non-identical residueIds");
       }
-      if(one.getResidueNumberScheme() != other.getResidueNumberScheme()) return false;
-      if(!one.getChain().getChainId().equals(other.getChain().getChainId())) return false;
+//      if(one.getResidueNumberScheme() != other.getResidueNumberScheme()) 
+//    	  return false;
+      if(!one.getChain().getChainId().equals(other.getChain().getChainId())) 
+    	  return false;
       return true;
    }
 

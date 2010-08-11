@@ -26,13 +26,17 @@ package org.rcsb.sequence.ptm;
 
 import java.io.Serializable;
 
+import java.util.Iterator;
+import java.util.TreeSet;
+
 import org.biojava3.protmod.structure.ModifiedCompound;
+import org.biojava3.protmod.structure.StructureGroup;
 
 import org.rcsb.sequence.core.AbstractAnnotationValue;
 
 public class PTMValue 
 extends AbstractAnnotationValue<ModifiedCompound>
-implements Serializable {
+implements Serializable, Comparable<PTMValue> {
    private static final long serialVersionUID = 6085028925723776780L;
    
    private final ModifiedCompound modComp;
@@ -59,5 +63,28 @@ implements Serializable {
    public ModifiedCompound value() {
       return modComp;
    }
+   
+   public int compareTo(PTMValue aValue) {
+	   TreeSet<StructureGroup> groups1 = new TreeSet<StructureGroup>(modComp.getGroups());
+	   TreeSet<StructureGroup> groups2 = new TreeSet<StructureGroup>(aValue.modComp.getGroups());
+	   Iterator<StructureGroup> it1 = groups1.iterator();
+	   Iterator<StructureGroup> it2 = groups2.iterator();
+	   while (it1.hasNext() && it2.hasNext()) {
+		   StructureGroup g1 = it1.next();
+		   StructureGroup g2 = it2.next();
+		   if (!g1.equals(g2)) {
+			   return g1.compareTo(g2);
+		   }
+	   }
+	   
+	   if (it1.hasNext())
+		   return 1;
+	   
+	   if (it2.hasNext())
+		   return -1;
+	   
+	   return 0;
+   }
+   
    
 }
