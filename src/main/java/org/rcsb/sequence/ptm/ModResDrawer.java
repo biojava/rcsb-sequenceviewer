@@ -24,6 +24,7 @@
 
 package org.rcsb.sequence.ptm;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -100,9 +101,11 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		
 		g2.setColor(color);
 		
+		g2.setStroke(new BasicStroke(2));
+		
 		switch (mc.getModification().getCategory()) {
 		case CROSS_LINK_1:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 1);
+			drawCrossLink1(g2, xMin, yMin, xMax, yMax);
 			break;
 		case CROSS_LINK_2:
 			drawCrossLink(g2, xMin, yMin, xMax, yMax, 2);
@@ -136,6 +139,16 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		Polygon polygon = getPolygon(xCenter, yCenter, radius, 3, Math.PI/2);
 		g2.fill(polygon);
 		g2.draw(polygon);
+	}
+	
+	protected void drawCrossLink1(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)
+	{
+		int xCenter = (xMin + xMax) / 2;
+		int yCenter = (yMin + yMax) / 2;
+		
+		int thick = getImage().getFontWidth() / 3;
+		
+		g2.drawOval(xCenter-thick, yCenter-thick, 2*thick, 2*thick);
 	}
 	
 	protected void drawCrossLink(Graphics2D g2, int xMin, int yMin, int xMax, int yMax, int nRes)
