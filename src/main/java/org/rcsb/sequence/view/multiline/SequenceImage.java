@@ -29,6 +29,7 @@ import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.ptm.CrosslinkAnnotationGroup;
+import org.rcsb.sequence.ptm.ModResDrawer;
 import org.rcsb.sequence.util.MapOfCollections;
 
 /**
@@ -179,14 +180,20 @@ public class SequenceImage extends AbstractSequenceImage
 		Map<ResidueId, Point> crosslinkPoints = new HashMap<ResidueId, Point>();
 
 		int yOffset = 0;
+		
+		Map<ProteinModification, Color> mapCrosslinkColor = getMapModColor();
 
 		// iterate through all the drawers, telling them to draw at the given y offset on the graphics object
 		for (Drawer r : orderedRenderables)
 		{
+			if (r instanceof ModResDrawer) {
+				((ModResDrawer)r).setMapCrossLinkColor(mapCrosslinkColor);
+			}
+			
 			r.draw(g2, yOffset);
 			yOffset += r.getImageHeightPx();
 
-			// also collect the positions of all the disulphides so we can draw the lines connecting them
+			// also collect the positions of all the crosslinks so we can draw the lines connecting them
 			// once we're done with this loop
 			if (r instanceof SequenceDrawer)
 			{
@@ -194,7 +201,7 @@ public class SequenceImage extends AbstractSequenceImage
 			}
 		}
 
-		renderCrosslinks(g2, crosslinkPoints, disulphideYPosNudgePx);
+		renderCrosslinks(g2, crosslinkPoints, disulphideYPosNudgePx, mapCrosslinkColor);
 		return result;
 	}
 	/**
@@ -213,12 +220,44 @@ public class SequenceImage extends AbstractSequenceImage
 		}
 		return imageBytes;
 	}
+	
+	private Map<ProteinModification, Color> getMapModColor() {
+		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
+		for (Sequence s : sequences)
+		{
+			CrosslinkAnnotationGroup clag = s.getCrosslinkAnnotationGroup();
+			if (clag == null || !clag.hasData())
+				continue;
+			
+			for (ModifiedCompound crosslink : clag.getPTMs()) {
+				ProteinModification mod = crosslink.getModification();
+				
+				if (!mapModColor.containsKey(mod)) {
+					Color color = colors[mapModColor.size()%colors.length];
+					mapModColor.put(mod, color);
+				}
+			}
+		}
+		
+		return mapModColor;
+	}
+	
+	private static Color[] colors = new Color[] {
+		Color.green,
+		Color.red,
+		Color.blue,
+		Color.orange,
+		Color.yellow,
+		Color.pink,
+		Color.gray
+	};
 
 	/*
 	 * This method is a kludge to allow the green dotted lines to connect disulphides together. This can't be done within
 	 * the Drawer framework because the disulphide partner might be on a different Drawer.
 	 */
-	private void renderCrosslinks(Graphics2D g2, Map<ResidueId, Point> crosslinkPoints, final int yNudgeValue)
+	private void renderCrosslinks(Graphics2D g2, Map<ResidueId, Point> crosslinkPoints,
+			final int yNudgeValue, Map<ProteinModification, Color> mapCrosslinkColor)
 	{
 		ResidueId ra, rb;
 		Point pa, pb;
@@ -226,8 +265,6 @@ public class SequenceImage extends AbstractSequenceImage
 
 		int prevYPos = 0, yNudge = 0;
 		boolean lineGoesAbove = true;
-		
-		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
 
 		for (Sequence s : sequences)
 		{
@@ -240,11 +277,7 @@ public class SequenceImage extends AbstractSequenceImage
 				
 				setDashed(g2, crosslink);
 				
-				Color color = mapModColor.get(mod);
-				if (color==null) {
-					color = colors[mapModColor.size()%colors.length];
-					mapModColor.put(mod, color);
-				}
+				Color color = mapCrosslinkColor.get(mod);
 				g2.setColor(color);
 				
 				List<ResidueId> residues = clag.getInvolvedResidues(crosslink);
@@ -384,16 +417,6 @@ public class SequenceImage extends AbstractSequenceImage
 		g2.setStroke(dashedStroke);
 		
 	}
-	
-	private static Color[] colors = new Color[] {
-		Color.green,
-		Color.red,
-		Color.blue,
-		Color.orange,
-		Color.yellow,
-		Color.pink,
-		Color.gray
-	};
 
 	/**
 	 * Get the height of the image in pixels

@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 
 import org.rcsb.sequence.conf.AnnotationClassification;
@@ -77,6 +78,12 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		this.xPeriod = fontWidth / 2;
 
 	}
+	
+	private Map<ProteinModification, Color> mapModColor = null;
+	
+	public void setMapCrossLinkColor(Map<ProteinModification, Color> mapModColor) {
+		this.mapModColor = mapModColor;
+	}
 
 	@Override
 	protected boolean displayLabel() {
@@ -93,6 +100,17 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 			AnnotationValue<ModifiedCompound> annotation, int sequenceLength, int xMin, int yMin, int xMax,
 			int yMax, boolean startIsNotStart, boolean endIsNotEnd) {
 		ModifiedCompound mc = annotation.value();
+		
+		Color color = null;
+		if (mapModColor!=null ) {
+			color = mapModColor.get(mc.getModification());
+		}
+		
+		if (color==null)
+			color = Color.red;
+		
+		g2.setColor(color);
+		
 		switch (mc.getModification().getCategory()) {
 		case CROSS_LINK_1:
 			drawCrossLink(g2, xMin, yMin, xMax, yMax, 1);
@@ -122,9 +140,6 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 
 	protected void drawModRes(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)
 	{
-		Color ssColor = Color.green;
-		g2.setColor(ssColor);
-		
 		int xCenter = (xMin + xMax) / 2;
 		int yCenter = (yMin + yMax) / 2;
 		double radius = (yMax - yMin) / 2.0;
@@ -136,16 +151,13 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	
 	protected void drawCrossLink(Graphics2D g2, int xMin, int yMin, int xMax, int yMax, int nRes)
 	{
-		Color ssColor = Color.green;
-		g2.setColor(ssColor);
-		
 		int xCenter = (xMin + xMax) / 2;
 		int yCenter = (yMin + yMax) / 2;
 		double radius = (yMax - yMin) / 2.0;
 		
 		Polygon polygon = getPolygon(xCenter, yCenter, radius, nRes);
-		g2.fill(polygon);
-		g2.draw(polygon);
+//		g2.fill(polygon);
+		g2.drawPolygon(polygon);
 	}
 	
 	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint) {
