@@ -270,6 +270,24 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		}
 		addAnnotationGroup(secanno);
 		
+		// test		
+		AnnotationName scop = new AnnotationName(
+				AnnotationClassification.strdom,
+				TestAnnotationGroup.annotationName,
+				"Structural Classification Of Proteins",
+				new Reference(7723011L),
+				TestAnnotationGroup.class,
+				PROTEIN_ONLY
+		);
+		AnnotationRegistry.registerAnnotation(scop);
+		TestAnnotationGroup test = new TestAnnotationGroup(this,AnnotationClassification.strdom,scop);
+		try {
+			test.constructAnnotations();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		addAnnotationGroup(test);
+		
 		// modres
 
 		AnnotationClassification mrac = AnnotationClassification.modres;
@@ -326,24 +344,6 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 //			e.printStackTrace();
 //		}
 //		addAnnotationGroup(disulfg);
-		
-		// test		
-		AnnotationName scop = new AnnotationName(
-				AnnotationClassification.strdom,
-				TestAnnotationGroup.annotationName,
-				"Structural Classification Of Proteins",
-				new Reference(7723011L),
-				TestAnnotationGroup.class,
-				PROTEIN_ONLY
-		);
-		AnnotationRegistry.registerAnnotation(scop);
-		TestAnnotationGroup test = new TestAnnotationGroup(this,AnnotationClassification.strdom,scop);
-		try {
-			test.constructAnnotations();
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		addAnnotationGroup(test);
 		
 	}
 
