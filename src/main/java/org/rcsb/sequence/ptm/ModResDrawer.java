@@ -32,7 +32,6 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,6 @@ import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
-import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.view.multiline.AbstractAnnotationDrawer;
 import org.rcsb.sequence.view.multiline.SequenceImage;
@@ -156,11 +154,33 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	{
 		int xCenter = (xMin + xMax) / 2;
 		int yCenter = (yMin + yMax) / 2;
-		double radius = (yMax - yMin) / 2.0;
+		double radius = 0.4 * (yMax - yMin);
 		
-		Polygon polygon = getPolygon(xCenter, yCenter, radius, 3, Math.PI/2);
+		Polygon polygon = getAsterisk(xCenter, yCenter, 6, radius, radius*0.2, 0);
 		g2.fill(polygon);
-		g2.draw(polygon);
+	}
+	
+	protected Polygon getAsterisk(int xCenter, int yCenter, int n, double largeRadius, double smallRadius, double startAngle) {		
+		double pie = 2 * Math.PI / n;
+		
+		int[] x = new int[3*n];
+		int[] y = new int[3*n];
+		
+		for (int i=0; i<n; i++) {
+			double angle = startAngle + i * pie;
+			double theta1 = angle - pie / 4;
+			x[3*i] = (int) (xCenter + smallRadius * Math.cos(theta1));
+			y[3*i] = (int) (yCenter + smallRadius * Math.sin(theta1));
+			
+			x[3*i+1] = (int) (xCenter + largeRadius * Math.cos(theta1));
+			y[3*i+1] = (int) (yCenter + largeRadius * Math.sin(theta1));
+			
+			double theta2 = angle + pie / 4;
+			x[3*i+2] = (int) (xCenter + largeRadius * Math.cos(theta2));
+			y[3*i+2] = (int) (yCenter + largeRadius * Math.sin(theta2));
+		}
+		
+		return new Polygon(x, y, 3*n);
 	}
 	
 	protected void drawCrossLink1(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)
@@ -168,9 +188,9 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		int xCenter = (xMin + xMax) / 2;
 		int yCenter = (yMin + yMax) / 2;
 		
-		int thick = getImage().getFontWidth() / 3;
+		int radius = (yMax - yMin) / 4;
 		
-		g2.drawOval(xCenter-thick, yCenter-thick, 2*thick, 2*thick);
+		g2.drawOval(xCenter-radius, yCenter-radius, 2*radius, 2*radius);
 	}
 	
 	protected void drawCrossLink(Graphics2D g2, int xMin, int yMin, int xMax, int yMax, int nRes)
@@ -179,21 +199,13 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		int yCenter = (yMin + yMax) / 2;
 		double radius = (yMax - yMin) / 2.0;
 		
-		Polygon polygon = getPolygon(xCenter, yCenter, radius, nRes);
-//		g2.fill(polygon);
+		Polygon polygon = getPolygon(xCenter, yCenter, radius, nRes, Math.PI/2);
 		g2.drawPolygon(polygon);
-	}
-	
-	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint) {
-		return getPolygon(xCenter, yCenter, radius, nPoint, Double.NaN);
 	}
 	
 	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint, double startAngle) {
 		if (nPoint==1)
 			return new Polygon(new int[]{xCenter}, new int[]{yCenter}, 1);
-		
-		if (Double.isNaN(startAngle))
-			startAngle = nPoint%2==0 ? Math.PI/nPoint : -Math.PI/2;
 		
 		int[] x = new int[nPoint];
 		int[] y = new int[nPoint];

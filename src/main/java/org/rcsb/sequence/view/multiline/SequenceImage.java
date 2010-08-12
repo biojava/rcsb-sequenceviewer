@@ -242,6 +242,7 @@ public class SequenceImage extends AbstractSequenceImage
 		return mapModColor;
 	}
 	
+	// TODO: do we need more colors?
 	private static Color[] colors = new Color[] {
 		Color.green,
 		Color.red,
@@ -249,7 +250,10 @@ public class SequenceImage extends AbstractSequenceImage
 		Color.orange,
 		Color.yellow,
 		Color.pink,
-		Color.gray
+		Color.gray,
+		Color.cyan,
+		Color.lightGray,
+		Color.darkGray
 	};
 
 	/*
