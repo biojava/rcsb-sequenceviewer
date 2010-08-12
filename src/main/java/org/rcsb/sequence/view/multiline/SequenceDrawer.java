@@ -7,8 +7,6 @@ import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +17,6 @@ import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 import org.rcsb.sequence.util.ResourceManager;
 
 public class SequenceDrawer extends AbstractDrawer<Object> {

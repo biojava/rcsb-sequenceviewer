@@ -24,9 +24,6 @@
 
 package org.rcsb.sequence.ptm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -97,6 +94,12 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean annotationsMayOverlap()
+	{
+		return true;
 	}
 	
 	public Set<ModifiedCompound> getPTMs() {
