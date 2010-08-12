@@ -27,8 +27,14 @@ package org.rcsb.sequence.ptm;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.biojava3.protmod.ProteinModification;
@@ -38,6 +44,7 @@ import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
+import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.view.multiline.AbstractAnnotationDrawer;
 import org.rcsb.sequence.view.multiline.SequenceImage;
@@ -50,6 +57,10 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	// (fontWidth of 8 gives a stroke size of 3)
 	protected final float strokeSize;
 	protected final double xPeriod;
+	
+	private Map<ProteinModification, Color> mapModColor = null;
+	
+	private Map<ModifiedCompound, List<Point>> crosslinkPositions;
 	
 	private static final double RELATIVE_HEIGHT = 1.0;
 	
@@ -66,10 +77,8 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		final int fontWidth = image.getFontWidth();
 		this.strokeSize = STROKE_TO_FONT_WIDTH_RATIO * fontWidth;
 		this.xPeriod = fontWidth / 2;
-
+		crosslinkPositions = new HashMap<ModifiedCompound, List<Point>>();
 	}
-	
-	private Map<ProteinModification, Color> mapModColor = null;
 	
 	public void setMapCrossLinkColor(Map<ProteinModification, Color> mapModColor) {
 		this.mapModColor = mapModColor;
@@ -128,6 +137,19 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		default:
 			drawModRes(g2, xMin, yMin, xMax, yMax);
 		}
+		
+		if (mc.getModification().getCategory().isCrossLink()) {
+			List<Point> points = crosslinkPositions.get(mc);
+			if (points==null) {
+				points = new ArrayList<Point>();
+				crosslinkPositions.put(mc, points);
+			}
+			points.add(new Point((xMin+xMax)/2,(yMin+yMax)/2));
+		}
+	}
+	
+	public Map<ModifiedCompound, List<Point>> getCrosslinkPositions() {
+		return crosslinkPositions;
 	}
 
 	protected void drawModRes(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)

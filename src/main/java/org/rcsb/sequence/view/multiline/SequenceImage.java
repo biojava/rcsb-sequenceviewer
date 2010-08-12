@@ -9,6 +9,8 @@ import java.awt.Shape;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ import org.rcsb.sequence.util.MapOfCollections;
  */
 public class SequenceImage extends AbstractSequenceImage
 {
-	private final int disulphideYPosNudgePx;
+	private int yBendOffset;
 
 	 AnnotationDrawMapper annotationDrawMapper ;
 	
@@ -138,21 +140,12 @@ public class SequenceImage extends AbstractSequenceImage
 		// loop to determine whether it was successful.
 		if (sequenceDrawer != null)
 		{
-			this.disulphideYPosNudgePx = sequenceDrawer == null ? 0 : sequenceDrawer.getImageHeightPx() / 2; // fudge
-			// factor for
-			// working out
-			// the start y
-			// position of
-			// the green
-			// dotted
-			// lines
 			this.imageHeight = yOffset;
 		}
 		else
 		{
 			System.err.println("problem during creation of SequenceImage: sequenceDrawer == null!");
 			System.err.println("Uh oh -- the sequence image for " + sequences + " didn't get drawn right");
-			this.disulphideYPosNudgePx = 0;
 			this.imageHeight = 0;
 		}
 	}
@@ -177,7 +170,7 @@ public class SequenceImage extends AbstractSequenceImage
 		g2.setBackground(Color.white);
 		g2.clearRect(0, 0, imageWidth, imageHeight);
 
-		Map<ResidueId, Point> crosslinkPoints = new HashMap<ResidueId, Point>();
+		Map<ModifiedCompound, List<Point>> crosslinkPoints = new HashMap<ModifiedCompound, List<Point>>();
 
 		int yOffset = 0;
 		
@@ -188,6 +181,8 @@ public class SequenceImage extends AbstractSequenceImage
 		{
 			if (r instanceof ModResDrawer) {
 				((ModResDrawer)r).setMapCrossLinkColor(mapCrosslinkColor);
+				this.yBendOffset = ((ModResDrawer)r).getImageHeight()/2; 
+				// fudge factor for working out the start y position of the dotted lines
 			}
 			
 			r.draw(g2, yOffset);
@@ -195,13 +190,22 @@ public class SequenceImage extends AbstractSequenceImage
 
 			// also collect the positions of all the crosslinks so we can draw the lines connecting them
 			// once we're done with this loop
-			if (r instanceof SequenceDrawer)
+			if (r instanceof ModResDrawer)
 			{
-				crosslinkPoints.putAll(((SequenceDrawer) r).getCrosslinkPositions());
+				Map<ModifiedCompound, List<Point>> map = ((ModResDrawer)r).getCrosslinkPositions();
+				for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
+					ModifiedCompound mc = entry.getKey();
+					List<Point> points = crosslinkPoints.get(mc);
+					if (points==null) {
+						points = new ArrayList<Point>();
+						crosslinkPoints.put(mc, points);
+					}
+					points.addAll(entry.getValue());
+				}
 			}
 		}
 
-		renderCrosslinks(g2, crosslinkPoints, disulphideYPosNudgePx, mapCrosslinkColor);
+		renderCrosslinks(g2, crosslinkPoints, yBendOffset, mapCrosslinkColor);
 		return result;
 	}
 	/**
@@ -225,11 +229,11 @@ public class SequenceImage extends AbstractSequenceImage
 		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
 		for (Sequence s : sequences)
 		{
-			PTMAnnotationGroup clag = s.getPTMAnnotationGroup();
+			PTMAnnotationGroup clag = s.getAnnotationGroup(PTMAnnotationGroup.class);
 			if (clag == null || !clag.hasData())
 				continue;
 			
-			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
+			for (ModifiedCompound crosslink : clag.getPTMs()) {
 				ProteinModification mod = crosslink.getModification();
 				
 				if (!mapModColor.containsKey(mod)) {
@@ -256,23 +260,20 @@ public class SequenceImage extends AbstractSequenceImage
 	 * This method is a kludge to allow the green dotted lines to connect disulphides together. This can't be done within
 	 * the Drawer framework because the disulphide partner might be on a different Drawer.
 	 */
-	private void renderCrosslinks(Graphics2D g2, Map<ResidueId, Point> crosslinkPoints,
-			final int yNudgeValue, Map<ProteinModification, Color> mapCrosslinkColor)
+	private void renderCrosslinks(Graphics2D g2, Map<ModifiedCompound, List<Point>> crosslinkPoints,
+			final int yBendOffset, Map<ProteinModification, Color> mapCrosslinkColor)
 	{
-		ResidueId ra, rb;
 		Point pa, pb;
 		Shape bond;
 
-		int prevYPos = 0, yNudge = 0;
+		int prevYPos = 0, yBend = 0;
 		boolean lineGoesAbove = true;
 
-		for (Sequence s : sequences)
+		for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
 		{
-			PTMAnnotationGroup clag = s.getPTMAnnotationGroup();
-			if (clag == null || !clag.hasData())
-				continue;
+			ModifiedCompound crosslink = entry.getKey();
+			List<Point> points = entry.getValue();
 			
-			for (ModifiedCompound crosslink : clag.getCrosslinks()) {
 				ProteinModification mod = crosslink.getModification();
 				
 				setDashed(g2, crosslink);
@@ -280,19 +281,13 @@ public class SequenceImage extends AbstractSequenceImage
 				Color color = mapCrosslinkColor.get(mod);
 				g2.setColor(color);
 				
-				List<ResidueId> residues = clag.getInvolvedResidues(crosslink);
-				int n = residues.size();
-				
-				ra = residues.get(0);
-				pa = crosslinkPoints.remove(ra); // remove them so we don't draw the same line forwards and backwards
+				int n = points.size();
 
-				for (int i=1; i<n; i++) {
-					rb = residues.get(i);
-					pb = crosslinkPoints.remove(rb);
+				for (int i=0; i<n-1; i++) {
+					pa = points.get(i);
+					pb = points.get(i+1);;
 
 					int y1, y2;
-
-					if (pa == null || pb == null) continue;
 
 					// if both cysteines are on the same line we need to
 					// a. decide (based on if there are other disulphides on the same line)
@@ -302,14 +297,14 @@ public class SequenceImage extends AbstractSequenceImage
 					{
 						if (lineGoesAbove)
 						{
-							yNudge = -1 * yNudgeValue;
+							yBend = -1 * yBendOffset;
 						}
 						else
 						{
-							yNudge = yNudgeValue;
+							yBend = yBendOffset;
 						}
-						y1 = pa.y + yNudge;
-						y2 = y1 + yNudge; // this is a bit of a hack
+						y1 = pa.y;
+						y2 = y1 + yBend;
 
 						bond = new CubicCurve2D.Double(pa.x, y1, pa.x, y2, pb.x, y2, pb.x, y1);
 
@@ -318,27 +313,12 @@ public class SequenceImage extends AbstractSequenceImage
 					}
 					else
 					{
-
-						if (pa.y > pb.y)
-						{
-							y1 = pa.y - yNudgeValue;
-							y2 = pb.y + yNudgeValue;
-						}
-						else
-						{
-
-							y1 = pa.y + yNudgeValue;
-							y2 = pb.y - yNudgeValue;
-						}
-
-						bond = new Line2D.Double(pa.x, y1, pb.x, y2);
+						bond = new Line2D.Double(pa.x, pa.y, pb.x, pb.y);
 					}
 
 					g2.draw(bond);
-					
-					pa = pb;
 				}
-			}
+			
 		}
 	}
 	

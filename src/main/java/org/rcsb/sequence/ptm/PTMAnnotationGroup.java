@@ -100,43 +100,11 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 	}
 	
 	public Set<ModifiedCompound> getPTMs() {
-		return getPTMs(false);
-	}
-	
-	public Set<ModifiedCompound> getCrosslinks() {
-		return getPTMs(true);
-	}
-	
-	private Set<ModifiedCompound> getPTMs(boolean crosslinkOnly) {
 		Set<ModifiedCompound> ptms = new HashSet<ModifiedCompound>();
 		for (Annotation<ModifiedCompound> mca : getAnnotations()) {
 			ModifiedCompound mc = mca.getAnnotationValue().value();
-			if (!crosslinkOnly || mc.getModification().getCategory().isCrossLink())
-				ptms.add(mc);
+			ptms.add(mc);
 		}
 		return ptms;
-	}
-	
-	public boolean hasCrosslinks() {
-		for (Annotation<ModifiedCompound> mca : getAnnotations()) {
-			ModifiedCompound mc = mca.getAnnotationValue().value();
-			if (mc.getModification().getCategory().isCrossLink())
-				return true;
-		}
-		return false;
-	}
-	
-	public List<ResidueId> getInvolvedResidues(ModifiedCompound ptm) {
-		List<ResidueId> result = new ArrayList<ResidueId>();
-		Set<StructureGroup> groups = ptm.getGroups();
-		for (StructureGroup group : groups) {
-			if (group.isAminoAcid()) {
-				ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
-				result.add(resId);
-			}
-		}
-		Collections.sort(result);
-		return result;
-		
 	}
 }

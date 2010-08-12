@@ -24,7 +24,6 @@ import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.ResidueUtils;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 
 
 
@@ -116,22 +115,6 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		
 	}
 	
-	public PTMAnnotationGroup getPTMAnnotationGroup() {
-		ensureAnnotated();
-		
-//		for (Class ag : annotationGroupMap.keySet()) {
-//			Class[] interfaces = ag.getInterfaces();
-//			for ( Class interf : interfaces){
-//				if ( interf.equals(CrosslinkAnnotationGroup.class)) {
-//					return (CrosslinkAnnotationGroup) getAnnotationGroupMap().get(ag);
-//				}
-//			}
-//		}
-//		return null; 
-		return (PTMAnnotationGroup)annotationGroupMap.get(PTMAnnotationGroup.class);
-	}
-
-
 	@SuppressWarnings("unchecked")
 	public Collection<AnnotationGroup<?>> getAnnotationGroupsWithData() {
 		

@@ -23,14 +23,6 @@ import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 import org.rcsb.sequence.util.ResourceManager;
 
 public class SequenceDrawer extends AbstractDrawer<Object> {
-
-//   private DisulfideAnnotationGroup disulphides = null;
-//   private boolean hasDisulphides = false;
-//   private Map<ResidueId, Point> disulphidePositions = Collections.emptyMap();
-   
-   private PTMAnnotationGroup crosslinks = null;
-   private boolean hasCrosslinks = false;
-   private Map<ResidueId, Point> crosslinkPositions = Collections.emptyMap();
    
    private final ResidueNumberScheme rns;
    
@@ -42,7 +34,6 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
    private Color residueWithStructure;
    private Color residueUniProtMismatch;
    private Color residueNonstandard  ;
-   private Color disulphideColor     ;
    
    
    Map<Character,Integer> charSize;
@@ -65,22 +56,9 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       String col4 = resourceManager.getString("sequencedrawer.residueNonstandard");
       residueNonstandard = Color.decode(col4);
       
-      String col5 = resourceManager.getString("sequencedrawer.disulphideColor");
-      disulphideColor = Color.decode(col5);
-      
       this.rns = rns;
 
       setImageHeight(image.getFontHeight());
-      
-//      disulphides = sequence.getDisulfideAnnotationGroup();
-      crosslinks = sequence.getPTMAnnotationGroup();
-      
-      if(crosslinks != null && crosslinks.getAnnotations().size() > 0
-    		  && crosslinks.hasCrosslinks())
-      {
-         hasCrosslinks = true;
-         crosslinkPositions = new HashMap<ResidueId, Point>();
-      }
       
       charSize = new HashMap<Character, Integer>();
    }
@@ -156,23 +134,6 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
                   }
                   
                   formatResidue(description, rid);
-                  
-                  if(hasCrosslinks && (crosslink = crosslinks.getAnnotation(rid)) != null)
-                  {
-//                     ResidueId disulphidePartner = crosslink.getAnnotationValue().value().getEquivalentResidueId(rnsOfSeq);
-//                     if(disulphidePartner != null)
-//                     {
-//                        description.append(" disulphide bond with ");
-//                        formatResidue(description, disulphidePartner);
-//                        if(!rid.getChain().equals(disulphidePartner.getChain()))
-//                        {
-//                           description.append(" on chain ").append(disulphidePartner.getChain().getChainId());
-//                        }
-//                     }
-                	  ModifiedCompound mc = crosslink.getAnnotationValue().value();
-                	  if (mc.getModification().getCategory().isCrossLink())                	  
-                		  description.append(mc);
-                  }
              
                   if ( rid.getResidueInfo().isNonstandard()){ 
                   //System.out.println(rid + " " + rid.getResidueInfo());
@@ -250,7 +211,6 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
    {
       final SequenceImageIF image = getImage();
       final int fontWidth = image.getFontWidth();
-      final int imageHeight = getImageHeight();
 //      g2.drawString(sequence.getSequenceString(), 0, fontAscent);
       int xPos = image.getImageWidthOffset();
       
@@ -260,17 +220,7 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       
       
       for(ResidueId r : getSequence().getResidueIds())
-      {
-         if(hasCrosslinks && crosslinks != null && crosslinks.getAnnotation(r) != null)
-         {
-        	 Annotation<ModifiedCompound> crosslink = crosslinks.getAnnotation(r);
-        	 if (crosslink.getAnnotationValue().value().getModification().getCategory().isCrossLink()) {
-                 //g2.setColor(disulphideColor);
-                 //g2.fillOval(xPos, yOffset + (imageHeight * 1/10), fontWidth, imageHeight * 8/10);
-                 crosslinkPositions.put(r.getEquivalentResidueId(ATOM), new Point(xPos + (fontWidth/2), yOffset + (imageHeight/2)));
-        	 }
-         }
-         
+      {         
          g2.setColor(r.hasStructuralData() ? residueWithStructure : residueNoStructure);
          
          if(r.hasDbrefMismatch())
@@ -328,10 +278,6 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
          default:
             return "INTERNAL SEQ";
       }
-   }
-
-   public Map<ResidueId, Point> getCrosslinkPositions() {
-      return crosslinkPositions;
    }
    
    protected ResidueNumberScheme getResidueNumberScheme()
