@@ -26,7 +26,6 @@ import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
 
-import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
@@ -114,11 +113,8 @@ public class SequenceImage extends AbstractSequenceImage
 
 				if ( an.getName().equals("disulphide"))
 					continue;
-				if ( an.getName().equals("crosslink"))
-					continue;
 				if (annotationsToView.contains(an))
 				{
-
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
 				}
 			}
