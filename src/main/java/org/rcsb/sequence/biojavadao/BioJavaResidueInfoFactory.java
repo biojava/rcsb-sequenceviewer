@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.biojava.bio.structure.io.mmcif.ChemCompGroupFactory;
 import org.biojava.bio.structure.io.mmcif.model.ChemComp;
-import org.biojava.utils.io.SoftHashMap;
+import org.biojava3.core.util.SoftHashMap;
 import org.rcsb.sequence.core.ResidueProvider;
 import org.rcsb.sequence.model.PolymerType;
 import org.rcsb.sequence.model.ResidueInfo;

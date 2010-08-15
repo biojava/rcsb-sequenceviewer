@@ -11,8 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.biojava.bio.structure.align.ce.AbstractUserArgumentProcessor;
-import org.biojava.utils.io.InputStreamProvider;
+import org.biojava3.core.util.InputStreamProvider;
 
 import org.rcsb.sequence.biojavadao.BioJavaPubMedFactory;
 import org.rcsb.sequence.biojavadao.BioJavaResidueInfoFactory;
@@ -30,7 +29,6 @@ import org.rcsb.sequence.model.SequenceCollection;
 
 import org.rcsb.sequence.view.html.ChainView;
 import org.rcsb.sequence.view.html.ViewParameters;
-import org.rcsb.sequence.view.multiline.Annotation2MultiLineDrawer;
 import org.rcsb.sequence.view.multiline.SequenceImage;
 import org.rcsb.sequence.view.oneline.Annotation2SingleLineDrawer;
 import org.rcsb.sequence.view.oneline.OneLineView;
