@@ -24,11 +24,9 @@
 
 package org.rcsb.sequence.view.multiline;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 
 import java.util.ArrayList;
@@ -54,7 +52,7 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	protected final float strokeSize;
 	protected final double xPeriod;
 	
-	private Map<ProteinModification, Color> mapModColor = null;
+	private ProtModDrawerUtil modDrawerUtil = null;
 	
 	private Map<ModifiedCompound, List<Point>> crosslinkPositions;
 	
@@ -76,8 +74,8 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		crosslinkPositions = new HashMap<ModifiedCompound, List<Point>>();
 	}
 	
-	public void setMapCrossLinkColor(Map<ProteinModification, Color> mapModColor) {
-		this.mapModColor = mapModColor;
+	public void setModDrawerUtil(ProtModDrawerUtil modDrawerUtil) {
+		this.modDrawerUtil = modDrawerUtil;
 	}
 
 	@Override
@@ -96,45 +94,13 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 			int yMax, boolean startIsNotStart, boolean endIsNotEnd) {
 		ModifiedCompound mc = annotation.value();
 		
-		Color color = null;
-		if (mapModColor!=null ) {
-			color = mapModColor.get(mc.getModification());
-		}
+		if (modDrawerUtil==null)
+			modDrawerUtil = new ProtModDrawerUtil(null);
 		
-		if (color==null)
-			color = Color.red;
+		ProteinModification mod = mc.getModification();
+		modDrawerUtil.drawProtMod(g2, mod, xMin, yMin, xMax, yMax);
 		
-		g2.setColor(color);
-		
-		g2.setStroke(new BasicStroke(2));
-		
-		switch (mc.getModification().getCategory()) {
-		case CROSS_LINK_1:
-			drawCrossLink1(g2, xMin, yMin, xMax, yMax);
-			break;
-		case CROSS_LINK_2:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 2);
-			break;
-		case CROSS_LINK_3:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 3);
-			break;
-		case CROSS_LINK_4:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 4);
-			break;
-		case CROSS_LINK_5:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 5);
-			break;
-		case CROSS_LINK_6:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 6);
-			break;
-		case CROSS_LINK_7:
-			drawCrossLink(g2, xMin, yMin, xMax, yMax, 7);
-			break;
-		default:
-			drawModRes(g2, xMin, yMin, xMax, yMax);
-		}
-		
-		if (mc.getModification().getCategory().isCrossLink()) {
+		if (mod.getCategory().isCrossLink()) {
 			List<Point> points = crosslinkPositions.get(mc);
 			if (points==null) {
 				points = new ArrayList<Point>();
@@ -146,75 +112,6 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	
 	public Map<ModifiedCompound, List<Point>> getCrosslinkPositions() {
 		return crosslinkPositions;
-	}
-
-	protected void drawModRes(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)
-	{
-		int xCenter = (xMin + xMax) / 2;
-		int yCenter = (yMin + yMax) / 2;
-		double radius = 0.4 * (yMax - yMin);
-		
-		Polygon polygon = getAsterisk(xCenter, yCenter, 6, radius, radius*0.2, 0);
-		g2.fill(polygon);
-	}
-	
-	protected Polygon getAsterisk(int xCenter, int yCenter, int n, double largeRadius, double smallRadius, double startAngle) {		
-		double pie = 2 * Math.PI / n;
-		
-		int[] x = new int[3*n];
-		int[] y = new int[3*n];
-		
-		for (int i=0; i<n; i++) {
-			double angle = startAngle + i * pie;
-			double theta1 = angle - pie / 4;
-			x[3*i] = (int) (xCenter + smallRadius * Math.cos(theta1));
-			y[3*i] = (int) (yCenter + smallRadius * Math.sin(theta1));
-			
-			x[3*i+1] = (int) (xCenter + largeRadius * Math.cos(theta1));
-			y[3*i+1] = (int) (yCenter + largeRadius * Math.sin(theta1));
-			
-			double theta2 = angle + pie / 4;
-			x[3*i+2] = (int) (xCenter + largeRadius * Math.cos(theta2));
-			y[3*i+2] = (int) (yCenter + largeRadius * Math.sin(theta2));
-		}
-		
-		return new Polygon(x, y, 3*n);
-	}
-	
-	protected void drawCrossLink1(Graphics2D g2, int xMin, int yMin, int xMax, int yMax)
-	{
-		int xCenter = (xMin + xMax) / 2;
-		int yCenter = (yMin + yMax) / 2;
-		
-		int radius = (yMax - yMin) / 4;
-		
-		g2.drawOval(xCenter-radius, yCenter-radius, 2*radius, 2*radius);
-	}
-	
-	protected void drawCrossLink(Graphics2D g2, int xMin, int yMin, int xMax, int yMax, int nRes)
-	{
-		int xCenter = (xMin + xMax) / 2;
-		int yCenter = (yMin + yMax) / 2;
-		double radius = (yMax - yMin) / 2.0;
-		
-		Polygon polygon = getPolygon(xCenter, yCenter, radius, nRes, Math.PI/2);
-		g2.drawPolygon(polygon);
-	}
-	
-	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint, double startAngle) {
-		if (nPoint==1)
-			return new Polygon(new int[]{xCenter}, new int[]{yCenter}, 1);
-		
-		int[] x = new int[nPoint];
-		int[] y = new int[nPoint];
-		
-		for (int i=0; i<nPoint; i++) {
-			double angle = startAngle + i * 2 * Math.PI / nPoint;
-			x[i] = (int) (xCenter + radius * Math.cos(angle));
-			y[i] = (int) (yCenter + radius * Math.sin(angle));
-		}
-		
-		return new Polygon(x, y, nPoint);
 	}
 
 	@Override

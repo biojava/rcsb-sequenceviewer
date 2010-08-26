@@ -102,7 +102,7 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 		return true;
 	}
 	
-	public Set<ModifiedCompound> getPTMs() {
+	public Set<ModifiedCompound> getModCompounds() {
 		Set<ModifiedCompound> ptms = new HashSet<ModifiedCompound>();
 		for (Annotation<ModifiedCompound> mca : getAnnotations()) {
 			ModifiedCompound mc = mca.getAnnotationValue().value();

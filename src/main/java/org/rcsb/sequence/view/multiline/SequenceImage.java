@@ -40,9 +40,10 @@ import org.rcsb.sequence.util.MapOfCollections;
  */
 public class SequenceImage extends AbstractSequenceImage
 {
-	private int yBendOffset;
 
 	 AnnotationDrawMapper annotationDrawMapper ;
+	 
+	 private ProtModDrawerUtil modDrawerUtil;
 	
 	/**
 	 * Constructor for creating images of a {@link SegmentedSequence}. Each <tt>SequenceSegment</tt> in the
@@ -106,9 +107,12 @@ public class SequenceImage extends AbstractSequenceImage
 		Drawer spacer = new SpacerDrawer(fragmentBufferPx);
 		
 		boolean ptmAnnotationExists = false;
+		
 
 		for (Sequence s : sequences)
 		{
+			
+			// add renders
 			for (AnnotationName an : AnnotationRegistry.getAllAnnotations())
 			{
 
@@ -133,6 +137,31 @@ public class SequenceImage extends AbstractSequenceImage
 			yOffset += addRenderable(new RulerImpl(this, s, rnsOfBottomRuler, false), LOWER_RULER);
 
 			yOffset += addRenderable(spacer, SPACER);
+			
+			
+		}
+		
+		if (ptmAnnotationExists) {
+			// collect ptms
+			Set<ProteinModification> protMods = new HashSet<ProteinModification>();
+			for (Sequence s : sequences) {
+				ProtModAnnotationGroup clag = s.getAnnotationGroup(ProtModAnnotationGroup.class);
+				if (clag == null || !clag.hasData())
+					continue;
+				
+				for (ModifiedCompound mc : clag.getModCompounds()) {
+					ProteinModification mod = mc.getModification();
+					protMods.add(mod);
+				}
+			}
+			
+			modDrawerUtil = new ProtModDrawerUtil(protMods);
+			modDrawerUtil.setCrosslinkLineThickness(getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS);
+			modDrawerUtil.setCrosslinkLineBendOffset(fontSize/2);
+			
+			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(fontSize, fontSize/2);
+			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
+			yOffset += addRenderable(modLegendDrawer, "ProtModLegend");
 		}
 
 		// we use the presence of a sequence drawer after going through the
@@ -172,15 +201,12 @@ public class SequenceImage extends AbstractSequenceImage
 		Map<ModifiedCompound, List<Point>> crosslinkPoints = new HashMap<ModifiedCompound, List<Point>>();
 
 		int yOffset = 0;
-		
-		Map<ProteinModification, Color> mapCrosslinkColor = getMapModColor();
 
 		// iterate through all the drawers, telling them to draw at the given y offset on the graphics object
 		for (Drawer r : orderedRenderables)
 		{
 			if (r instanceof ProtModDrawer) {
-				((ProtModDrawer)r).setMapCrossLinkColor(mapCrosslinkColor);
-				this.yBendOffset = ((ProtModDrawer)r).getImageHeight()/2; 
+				((ProtModDrawer)r).setModDrawerUtil(modDrawerUtil);
 				// fudge factor for working out the start y position of the dotted lines
 			}
 			
@@ -204,7 +230,13 @@ public class SequenceImage extends AbstractSequenceImage
 			}
 		}
 
-		renderCrosslinks(g2, crosslinkPoints, yBendOffset, mapCrosslinkColor);
+		for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
+		{
+			ModifiedCompound crosslink = entry.getKey();
+			List<Point> points = entry.getValue();
+			modDrawerUtil.drawCrosslinks(g2, crosslink.getModification(), 
+					points);
+		}
 		return result;
 	}
 	/**
@@ -224,183 +256,6 @@ public class SequenceImage extends AbstractSequenceImage
 		return imageBytes;
 	}
 	
-	private Map<ProteinModification, Color> getMapModColor() {
-		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
-		for (Sequence s : sequences)
-		{
-			ProtModAnnotationGroup clag = s.getAnnotationGroup(ProtModAnnotationGroup.class);
-			if (clag == null || !clag.hasData())
-				continue;
-			
-			for (ModifiedCompound crosslink : clag.getPTMs()) {
-				ProteinModification mod = crosslink.getModification();
-				
-				if (!mapModColor.containsKey(mod)) {
-					Color color = colors[mapModColor.size()%colors.length];
-					mapModColor.put(mod, color);
-				}
-			}
-		}
-		
-		return mapModColor;
-	}
-	
-	// TODO: do we need more colors?
-	private static Color[] colors = new Color[] {
-		Color.green,
-		Color.red,
-		Color.blue,
-		Color.orange,
-		Color.yellow,
-		Color.pink,
-		Color.gray,
-		Color.cyan,
-		Color.lightGray,
-		Color.darkGray
-	};
-
-	/*
-	 * This method is a kludge to allow the green dotted lines to connect disulphides together. This can't be done within
-	 * the Drawer framework because the disulphide partner might be on a different Drawer.
-	 */
-	private void renderCrosslinks(Graphics2D g2, Map<ModifiedCompound, List<Point>> crosslinkPoints,
-			final int yBendOffset, Map<ProteinModification, Color> mapCrosslinkColor)
-	{
-		Point pa, pb;
-		Shape bond;
-
-		int prevYPos = 0, yBend = 0;
-		boolean lineGoesAbove = true;
-
-		for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
-		{
-			ModifiedCompound crosslink = entry.getKey();
-			List<Point> points = entry.getValue();
-			
-				ProteinModification mod = crosslink.getModification();
-				
-				setDashed(g2, crosslink);
-				
-				Color color = mapCrosslinkColor.get(mod);
-				g2.setColor(color);
-				
-				int n = points.size();
-
-				for (int i=0; i<n-1; i++) {
-					pa = points.get(i);
-					pb = points.get(i+1);;
-
-					int y1, y2;
-
-					// if both cysteines are on the same line we need to
-					// a. decide (based on if there are other disulphides on the same line)
-					// whether to put the connecting line above or below the sequence
-					// b. nudge the points accordingly
-					if (pa.y == pb.y)
-					{
-						if (lineGoesAbove)
-						{
-							yBend = -1 * yBendOffset;
-						}
-						else
-						{
-							yBend = yBendOffset;
-						}
-						y1 = pa.y;
-						y2 = y1 + yBend;
-
-						bond = new CubicCurve2D.Double(pa.x, y1, pa.x, y2, pb.x, y2, pb.x, y1);
-
-						lineGoesAbove = pa.y == prevYPos && !lineGoesAbove; // invert for next time on same line
-						prevYPos = pa.y;
-					}
-					else
-					{
-						bond = new Line2D.Double(pa.x, pa.y, pb.x, pb.y);
-					}
-
-					g2.draw(bond);
-				}
-			
-		}
-	}
-	
-	private void setDashed(Graphics2D g2, ModifiedCompound crosslink) {
-		final float relativeThickness = getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS;
-		float[] dashed;
-		switch (crosslink.getModification().getCategory()) {
-		case CROSS_LINK_2:
-			dashed = new float[] {
-					relativeThickness*4, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness
-					};
-			break;
-		case CROSS_LINK_3:
-			dashed = new float[] {
-					relativeThickness*4, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness
-					}
-			;
-			break;
-		case CROSS_LINK_4:
-			dashed = new float[] {
-					relativeThickness*4, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness
-					}
-			;
-			break;
-		case CROSS_LINK_5:
-			dashed = new float[] {
-					relativeThickness*4, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness
-					}
-			;
-			break;
-		case CROSS_LINK_6:
-			dashed = new float[] {
-					relativeThickness*4, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness
-					}
-			;
-			break;
-		case CROSS_LINK_7:
-			dashed = new float[] {
-					relativeThickness*4, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness, 
-					relativeThickness, relativeThickness
-					}
-			;
-			break;
-		default:
-			dashed = new float[] {relativeThickness};
-		}
-		
-		BasicStroke dashedStroke = new BasicStroke(relativeThickness, BasicStroke.CAP_BUTT, 
-				BasicStroke.JOIN_MITER, 10.0f, dashed, 0.0f);
-		g2.setStroke(dashedStroke);
-		
-	}
-
 	/**
 	 * Get the height of the image in pixels
 	 * 
