@@ -22,7 +22,7 @@
  *
  */
 
-package org.rcsb.sequence.ptm;
+package org.rcsb.sequence.core;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -34,29 +34,29 @@ import org.biojava3.protmod.structure.ModifiedCompound;
 import org.biojava3.protmod.structure.ProteinModificationIdentifier;
 import org.biojava3.protmod.structure.StructureGroup;
 
+import org.rcsb.sequence.annotations.ProtModValue;
 import org.rcsb.sequence.biojavadao.BioJavaChainProxy;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
-import org.rcsb.sequence.core.AbstractAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
 
-import static org.rcsb.sequence.conf.AnnotationClassification.modres;
+import static org.rcsb.sequence.conf.AnnotationClassification.protmod;
 import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
-public class PTMAnnotationGroup
+public class ProtModAnnotationGroup
 extends AbstractAnnotationGroup<ModifiedCompound> {
 	private static final long serialVersionUID = -7395869127810790810L;
 	
 	private BioJavaChainProxy proxy ;
 	private Set<ProteinModification> protMods;
 	
-	public static final String annotationName = "modres"; 
+	public static final String annotationName = "modification"; 
 	
-	public PTMAnnotationGroup(BioJavaChainProxy chain,AnnotationClassification ac, 
+	public ProtModAnnotationGroup(BioJavaChainProxy chain,AnnotationClassification ac, 
 			AnnotationName name){
 		super(ac, name, SEQRES, chain);
 		this.proxy = chain;
@@ -67,8 +67,8 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 		this.protMods = protMods;
 	}
 	
-	public PTMAnnotationGroup(Sequence sequence){
-	    super(modres, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
+	public ProtModAnnotationGroup(Sequence sequence){
+	    super(protmod, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ extends AbstractAnnotationGroup<ModifiedCompound> {
 		ptmIdentifier.identify(bj, protMods!=null ? protMods : ProteinModification.allModifications());
 		Set<ModifiedCompound> modComps = ptmIdentifier.getIdentifiedModifiedCompound();
 		for (ModifiedCompound mc : modComps) {
-			PTMValue cv = new PTMValue(mc);
+			ProtModValue cv = new ProtModValue(mc);
 			Set<StructureGroup> groups = mc.getGroups();
 			for (StructureGroup group : groups) {
 				if (group.isAminoAcid()) {

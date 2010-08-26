@@ -25,12 +25,11 @@ import org.biojava3.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
+import org.rcsb.sequence.core.ProtModAnnotationGroup;
 
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.ptm.PTMAnnotationGroup;
-import org.rcsb.sequence.ptm.ModResDrawer;
 import org.rcsb.sequence.util.MapOfCollections;
 
 /**
@@ -105,14 +104,18 @@ public class SequenceImage extends AbstractSequenceImage
 		// inserted between sequence segments to create a buffer between
 		// them
 		Drawer spacer = new SpacerDrawer(fragmentBufferPx);
+		
+		boolean ptmAnnotationExists = false;
 
 		for (Sequence s : sequences)
 		{
 			for (AnnotationName an : AnnotationRegistry.getAllAnnotations())
 			{
 
-				if ( an.getName().equals("disulphide"))
+				if (an.getName().equals("disulphide"))
 					continue;
+				if (an.getName().equals(ProtModAnnotationGroup.annotationName))
+					ptmAnnotationExists = true;
 				if (annotationsToView.contains(an))
 				{
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
@@ -175,9 +178,9 @@ public class SequenceImage extends AbstractSequenceImage
 		// iterate through all the drawers, telling them to draw at the given y offset on the graphics object
 		for (Drawer r : orderedRenderables)
 		{
-			if (r instanceof ModResDrawer) {
-				((ModResDrawer)r).setMapCrossLinkColor(mapCrosslinkColor);
-				this.yBendOffset = ((ModResDrawer)r).getImageHeight()/2; 
+			if (r instanceof ProtModDrawer) {
+				((ProtModDrawer)r).setMapCrossLinkColor(mapCrosslinkColor);
+				this.yBendOffset = ((ProtModDrawer)r).getImageHeight()/2; 
 				// fudge factor for working out the start y position of the dotted lines
 			}
 			
@@ -186,9 +189,9 @@ public class SequenceImage extends AbstractSequenceImage
 
 			// also collect the positions of all the crosslinks so we can draw the lines connecting them
 			// once we're done with this loop
-			if (r instanceof ModResDrawer)
+			if (r instanceof ProtModDrawer)
 			{
-				Map<ModifiedCompound, List<Point>> map = ((ModResDrawer)r).getCrosslinkPositions();
+				Map<ModifiedCompound, List<Point>> map = ((ProtModDrawer)r).getCrosslinkPositions();
 				for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
 					ModifiedCompound mc = entry.getKey();
 					List<Point> points = crosslinkPoints.get(mc);
@@ -225,7 +228,7 @@ public class SequenceImage extends AbstractSequenceImage
 		Map<ProteinModification, Color> mapModColor = new HashMap<ProteinModification, Color>();
 		for (Sequence s : sequences)
 		{
-			PTMAnnotationGroup clag = s.getAnnotationGroup(PTMAnnotationGroup.class);
+			ProtModAnnotationGroup clag = s.getAnnotationGroup(ProtModAnnotationGroup.class);
 			if (clag == null || !clag.hasData())
 				continue;
 			

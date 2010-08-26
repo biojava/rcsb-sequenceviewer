@@ -22,7 +22,7 @@
  *
  */
 
-package org.rcsb.sequence.ptm;
+package org.rcsb.sequence.view.multiline;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -44,12 +44,10 @@ import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.view.multiline.AbstractAnnotationDrawer;
-import org.rcsb.sequence.view.multiline.SequenceImage;
 
 
 
-public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
+public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 
 	// Calibrate the stroke size
 	// (fontWidth of 8 gives a stroke size of 3)
@@ -65,11 +63,11 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	protected static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
 	
 	
-	public ModResDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<ModifiedCompound>> annotationGroupClass) {
+	public ProtModDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<ModifiedCompound>> annotationGroupClass) {
 		this(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
 	}
 
-	public ModResDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<ModifiedCompound>> annotationGroupClass, int annotationHeight) {
+	public ProtModDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<ModifiedCompound>> annotationGroupClass, int annotationHeight) {
 		super(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
 
 		final int fontWidth = image.getFontWidth();
@@ -89,7 +87,7 @@ public class ModResDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 
 	@Override
 	public boolean canDrawAnnotation(AnnotationName anAnnotationName) {
-		return anAnnotationName.getClassification() == AnnotationClassification.modres;
+		return anAnnotationName.getClassification() == AnnotationClassification.protmod;
 	}
 
 	@Override

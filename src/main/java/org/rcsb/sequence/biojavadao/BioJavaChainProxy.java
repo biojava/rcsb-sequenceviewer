@@ -22,6 +22,7 @@ import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AbstractSequence;
+import org.rcsb.sequence.core.ProtModAnnotationGroup;
 import org.rcsb.sequence.core.ResidueIdImpl;
 import org.rcsb.sequence.core.ResidueProvider;
 import org.rcsb.sequence.model.Chain;
@@ -31,7 +32,6 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SequenceCollection;
-import org.rcsb.sequence.ptm.PTMAnnotationGroup;
 
 
 public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
@@ -288,23 +288,23 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		}
 		addAnnotationGroup(test);
 		
-		// modres
+		// protein modifications
 
-		AnnotationClassification mrac = AnnotationClassification.modres;
+		AnnotationClassification mrac = AnnotationClassification.protmod;
 		Reference mrref = new Reference(-1L);
 
 		AnnotationName mrName = new AnnotationName(
 				mrac,
-				PTMAnnotationGroup.annotationName, 
-				"ModRes", 
+				ProtModAnnotationGroup.annotationName, 
+				ProtModAnnotationGroup.annotationName, 
 				mrref, 
-				PTMAnnotationGroup.class,
+				ProtModAnnotationGroup.class,
 				PolymerType.PROTEIN_ONLY);
 		
 		AnnotationRegistry.registerAnnotation(mrName);
 		
-		PTMAnnotationGroup mrag =
-			new PTMAnnotationGroup(
+		ProtModAnnotationGroup mrag =
+			new ProtModAnnotationGroup(
 					this,
 					mrac,
 					mrName);

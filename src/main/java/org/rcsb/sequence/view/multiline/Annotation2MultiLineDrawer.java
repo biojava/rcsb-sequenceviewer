@@ -10,14 +10,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
+import org.rcsb.sequence.core.ProtModAnnotationGroup;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Sequence;
-import org.rcsb.sequence.ptm.ModResDrawer;
-import org.rcsb.sequence.ptm.ModResSummary;
 import org.rcsb.sequence.view.html.AnnotationSummaryCell;
 import org.rcsb.sequence.view.html.CSASummary;
 import org.rcsb.sequence.view.html.DomainSummary;
 import org.rcsb.sequence.view.html.LigCRSummary;
+import org.rcsb.sequence.view.html.ProtModSummary;
 import org.rcsb.sequence.view.html.SecondaryStructureSummary;
 
 public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
@@ -97,9 +97,9 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 				a2rMap.put("ligcr", BoxAnnotationDrawer.class);
 				a2sMap.put("ligcr", LigCRSummary.class);
 			}
-			else if ( an.getName().equals("modres")) {
-				a2rMap.put("modres", ModResDrawer.class);
-				a2sMap.put("modres", ModResSummary.class);
+			else if ( an.getName().equals(ProtModAnnotationGroup.annotationName)) {
+				a2rMap.put(ProtModAnnotationGroup.annotationName, ProtModDrawer.class);
+				a2sMap.put(ProtModAnnotationGroup.annotationName, ProtModSummary.class);
 			}
 		}
 		

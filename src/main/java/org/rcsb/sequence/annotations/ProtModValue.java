@@ -22,7 +22,7 @@
  *
  */
 
-package org.rcsb.sequence.ptm;
+package org.rcsb.sequence.annotations;
 
 import java.io.Serializable;
 
@@ -34,14 +34,14 @@ import org.biojava3.protmod.structure.StructureGroup;
 
 import org.rcsb.sequence.core.AbstractAnnotationValue;
 
-public class PTMValue 
+public class ProtModValue 
 extends AbstractAnnotationValue<ModifiedCompound>
-implements Serializable, Comparable<PTMValue> {
+implements Serializable, Comparable<ProtModValue> {
    private static final long serialVersionUID = 6085028925723776780L;
    
    private final ModifiedCompound modComp;
    
-   public PTMValue(final ModifiedCompound modComp)
+   public ProtModValue(final ModifiedCompound modComp)
    {
       this.modComp = modComp;
    }
@@ -64,7 +64,7 @@ implements Serializable, Comparable<PTMValue> {
       return modComp;
    }
    
-   public int compareTo(PTMValue aValue) {
+   public int compareTo(ProtModValue aValue) {
 	   TreeSet<StructureGroup> groups1 = new TreeSet<StructureGroup>(modComp.getGroups());
 	   TreeSet<StructureGroup> groups2 = new TreeSet<StructureGroup>(aValue.modComp.getGroups());
 	   Iterator<StructureGroup> it1 = groups1.iterator();
