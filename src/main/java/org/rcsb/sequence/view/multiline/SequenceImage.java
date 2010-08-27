@@ -1,13 +1,9 @@
 package org.rcsb.sequence.view.multiline;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
@@ -159,8 +155,8 @@ public class SequenceImage extends AbstractSequenceImage
 			modDrawerUtil.setCrosslinkLineThickness(getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS);
 			modDrawerUtil.setCrosslinkLineBendOffset(fontSize/2);
 			
-			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(fontSize, fontSize/2);
-			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
+			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth());
+//			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
 			yOffset += addRenderable(modLegendDrawer, "ProtModLegend");
 		}
 
