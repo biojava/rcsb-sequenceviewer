@@ -39,6 +39,8 @@ public class ChainView implements Serializable {
 	// kind of polymer
 	// chain statistics, etc
 
+	private boolean DEBUG = false;
+
 	private static final long serialVersionUID = 1L;
 
 	private final Collection<AnnotationSummaryCell<?>> annotationSummaryCells;
@@ -53,7 +55,7 @@ public class ChainView implements Serializable {
 	public ChainView(Sequence sequence, ViewParameters params)
 	{
 		this(sequence.getSegmentedSequence(params.getFragmentLength(), getBestRns(sequence, params.getDesiredSequenceRns())), params);
-		
+
 	}
 
 
@@ -66,8 +68,8 @@ public class ChainView implements Serializable {
 		this.params = params;
 		this.backingData = segmentedSequence;
 		annotationDrawMapper = new Annotation2MultiLineDrawer();
-		
-		
+
+
 		/*
 		 * At this point, we should instantiate a collection of annotations that we are ACTUALLY GOING TO DISPLAY
 		 * FOR THIS CHAIN. If all the desired annotations from ViewParameters are present, we can just use that. 
@@ -95,10 +97,11 @@ public class ChainView implements Serializable {
 				System.err.println("got NULL instead of annotation name!");
 				continue;
 			}
-			System.out.println("checking annotation: " + an.getName() ) ;
-			System.out.println("backingdata: " + backingData);
-			System.out.println("assignment: " + this.backingData.getAnnotationGroup(an.getAnnotationClass()));
-
+			if (DEBUG){
+				System.out.println("checking annotation: " + an.getName() ) ;
+				System.out.println("backingdata: " + backingData);
+				System.out.println("assignment: " + this.backingData.getAnnotationGroup(an.getAnnotationClass()));
+			}
 
 			if( ((ag = this.backingData.getAnnotationGroup(an.getAnnotationClass())) == null || !ag.hasData()) 
 					&& params.isShowNextBestAnnotationIfPossible() ) // should we look for the next best?
@@ -111,7 +114,8 @@ public class ChainView implements Serializable {
 				}
 			}
 
-			System.out.println("testing if ag should be displayed " + ag + " an: " + an.getAnnotationClass());
+			if ( DEBUG )
+				System.out.println("testing if ag should be displayed " + ag + " an: " + an.getAnnotationClass());
 
 			if(ag != null && ag.hasData())
 			{
@@ -182,7 +186,7 @@ public class ChainView implements Serializable {
 		if(sequenceImage == null)
 		{
 			this.sequenceImage = new SequenceImage(backingData, annotationsToView, params.getDesiredBottomRulerRns(), params.getDesiredTopRulerRns(), params.getFontSize(), params.getFragmentBuffer(), params.getNumCharsInKey(), annotationDrawMapper);
-			
+
 		}
 
 		return sequenceImage;
@@ -215,7 +219,9 @@ public class ChainView implements Serializable {
 			this.otherAnnotationsAvailable = new TreeSet<AnnotationName>();
 
 			Collection<AnnotationGroup<?>> dataAnnos = this.chain.getAnnotationGroupsWithData();
-			System.out.println("ChainView: got annotations with data:" + dataAnnos.size());
+
+			if ( DEBUG )
+				System.out.println("ChainView: got annotations with data:" + dataAnnos.size());
 			for(AnnotationGroup<?> ag : dataAnnos )
 			{
 				this.otherAnnotationsAvailable.add(ag.getName());
@@ -232,8 +238,10 @@ public class ChainView implements Serializable {
 			//System.out.println("ChainView after retain: " + otherAnnotationsAvailable.size());
 		}
 
-		System.out.println("ChainView: getOtherAnnotationsAvailable " + otherAnnotationsAvailable.size());
-		System.out.println("ChainView: annotationsToView: " + annotationsToView.size());
+		if ( DEBUG ){
+			System.out.println("ChainView: getOtherAnnotationsAvailable " + otherAnnotationsAvailable.size());
+			System.out.println("ChainView: annotationsToView: " + annotationsToView.size());
+		}
 		return this.otherAnnotationsAvailable;
 	}
 
@@ -275,7 +283,7 @@ public class ChainView implements Serializable {
 		annotationDrawMapper = a2h;
 
 	}
-	
+
 	public AnnotationDrawMapper getAnnotationDrawMapper(){
 		return annotationDrawMapper;
 	}
