@@ -11,27 +11,42 @@ import org.rcsb.sequence.model.AnnotationValue;
 
 public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> {
 
-	protected int helixCount = 0, helixResidueCount = 0, strandCount = 0, strandResidueCount = 0, totalResidues = 0;
+	protected int helixCount = 0;
+	protected int helixResidueCount = 0;
+	protected int strandCount = 0;
+	protected int strandResidueCount = 0;
+	protected int totalResidues = 0;
 
 	public SecondaryStructureSummary(AnnotationGroup<Character> ag) {
 		super(ag);
+		
 	}
 
 	@Override
 	protected Collection<SecondaryStructureValue> annotationValues() {
+		// make sure the values are reset
+		helixCount = 0;
+		helixResidueCount = 0;
+		strandCount = 0;
+		strandResidueCount = 0;
+		totalResidues = 0;
+		
 		//    first we need to count how many helices/sheets there are
 
 		Integer val;
-
+		
 		// we need to combine stats for GHI into 'helices' and EB into 'sheets'
 		for(SecondaryStructureValue ssv : SecondaryStructureValue.values())
 		{
+			//System.out.println(ssv);
+			//System.out.println(ag.getAnnotationValueCount().get(ssv));
 			switch(ssv)
 			{
 			case G:
 			case H:
 				helixCount         += (val = ag.getAnnotationValueCount().get(ssv)) == null ? 0 : val;
 				helixResidueCount  += (val = ag.getResiduesPerAnnotationValue().get(ssv)) == null ? 0 : val;
+				break;
 			case I:
 				helixCount         += (val = ag.getAnnotationValueCount().get(ssv)) == null ? 0 : val;
 				helixResidueCount  += (val = ag.getResiduesPerAnnotationValue().get(ssv)) == null ? 0 : val;
@@ -48,8 +63,10 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 			default :
 				// do nothing
 			}
+					
+			//System.out.println("   ssvalue: " + ssv + " helixCount: " + helixCount + " helixResidueCount: " + helixResidueCount );
+		
 		}
-
 
 		totalResidues = ag.getSequence().getSequenceLength();
 
@@ -57,6 +74,8 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 		if(helixCount  == 0) annotationValues.remove(SecondaryStructureValue.H);
 		if(strandCount == 0) annotationValues.remove(SecondaryStructureValue.E);
 
+		//System.out.println("SecondaryStructureSummary: helixCount : " + helixCount + " helixResidueCount: " + helixResidueCount + " totalResidues: " + totalResidues);
+		
 		return annotationValues;
 	}
 
