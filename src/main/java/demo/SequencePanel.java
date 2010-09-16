@@ -39,12 +39,13 @@ public class SequencePanel {
 	
 	public static void main(String[] args){
 
-//		String pdbId = "1cdg"; // crosslink2
+		String pdbId = "1cdg"; // crosslink2
 //		String pdbId = "1A6L"; // crosslink3,4
 //		String pdbId = "1UIS"; // crosslink1
 //		String pdbId = "3HN3"; // attachment
-		String pdbId = "3MVJ"; // mod. res.
+//		String pdbId = "3MVJ"; // mod. res.
 //		String pdbId = "1SU6"; // crosslink6
+//		String pdbId = "1CAD"; // crosslink4
 		String chainId = "A";
 
 		// define where PDB files are stored...
@@ -100,10 +101,10 @@ public class SequencePanel {
 
 		BufferedImage buf = image.getBufferedImage();
 		
-		try {
-			javax.imageio.ImageIO.write(buf, "png", 
-					new java.io.File("C:\\Documents and Settings\\gjj\\Desktop\\jj\\"+pdbId+chainId+".png"));
-		} catch (Exception e){}
+//		try {
+//			javax.imageio.ImageIO.write(buf, "png", 
+//					new java.io.File("C:\\Documents and Settings\\gjj\\Desktop\\jj\\"+pdbId+chainId+".png"));
+//		} catch (Exception e){}
 
 		return buf;
 

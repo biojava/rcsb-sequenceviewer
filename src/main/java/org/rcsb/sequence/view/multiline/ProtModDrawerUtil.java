@@ -112,6 +112,9 @@ class ProtModDrawerUtil {
 		case CROSS_LINK_7:
 			drawCrossLink(g2, xMin, yMin, xMax, yMax, 7);
 			break;
+		case CROSS_LINK_8_OR_LARGE:
+			drawCrossLink(g2, xMin, yMin, xMax, yMax, 8);
+			break;
 		default:
 			drawModRes(g2, xMin, yMin, xMax, yMax);
 		}
@@ -294,6 +297,20 @@ class ProtModDrawerUtil {
 		case CROSS_LINK_7:
 			dashed = new float[] {
 					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness, 
+					relativeThickness, relativeThickness
+					}
+			;
+			break;
+		case CROSS_LINK_8_OR_LARGE:
+			dashed = new float[] {
+					relativeThickness*4, relativeThickness, 
+					relativeThickness, relativeThickness, 
 					relativeThickness, relativeThickness, 
 					relativeThickness, relativeThickness, 
 					relativeThickness, relativeThickness, 
