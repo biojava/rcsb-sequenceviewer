@@ -185,7 +185,7 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
       
       if(tickXpos <= endPosOfPreviousText)
       {
-         System.err.println("Not adding tick for residue " + r.toString() + " as it overlaps the previous text");
+         //System.err.println("Not adding tick for residue " + r.toString() + " as it overlaps the previous text");
          return;
       }
       
@@ -247,7 +247,7 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
       
       if(xPosOfText <= endPosOfPreviousText || sizeOfText + imageWidthOffset > imageWidth)
       {
-         System.err.println("Ignoring text string " + text + " on ruler because it would overlap the previous text");
+         //System.err.println("Ignoring text string " + text + " on ruler because it would overlap the previous text");
          return;
       }
       
