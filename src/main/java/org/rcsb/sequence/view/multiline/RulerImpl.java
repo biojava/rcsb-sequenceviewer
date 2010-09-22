@@ -58,6 +58,9 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
    protected void drawData(Graphics2D g2, int yOffset) 
    {
       final Sequence sequence = getSequence();
+      
+     // System.out.println("RulerImpl: drawing sequence " + sequence);
+      
       final SequenceImageIF image = getImage();
       final ResidueNumberScheme rns = getResidueNumberScheme();
       
@@ -69,6 +72,8 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
 //      final boolean hasInsertionCodes = rns.hasInsertionCodes();
       final boolean rulerUsesNonDefaultRns = rns != sequence.getDefaultResidueNumberScheme();
       
+     // System.out.println("ruler used RNS: " + rulerUsesNonDefaultRns + " " + rns);
+      
       int xPos  = image.getImageWidthOffset();
       boolean isFirstResidue = true;
       
@@ -76,10 +81,7 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
       {
          modifyHeightsForRulerAbove();
       }
-      
-
-    
-      
+            
       g2.setStroke(rulerStroke);
       
       Iterator<ResidueId> rIt = sequence.getResidueIds().iterator();
@@ -87,11 +89,14 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
 //      for(ResidueId r : sequence.getResidueIds())
       {         
          ResidueId r = rIt.next();
-         
+         ResidueId orig = r;
          // change to the correct rns if necessary
          if(rulerUsesNonDefaultRns)
          {
+        	 
+      //  System.out.println("Ruler get equivalent ResID: " + rns + " " + r + " " + r.getEquivalentResidueId(rns));;
             r = r.getEquivalentResidueId(rns);
+            
          }
          
          if(r == null)
@@ -107,14 +112,15 @@ public class RulerImpl extends SequenceDrawer implements Ruler {
          
        
          // if it's the first residue of a sequence
-         else if( r.getPrevious() == null || r.getPrevious().isBeginningOfChainMarker() )
+         else if( orig.getPrevious() == null || orig.getPrevious().isBeginningOfChainMarker() )
          {
+        	// System.out.println("RulerImpl: begginning of chain: " + r + " " + r.getResidueNumberScheme() + " " + r.getPrevious());
             renderHalfLine(g2, r, xPos, false, true, yOffset);
             isFirstResidue = false;
          }
          
          // if it's the last residue of a sequence
-         else if( r.getNext() == null || r.getNext().isBeginningOfChainMarker() )
+         else if( orig.getNext() == null || orig.getNext().isBeginningOfChainMarker() )
          {
             renderHalfLine(g2, r, xPos, true, true, yOffset);
          }
