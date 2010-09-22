@@ -156,7 +156,7 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
          try {
             result = new BoundedAnnotation<T>(a, lowerBound, upperBound, maxLength);
          } catch (RuntimeException e){
-            System.out.println(e.getMessage() + " " + a + " " + lowerBound + " " + upperBound + " " + maxLength);
+            System.err.println(e.getMessage() + " " + a + " " + lowerBound + " " + upperBound + " " + maxLength);
             return null;
 
          }
@@ -188,8 +188,8 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
          start.ensureBeforeOrEqual(end);
       } catch (Exception e){
          // argh another RuntimeException thrown just because of state info...
-         System.out.println(e.getMessage());
-         System.out.println("AbstractAnnotationGroup: can't add Annotation " +value + " because can't ensure that start is before end or equal (" +start+ " , " + end + " )" );
+         //System.out.println(e.getMessage());
+         //System.out.println("AbstractAnnotationGroup: can't add Annotation >" +value + "< because can't ensure that start is before end or equal (" +start+ " , " + end + " )" );
          return false;
       }
       Collection<ResidueId> resForThisAn = ResidueUtils.getResidueIdsBetween(start, end);
@@ -209,7 +209,7 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
                System.out.println(e.getMessage());
             }
 
-    	  System.out.println("AbstractAnnotationGroup: " + chain + " with " +  nameS+ " Residues may not be annotated more than once by this annotation group. You want to assign " + value + " but it's already assigned " + annoV);
+    	  //System.out.println("AbstractAnnotationGroup: " + chain + " with " +  nameS+ " Residues may not be annotated more than once by this annotation group. You want to assign " + value + " but it's already assigned " + annoV);
     	  return false;
       }
 
@@ -224,6 +224,9 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
 
    protected boolean addAnnotation(AnnotationValue<T> value, String startId, String endId)
    {
+	   
+	   
+	   
       ResidueId start = chain.getResidueId(residueNumberScheme, startId);
       ResidueId end   = chain.getResidueId(residueNumberScheme, endId);
       if ( start == null || end == null ){
@@ -316,7 +319,7 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
      */
     public void constructAnnotations() throws Exception
     {
-    	System.err.println("ABSTRACT ANNOTATIONGROUP: CONSTRUCTING ANNOTATIONS " + getName().getName() + " status:" +status);
+    	//System.err.println("ABSTRACT ANNOTATIONGROUP: CONSTRUCTING ANNOTATIONS " + getName().getName() + " status:" +status);
        if(status == underConstruction)
        {
     	   System.out.println("contructAnnotations() has been called circularly!");
