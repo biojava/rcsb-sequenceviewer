@@ -138,6 +138,10 @@ public class PageView implements Serializable {
       return getAnnotationJson(null);
    }
    
+   
+   // WHAT IS THE URL FOR THIS REQUEST???
+   //example call:
+   // http://www.rcsb.org/pdb/explore/remediatedSequence.do?structureId=1CDG&returnJson=true
    public String getAnnotationJson(AnnotationName theAnnotation)
    {
 	 
@@ -292,8 +296,8 @@ public class PageView implements Serializable {
             //PdbLogger.debug("Data about the order and visibility of annotations added to JSON: " + annotationOrder.length() + " data items");
          }
          
-         
-         System.out.println(json.toString());
+        // System.out.println("PageView.java : ");
+         //System.out.println(json.toString());
    
          //PdbLogger.debug("Generated JSON");
          //return PdbLogger.isDebugOn() ? json.toString(2) : json.toString();
@@ -362,7 +366,7 @@ public class PageView implements Serializable {
          }
       }
 
-      System.out.println("Leaving getAvailableAnnotationsNotDisplayed " + availableAnnotationsNotDisplayed.size() + " " + availableAnnotationsNotDisplayed.keySet());
+      //System.out.println("Leaving getAvailableAnnotationsNotDisplayed " + availableAnnotationsNotDisplayed.size() + " " + availableAnnotationsNotDisplayed.keySet());
       return availableAnnotationsNotDisplayed;
    }
    
