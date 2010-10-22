@@ -5,59 +5,85 @@ import java.io.Serializable;
 
 public class PubMed implements Serializable{
 
+	
+	
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 944156914139173452L;
 
+	String journalTitle;
+	String issueNumber;
+	String medlinePages;
+	String authorList;
+	String articleTitle;
+	String publishedYear;
+	String publishedMonth;
+	String publishedDay;
+	String volume;
+	Integer pubmedId;
 	public String getJournalTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return journalTitle;
 	}
-
+	public void setJournalTitle(String journalTitle) {
+		this.journalTitle = journalTitle;
+	}
 	public String getIssueNumber() {
-		// TODO Auto-generated method stub
-		return null;
+		return issueNumber;
 	}
-
+	public void setIssueNumber(String issueNumber) {
+		this.issueNumber = issueNumber;
+	}
 	public String getMedlinePages() {
-		// TODO Auto-generated method stub
-		return null;
+		return medlinePages;
 	}
-
+	public void setMedlinePages(String medlinePages) {
+		this.medlinePages = medlinePages;
+	}
 	public String getAuthorList() {
-		// TODO Auto-generated method stub
-		return null;
+		return authorList;
 	}
-
+	public void setAuthorList(String authorList) {
+		this.authorList = authorList;
+	}
 	public String getArticleTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return articleTitle;
 	}
-
-	public Integer getPublishedYear() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setArticleTitle(String articleTitle) {
+		this.articleTitle = articleTitle;
 	}
-
+	public String getPublishedYear() {
+		return publishedYear;
+	}
+	public void setPublishedYear(String publishedYear) {
+		this.publishedYear = publishedYear;
+	}
 	public String getPublishedMonth() {
-		// TODO Auto-generated method stub
-		return null;
+		return publishedMonth;
 	}
-
+	public void setPublishedMonth(String publishedMonth) {
+		this.publishedMonth = publishedMonth;
+	}
 	public String getPublishedDay() {
-		// TODO Auto-generated method stub
-		return null;
+		return publishedDay;
 	}
-
+	public void setPublishedDay(String publishedDay) {
+		this.publishedDay = publishedDay;
+	}
 	public String getVolume() {
-		// TODO Auto-generated method stub
-		return null;
+		return volume;
 	}
-
+	public void setVolume(String volume) {
+		this.volume = volume;
+	}
 	public Integer getPubmedId() {
-		// TODO Auto-generated method stub
-		return null;
+		return pubmedId;
 	}
-
+	public void setPubmedId(Integer pubmedId) {
+		this.pubmedId = pubmedId;
+	}
+	
+	
+	
 }
