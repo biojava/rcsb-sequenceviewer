@@ -3,11 +3,13 @@ package org.rcsb.sequence.model;
 import java.io.Serializable;
 
 
+/** A bean containing the most important data from Pubmed
+ * 
+ * @author andreas
+ *
+ */
 public class PubMed implements Serializable{
 
-	
-	
-	
 	/**
 	 * 
 	 */
@@ -22,7 +24,10 @@ public class PubMed implements Serializable{
 	String publishedMonth;
 	String publishedDay;
 	String volume;
-	Integer pubmedId;
+	Long pubmedId;
+	String pmc;
+	
+	
 	public String getJournalTitle() {
 		return journalTitle;
 	}
@@ -77,11 +82,17 @@ public class PubMed implements Serializable{
 	public void setVolume(String volume) {
 		this.volume = volume;
 	}
-	public Integer getPubmedId() {
+	public Long getPubmedId() {
 		return pubmedId;
 	}
-	public void setPubmedId(Integer pubmedId) {
+	public void setPubmedId(Long pubmedId) {
 		this.pubmedId = pubmedId;
+	}
+	public String getPmc() {
+		return pmc;
+	}
+	public void setPmc(String pmc) {
+		this.pmc = pmc;
 	}
 	
 	
