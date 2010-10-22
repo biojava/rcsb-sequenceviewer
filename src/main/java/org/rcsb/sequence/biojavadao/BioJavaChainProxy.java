@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.biojava.bio.structure.Compound;
 import org.biojava.bio.structure.Group;
 
-import org.biojava.bio.structure.PDBResidueNumber;
+import org.biojava.bio.structure.ResidueNumber;
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.StructureTools;
 
@@ -112,7 +112,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		Map<ResidueNumberScheme, Map<String, ResidueId>> residueIdMaps = getResidueIdMaps();
 		
 		ResidueIdImpl equivResId;
-		String insertionCodeStr;
+
 		Character insertionCode;
 		ResidueInfo theResidue;
 	
@@ -132,19 +132,16 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 			
 			theResidue    = ResidueProvider.getResidue(g.getPDBName());
 			
-			PDBResidueNumber pdbResNum ;
-			if ( g.getPDBCode() != null )
-				pdbResNum = StructureTools.getPDBResidueNumber(g);
+			ResidueNumber pdbResNum ;
+			if ( g.getResidueNumber() != null )
+				pdbResNum = g.getResidueNumber();
 			else 
-				pdbResNum = new PDBResidueNumber();
+				pdbResNum = new ResidueNumber();
 			
 			if ( pdbResNum.getInsCode() != null)
-				insertionCodeStr = pdbResNum.getInsCode();
+				insertionCode = pdbResNum.getInsCode() ;
 			else
-				insertionCodeStr = null;
-			
-			insertionCode    = insertionCodeStr != null && insertionCodeStr.length() > 0 ? Character.valueOf(insertionCodeStr.charAt(0)) : null;
-			
+				insertionCode = null;
 			
 			equivResId = new ResidueIdImpl(ResidueNumberScheme._ARRAY_IDX, this, index, theResidue);
 			
@@ -154,7 +151,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 			// if no pdb id, that's ok			
 			int atomPos = getAtomPosition(g);
 			if ( atomPos > 0) {
-				int authSeqNum       = pdbResNum.getResidueNumber();
+				int authSeqNum       = pdbResNum.getSeqNum();
 				pdbkey = authSeqNum + "" + (insertionCode == null ? "" : insertionCode);
 				ATOMMAP.put(pdbkey, new ResidueIdImpl(ResidueNumberScheme.ATOM, this, 
 						authSeqNum, 
