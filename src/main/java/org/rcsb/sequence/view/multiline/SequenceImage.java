@@ -114,7 +114,7 @@ public class SequenceImage extends AbstractSequenceImage
 
 				if (an.getName().equals("disulphide"))
 					continue;
-				if (an.getName().equals(ProtModAnnotationGroup.annotationName))
+				if (an.getName().equals("modification"))
 					ptmAnnotationExists = true;
 				if (annotationsToView.contains(an))
 				{
