@@ -97,9 +97,9 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 				a2rMap.put("ligcr", BoxAnnotationDrawer.class);
 				a2sMap.put("ligcr", LigCRSummary.class);
 			}
-			else if ( an.getName().equals(ProtModAnnotationGroup.annotationName)) {
-				a2rMap.put(ProtModAnnotationGroup.annotationName, ProtModDrawer.class);
-				a2sMap.put(ProtModAnnotationGroup.annotationName, ProtModSummary.class);
+			else if ( an.getName().equals("modification")) {
+				a2rMap.put("modification", ProtModDrawer.class);
+				a2sMap.put("modification", ProtModSummary.class);
 			}
 		}
 		
