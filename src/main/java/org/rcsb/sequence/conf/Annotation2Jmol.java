@@ -4,6 +4,7 @@ import static org.rcsb.sequence.conf.AnnotationClassification.seqdom;
 import static org.rcsb.sequence.conf.AnnotationClassification.strdom;
 import static org.rcsb.sequence.conf.AnnotationClassification.func;
 import static org.rcsb.sequence.conf.AnnotationClassification.secstr;
+import static org.rcsb.sequence.conf.AnnotationClassification.protmod;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +33,7 @@ public class Annotation2Jmol {
       // warning: bulidng up the image map take a lot of time, so don;t enable this
       // until we have found a better solution to create the image map
       a2jMap.put(secstr, AnnotationJsonObject.class);
+      a2jMap.put(protmod, AnnotationJsonObject.class);
       
       ANNOTATION_CLASSIFICATION_TO_JSON_DATA_MAP = Collections.unmodifiableMap(a2jMap);
    }
@@ -47,6 +49,7 @@ public class Annotation2Jmol {
       a2jMap.put(strdom, DEFAULT_JMOL_SCRIPT_BUILDER_FUNCTION);
       a2jMap.put(seqdom, DEFAULT_JMOL_SCRIPT_BUILDER_FUNCTION);
       a2jMap.put(func,   "ImportantResidueScriptBuilder");
+      a2jMap.put(protmod, "ImportantResidueScriptBuilder");
       // enable this to map secstruc to jmol
       //a2jMap.put(secstr, DEFAULT_JMOL_SCRIPT_BUILDER_FUNCTION);
       
