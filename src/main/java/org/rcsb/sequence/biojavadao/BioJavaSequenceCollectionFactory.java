@@ -1,7 +1,5 @@
 package org.rcsb.sequence.biojavadao;
 
-import org.biojava.bio.structure.Group;
-import org.biojava.bio.structure.GroupIterator;
 import org.biojava.bio.structure.Structure;
 
 import org.biojava.bio.structure.align.ce.AbstractUserArgumentProcessor;

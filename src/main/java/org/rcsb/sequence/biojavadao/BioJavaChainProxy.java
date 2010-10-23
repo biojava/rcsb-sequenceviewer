@@ -14,7 +14,7 @@ import org.biojava.bio.structure.Group;
 
 import org.biojava.bio.structure.ResidueNumber;
 import org.biojava.bio.structure.Structure;
-import org.biojava.bio.structure.StructureTools;
+//import org.biojava.bio.structure.StructureTools;
 
 import org.biojava.bio.structure.io.mmcif.model.ChemComp;
 
@@ -43,6 +43,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 	public BioJavaChainProxy(org.biojava.bio.structure.Chain bj){		
 		super(bj.getSeqResSequence());
 		System.out.println("created new BiojavaChainProxy for " + bj.getSeqResSequence());
+	
 		instantiated = new AtomicBoolean();
 		instantiated.set(false);
 		annotated = new AtomicBoolean();
@@ -292,16 +293,16 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 
 		AnnotationName mrName = new AnnotationName(
 				mrac,
-				ProtModAnnotationGroup.annotationName, 
-				ProtModAnnotationGroup.annotationName, 
+				BJProtModAnnotation.annotationName, 
+				BJProtModAnnotation.annotationName, 
 				mrref, 
-				ProtModAnnotationGroup.class,
+				BJProtModAnnotation.class,
 				PolymerType.PROTEIN_ONLY);
 		
 		AnnotationRegistry.registerAnnotation(mrName);
 		
 		ProtModAnnotationGroup mrag =
-			new ProtModAnnotationGroup(
+			new BJProtModAnnotation(
 					this,
 					mrac,
 					mrName);
