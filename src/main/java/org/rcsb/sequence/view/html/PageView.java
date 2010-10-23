@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -16,7 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.rcsb.sequence.conf.Annotation2Jmol;
-import org.rcsb.sequence.conf.AnnotationClassification;
+
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.model.AnnotationGroup;
@@ -230,6 +230,12 @@ public class PageView implements Serializable {
                {
                   JSONArray entries = new JSONArray();
                   frags.put(entries);
+                  if ( hmd == null){
+                	  System.err.println("PageView: ImageMapData is null! " + an);
+                	  continue;
+                  } else {
+                	  System.out.println("PageView: adding annotation for " + an);
+                  }
                   for(ImageMapData.Entry e : hmd.getImageMapDataEntries())
                   {
                 	//  PdbLogger.warn("PAgeView: getAnnotationJson " + e.getJson());
