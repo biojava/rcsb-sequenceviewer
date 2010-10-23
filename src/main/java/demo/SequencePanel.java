@@ -48,12 +48,20 @@ public class SequencePanel {
 //		String pdbId = "1CAD"; // crosslink4
 		String chainId = "A";
 
+		String pdbId2="1a4w";
+		String chainId2 = "H";
+		
 		// define where PDB files are stored...
 		//System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
 		System.setProperty(InputStreamProvider.CACHE_PROPERTY, "true");
 		 
 		SequencePanel panel = new SequencePanel();		
 		
+		showSeq(panel, pdbId,chainId);
+		showSeq(panel, pdbId2,chainId2);
+	}
+	
+	public static void showSeq(SequencePanel panel, String pdbId, String chainId){
 		BufferedImage img = panel.viewMultiLine(pdbId,chainId);
 		
 		// alternative:
