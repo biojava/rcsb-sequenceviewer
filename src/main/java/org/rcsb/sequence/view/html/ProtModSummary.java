@@ -42,6 +42,6 @@ public class ProtModSummary  extends AnnotationSummaryCell<ModifiedCompound> {
    protected void renderAnnotation(AnnotationValue<ModifiedCompound> av, HtmlElement el) {
 	   ProtModValue pv = (ProtModValue)av;
 	   ModifiedCompound mc = pv.value();
-	   el.replaceContent(mc.toString());
+	   el.replaceContent("["+mc.getModification().getKeywords()+"]");
    }
 }

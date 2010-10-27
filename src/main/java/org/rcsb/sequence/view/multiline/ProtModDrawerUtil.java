@@ -39,7 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ProteinModification;
+import org.rcsb.sequence.util.ColorUtils;
 
 class ProtModDrawerUtil {
 	private Set<ProteinModification> mods;
@@ -128,6 +130,12 @@ class ProtModDrawerUtil {
 		
 		Polygon polygon = getAsterisk(xCenter, yCenter, 6, radius, radius*0.2, 0);
 		g2.fill(polygon);
+		
+		Color c = g2.getColor();		
+		Color tmp = ColorUtils.darker(c, 0.3);		
+		g2.setColor(tmp);		
+		g2.draw(polygon);
+		g2.setColor(c);
 	}
 	
 	private Polygon getAsterisk(int xCenter, int yCenter, int n, double largeRadius, double smallRadius, double startAngle) {		
@@ -160,6 +168,14 @@ class ProtModDrawerUtil {
 		int radius = (yMax - yMin) / 4;
 		
 		g2.drawOval(xCenter-radius, yCenter-radius, 2*radius, 2*radius);
+		
+		Color c = g2.getColor();		
+		Color tmp = ColorUtils.darker(c, 0.3);		
+		g2.setColor(tmp);
+		g2.setStroke(new BasicStroke(1));
+		g2.drawOval(xCenter-radius, yCenter-radius, 2*radius, 2*radius);
+		g2.setStroke(new BasicStroke(2));
+		g2.setColor(c);
 	}
 	
 	private void drawCrossLink(Graphics2D g2, int xMin, int yMin, int xMax, int yMax, int nRes) {
@@ -168,7 +184,18 @@ class ProtModDrawerUtil {
 		double radius = (yMax - yMin) / 2.0;
 		
 		Polygon polygon = getPolygon(xCenter, yCenter, radius, nRes, Math.PI/2);
+			
 		g2.drawPolygon(polygon);
+		
+		Color c = g2.getColor();		
+		Color tmp = ColorUtils.darker(c, 0.3);		
+		g2.setColor(tmp);
+		g2.setStroke(new BasicStroke(1));
+		g2.drawPolygon(polygon);
+		g2.setStroke(new BasicStroke(2));
+		g2.setColor(c);
+		
+		
 	}
 	
 	private Polygon getPolygon(int xCenter, int yCenter, double radius, int nPoint, double startAngle) {
@@ -237,6 +264,15 @@ class ProtModDrawerUtil {
 					}
 
 					g2.draw(bond);
+					
+					Color c = g2.getColor();		
+					Color tmp = ColorUtils.darker(c, 0.3);		
+					g2.setColor(tmp);
+					g2.setStroke(new BasicStroke(1));
+					g2.draw(bond);
+					g2.setStroke(new BasicStroke(2));
+					g2.setColor(c);
+					
 				}
 			
 	}
@@ -335,9 +371,16 @@ class ProtModDrawerUtil {
 		if (mods == null)
 			return Collections.emptyMap();
 		
+		
+		
 		mapModColor = new HashMap<ProteinModification, Color>();
 		for (ProteinModification mod : mods) {
+			
 			Color color = colors[mapModColor.size()%colors.length];
+			
+			if ( mod.getCategory() == ModificationCategory.CROSS_LINK_2 )
+			color = Color.orange;
+			
 			mapModColor.put(mod, color);
 		}
 		
@@ -349,8 +392,7 @@ class ProtModDrawerUtil {
 		Color.green,
 		Color.red,
 		Color.blue,
-		Color.orange,
-		Color.yellow,
+		Color.yellow,		
 		Color.pink,
 		Color.gray,
 		Color.cyan,

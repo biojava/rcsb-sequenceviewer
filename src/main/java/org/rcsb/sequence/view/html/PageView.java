@@ -42,6 +42,7 @@ public class PageView implements Serializable {
    
    protected final ViewParameters params;
    
+   private static final boolean DEBUG = false;
 
    public PageView(int page, ViewParameters params)
    {
@@ -173,7 +174,7 @@ public class PageView implements Serializable {
                anJson.put("entries", Annotation2Jmol.createAnnotationJsonObject(an, getAllAnnotationsDisplayedMap().get(an)));
                anJson.put("script",  Annotation2Jmol.getJmolScriptBuilderFunction(an.getClassification()));
             } else {
-            	System.out.println("PageView: no JSON data for " + an);
+            	debug("PageView: no JSON data for " + an);
             }
             
             // some annotations are displayed because the ones chosen have no data but an equivalent annotation does
@@ -236,7 +237,7 @@ public class PageView implements Serializable {
                 	  System.err.println("PageView: ImageMapData is null! " + an);
                 	  continue;
                   } else {
-                	  System.out.println("PageView: adding annotation for " + an);
+                	  debug("PageView: adding annotation for " + an);
                   }
                   for(ImageMapData.Entry e : hmd.getImageMapDataEntries())
                   {
@@ -304,8 +305,8 @@ public class PageView implements Serializable {
             //PdbLogger.debug("Data about the order and visibility of annotations added to JSON: " + annotationOrder.length() + " data items");
          }
          
-        // System.out.println("PageView.java : ");
-         //System.out.println(json.toString());
+        // debug("PageView.java : ");
+         //debug(json.toString());
    
          //PdbLogger.debug("Generated JSON");
          //return PdbLogger.isDebugOn() ? json.toString(2) : json.toString();
@@ -374,12 +375,17 @@ public class PageView implements Serializable {
          }
       }
 
-      //System.out.println("Leaving getAvailableAnnotationsNotDisplayed " + availableAnnotationsNotDisplayed.size() + " " + availableAnnotationsNotDisplayed.keySet());
+      //debug("Leaving getAvailableAnnotationsNotDisplayed " + availableAnnotationsNotDisplayed.size() + " " + availableAnnotationsNotDisplayed.keySet());
       return availableAnnotationsNotDisplayed;
    }
    
    public Set<AnnotationName> getAllAnnotationsDisplayed()
    {
       return getAllAnnotationsDisplayedMap().keySet();
+   }
+   
+   private void debug(String msg){
+	   if (DEBUG)
+		   System.out.println(msg);
    }
 }

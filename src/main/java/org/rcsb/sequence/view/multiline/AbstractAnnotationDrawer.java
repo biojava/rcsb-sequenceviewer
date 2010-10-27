@@ -125,7 +125,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		return mapData;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	protected void drawData(final Graphics2D g2, final int yOffset) {
 		for(AnnotationPixelRange apr : annotationPixelRanges)
@@ -148,7 +148,10 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		}
 	}
 
-	private void drawAnnotationFragment(Graphics2D g2, Annotation<T> annotation, int xMin, int yMin, int xMax, int yMax, boolean startIsNotStart, boolean endIsNotEnd)
+	private void drawAnnotationFragment(Graphics2D g2, 
+			Annotation<T> annotation, 
+			int xMin, int yMin, int xMax, int yMax, 
+			boolean startIsNotStart, boolean endIsNotEnd)
 	{
 		drawAnnotationFragment(g2, annotation.getAnnotationValue(), annotation.getSequence().getSequenceLength(), xMin, yMin, xMax, yMax, startIsNotStart, endIsNotEnd);
 		String label = getLabelString(annotation);
@@ -267,8 +270,8 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 	 * TODO: make sure that CATH and the other annotations have a nice description.
 	 */
 
-	@SuppressWarnings("unchecked")
-	protected String getLabelString(Annotation av)
+	
+	protected String getLabelString(Annotation<T> av)
 	{
 		String value = av.getAnnotationValue().value().toString().trim();
 
@@ -282,6 +285,8 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		buf.append(" (");
 		buf.append(value);
 		buf.append(")");
+		
+		//System.out.println("AbstactAnnotationDrawer: label: " + buf.toString());
 		return buf.toString();
 
 
@@ -300,11 +305,12 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 	{
 		final int xMin, xMax, yMin, yMax, numResidues;
 		final boolean startTruncated, endTruncated, isAGapInAnnotation;
-		@SuppressWarnings("unchecked")
-		final Annotation annotation;
+		
+		final Annotation<T> annotation;
 
-		@SuppressWarnings("unchecked")
-		protected AnnotationPixelRange(int xMin, int xMax, int yMin, int yMax, int numResidues, boolean startTruncated, boolean endTruncated, Annotation annotation)
+		
+		protected AnnotationPixelRange(int xMin, int xMax, int yMin, int yMax, int numResidues, 
+				boolean startTruncated, boolean endTruncated, Annotation<T> annotation)
 		{
 			final int imageWidth = getImage().getImageWidth();
 			if(xMax < xMin)
@@ -326,8 +332,9 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 			this.annotation = annotation;
 			this.isAGapInAnnotation = annotation == null;
 		}
-		@SuppressWarnings("unchecked")
-		protected AnnotationPixelRange(int xMin, int xMax, int yMin, int yMax, boolean startTruncated, boolean endTruncated, Annotation annotation)
+		
+		protected AnnotationPixelRange(int xMin, int xMax, int yMin, int yMax, 
+				boolean startTruncated, boolean endTruncated, Annotation<T> annotation)
 		{
 			this(xMin, xMax, yMin, yMax, annotation.getSequence().getSequenceLength(), startTruncated, endTruncated, annotation);
 		}
@@ -340,7 +347,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 	private final int maxAnnotationsPerResidue;
 
 	private Collection<AnnotationPixelRange> annotationPixelRanges = null;
-	@SuppressWarnings("unchecked")
+	
 	protected void initAnnotationPixelRanges()
 	{
 		if(annotationPixelRanges == null)
@@ -394,7 +401,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 				xPos = getImage().getImageWidthOffset();
 				lastResidueAnnotated = sequence.getFirstResidue().getPrevious();
 
-				for(Annotation a : annotations)
+				for(Annotation<T> a : annotations)
 				{
 													
 					startTruncated = a.isBeginningTruncated();
@@ -544,7 +551,6 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Collection<SortedSet<Annotation<T>>> initNonOverlappingAnnotations(SortedSet<Annotation<T>> collection) {
 		AnnotationGroup<T> annotationGroup = getAnnotationGroup();
 		if(!annotationGroup.annotationsDoOverlap())
@@ -563,7 +569,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		SortedSet<Annotation<T>> theSet;
 		result.add(new TreeSet<Annotation<T>>(comparator));
 
-		for(Annotation a : collection)
+		for(Annotation<T> a : collection)
 		{
 			boolean addedYet = false;
 			Iterator<SortedSet<Annotation<T>>> it = result.iterator();

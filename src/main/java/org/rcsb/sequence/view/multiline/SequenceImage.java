@@ -37,6 +37,7 @@ import org.rcsb.sequence.util.MapOfCollections;
 public class SequenceImage extends AbstractSequenceImage
 {
 
+	private boolean DEBUG = false;
 	AnnotationDrawMapper annotationDrawMapper ;
 
 	private ProtModDrawerUtil modDrawerUtil;
@@ -93,7 +94,7 @@ public class SequenceImage extends AbstractSequenceImage
 
 		initImage(sequences, fontSize, fragmentBuffer, numCharsInKey);
 
-		System.out.println("SequneceImage has been asked to view annotations: " + annotationsToView);
+		debug("SequneceImage has been asked to view annotations: " + annotationsToView);
 		
 		int yOffset = 0;
 		SequenceDrawer sequenceDrawer = null;
@@ -105,6 +106,7 @@ public class SequenceImage extends AbstractSequenceImage
 		Drawer spacer = new SpacerDrawer(fragmentBufferPx);
 
 		boolean ptmAnnotationExists = false;
+		@SuppressWarnings("rawtypes")
 		Class protModClass = null;
 
 		for (Sequence s : sequences)
@@ -119,7 +121,7 @@ public class SequenceImage extends AbstractSequenceImage
 				if (an.getName().equals("modification")) {
 					ptmAnnotationExists = true;
 					protModClass = an.getAnnotationClass();
-					System.out.println("found implementing class:" + protModClass.getName());
+					debug("found implementing class:" + protModClass.getName());
 				}
 
 
@@ -128,7 +130,7 @@ public class SequenceImage extends AbstractSequenceImage
 				{
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
 				} else {
-					System.out.println("Sequence Image: Not viewing: " + an.getName());
+					debug("Sequence Image: Not viewing: " + an.getName());
 				}
 			}
 
@@ -148,17 +150,18 @@ public class SequenceImage extends AbstractSequenceImage
 		}
 
 		if (ptmAnnotationExists) {
-			System.out.println("we have a ptm annotation...");
+			debug("we have a ptm annotation...");
 			// collect ptms
 			Set<ProteinModification> protMods = new HashSet<ProteinModification>();
 			for (Sequence s : sequences) {
+				@SuppressWarnings("unchecked")
 				ProtModAnnotationGroup clag = (ProtModAnnotationGroup) s.getAnnotationGroup(protModClass);
-				System.out.println("got ProtModAnntoationGroup " + clag);
+				debug("got ProtModAnntoationGroup " + clag);
 				if (clag == null || !clag.hasData())
 					continue;
 
 				for (ModifiedCompound mc : clag.getModCompounds()) {
-					System.out.println("got modified compound:  " + mc);
+					debug("got modified compound:  " + mc);
 					ProteinModification mod = mc.getModification();
 					protMods.add(mod);
 				}
@@ -377,6 +380,11 @@ public class SequenceImage extends AbstractSequenceImage
 
 	public void setAnnotationDrawMapper(AnnotationDrawMapper annotationDrawMapper) {
 		this.annotationDrawMapper = annotationDrawMapper;
+	}
+	
+	private void debug(String msg){
+		if (DEBUG)
+			System.out.println(msg);
 	}
 
 

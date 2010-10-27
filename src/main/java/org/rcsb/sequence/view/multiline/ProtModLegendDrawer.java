@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ProteinModification;
@@ -109,36 +108,7 @@ public class ProtModLegendDrawer implements Drawer {
 		
 	}
 	
-	private String printModification(ProteinModification mod) {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(mod.getCategory());
-
-		Set<String> keywords = mod.getKeywords();
-		if (keywords!=null && !keywords.isEmpty()) {
-			sb.append("; ");
-			for (String keyword : keywords) {
-				sb.append(keyword);
-				sb.append(", ");
-			}
-			sb.delete(sb.length()-2,sb.length());
-		}
-		
-		String resid = mod.getResidId();
-		if (resid != null) {
-			sb.append("; ");
-			sb.append("RESID:");
-			sb.append(resid);
-			String residname = mod.getResidName();
-			if (residname != null) {
-				sb.append(" (");
-				sb.append(residname);
-				sb.append(')');
-			}
-		}
-		
-		return sb.toString();
-	}
+	
 	
 	private int drawMultiLineText(Graphics2D g2, List<TextLayout> textLayouts, int xOffset, int yOffset) {
 	    int deltaY = 0;
@@ -163,7 +133,7 @@ public class ProtModLegendDrawer implements Drawer {
 		multiLineText = new HashMap<ProteinModification,List<TextLayout>>(modDrawerUtil.getProtMods().size());
 		
 		for (ProteinModification mod : modDrawerUtil.getProtMods()) {
-			AttributedString attributedString = new AttributedString(printModification(mod));
+			AttributedString attributedString = new AttributedString(mod.toString());
 			
 			
 			AttributedCharacterIterator characterIterator = attributedString.getIterator();
