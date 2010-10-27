@@ -49,7 +49,7 @@ public class SequenceCollectionView implements Serializable {
    
    private Map<String, PageView> chainPageMap;
    
-   private static final boolean DEBUG = true;
+   private static final boolean DEBUG = false;
    
    /**
     * Creates a new instance from the given structureId. The default {@link ViewParameters} are used.

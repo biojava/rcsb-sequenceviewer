@@ -88,7 +88,7 @@ public abstract class AbstractSequence implements Sequence, Serializable
 
 	public Collection<AnnotationGroup<?>> getAvailableAnnotationGroups() {
 		ensureAnnotated();
-		System.out.println("AbstractSequence: getAvailableAnnotationGroups " + getAnnotationGroupMap().size());
+		//System.out.println("AbstractSequence: getAvailableAnnotationGroups " + getAnnotationGroupMap().size());
 		
 		return Collections.unmodifiableCollection(getAnnotationGroupMap().values());
 	}
@@ -126,9 +126,9 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		});
 		
 		
-		for (AnnotationGroup<?> anno: annos){
-			System.out.println("AbstractSequence: annotationgroup has data:" + anno.getName().getName());
-		}
+//		for (AnnotationGroup<?> anno: annos){
+//			System.out.println("AbstractSequence: annotationgroup has data:" + anno.getName().getName());
+//		}
 		return annos;
 	}
 
@@ -179,7 +179,7 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		ResidueId start = getResidueId(rns, startId);
 		ResidueId end   = getResidueId(rns, endId);
 		if ( start == null || end == null){
-			System.out.println("Could not getResiduesIdsBetween for " + start + " - " + end);
+			System.err.println("Could not getResiduesIdsBetween for " + start + " - " + end);
 		}
 		return getResidueIdsBetween(start, end);
 	}
@@ -193,7 +193,7 @@ public abstract class AbstractSequence implements Sequence, Serializable
 			result = intermediate.get(idAsString);
 		}
 		if ( result == null){
-			System.out.println("AbstractSeqeunce: could not getResidueId: " + idAsString + " probably not found on residueIdMap.");
+			System.err.println("AbstractSeqeunce: could not getResidueId: " + idAsString + " probably not found on residueIdMap.");
 		}
 		return result;
 	}
@@ -251,7 +251,7 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		if(rns == null)
 		{
 			// do nothing
-			System.out.println("AbstractSequence: requested residue " + id + " but provided ResidueNumberScheme null.");
+			System.err.println("AbstractSequence: requested residue " + id + " but provided ResidueNumberScheme null.");
 		}
 		else // if(id != null)
 		{
@@ -414,6 +414,9 @@ public abstract class AbstractSequence implements Sequence, Serializable
 	 */
 	protected static Set<ResidueId> sequenceStringToResidueIds(String sequenceString, PolymerType polymerType, ResidueNumberScheme rns, Chain c, int indexStart)
 	{
+		
+		System.out.println(" ... sequenceStringToResidueIds ... ");
+		
 		if(sequenceString == null || rns == null) throw new NullPointerException();
 		Set<ResidueId> result = new LinkedHashSet<ResidueId>();
 		char[] chars = sequenceString.toCharArray();

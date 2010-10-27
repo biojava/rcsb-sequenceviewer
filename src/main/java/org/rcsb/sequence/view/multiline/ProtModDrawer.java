@@ -80,7 +80,7 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 
 	@Override
 	protected boolean displayLabel() {
-		return false;
+		return true;
 	}
 
 	@Override

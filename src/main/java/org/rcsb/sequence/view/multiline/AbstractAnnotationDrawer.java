@@ -512,7 +512,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 								System.err.println("I would have rendered an annotation fragment but it looks like it was going to cover 0 residues so i didn't");
 							}
 
-							System.err.println("Creating pixel range space to cover " + numResidues + " residues that are in " + rnsOfChain + " but not " + rnsOfAnnotation + " for " + a);
+							//System.err.println("Creating pixel range space to cover " + numResidues + " residues that are in " + rnsOfChain + " but not " + rnsOfAnnotation + " for " + a);
 							annotationPixelRanges.add(new AnnotationPixelRange(xPos, xPos += numResidues * fontWidth, yMin, yMax, numResidues));
 							counter = 0;
 						}

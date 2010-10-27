@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import org.rcsb.sequence.biojavadao.BioJavaPubMedFactory;
 import org.rcsb.sequence.biojavadao.BioJavaResidueInfoFactory;
 import org.rcsb.sequence.biojavadao.BioJavaSequenceCollectionFactory;
+import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.core.PubMedProvider;
 import org.rcsb.sequence.core.ResidueProvider;
 import org.rcsb.sequence.core.SequenceCollectionFactory;

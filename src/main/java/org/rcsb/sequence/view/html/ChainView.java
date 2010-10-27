@@ -61,9 +61,9 @@ public class ChainView implements Serializable {
 
 	public ChainView(SegmentedSequence segmentedSequence, ViewParameters params)
 	{
-		System.err.println("In ChainView constructor for " + segmentedSequence.getChainId());
-		System.err.println("segments: " + segmentedSequence.getSegmentCount());
-		System.err.println("params: " + params);
+//		System.err.println("In ChainView constructor for " + segmentedSequence.getChainId());
+//		System.err.println("segments: " + segmentedSequence.getSegmentCount());
+//		System.err.println("params: " + params);
 
 		this.params = params;
 		this.backingData = segmentedSequence;
@@ -98,9 +98,11 @@ public class ChainView implements Serializable {
 				continue;
 			}
 			if (DEBUG){
-				System.out.println("checking annotation: " + an.getName() ) ;
-				System.out.println("backingdata: " + backingData);
-				System.out.println("assignment: " + this.backingData.getAnnotationGroup(an.getAnnotationClass()));
+				System.out.println("ChainView: checking annotation: " + an.getName() ) ;
+				System.out.println("ChainView: backingdata: " + backingData);
+				AnnotationGroup<?> tmp = this.backingData.getAnnotationGroup(an.getAnnotationClass());
+				System.out.println("ChainView: assignment: " + tmp);
+				System.out.println("ChainView: has data: " + tmp.hasData());
 			}
 
 			if( ((ag = this.backingData.getAnnotationGroup(an.getAnnotationClass())) == null || !ag.hasData()) 
@@ -133,7 +135,7 @@ public class ChainView implements Serializable {
 
 		System.err.println("This chain will display the following annotations: ");
 		for ( AnnotationName anno: annotationsToView ) {
-			System.err.println("anno:" + anno.getName());
+			System.err.println("anno:" + anno.getName() );
 		}
 
 		this.chain = this.backingData.getFirstResidue().getChain();

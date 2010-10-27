@@ -172,6 +172,8 @@ public class PageView implements Serializable {
             {
                anJson.put("entries", Annotation2Jmol.createAnnotationJsonObject(an, getAllAnnotationsDisplayedMap().get(an)));
                anJson.put("script",  Annotation2Jmol.getJmolScriptBuilderFunction(an.getClassification()));
+            } else {
+            	System.out.println("PageView: no JSON data for " + an);
             }
             
             // some annotations are displayed because the ones chosen have no data but an equivalent annotation does

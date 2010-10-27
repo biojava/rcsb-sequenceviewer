@@ -57,11 +57,21 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 
 		Chain bj = proxy.getBJChain();
 		
+	
 		final ProteinModificationIdentifier ptmIdentifier = new ProteinModificationIdentifier();
+		
 		ptmIdentifier.setRecordAdditionalAttachments(false);
+				
+		System.out.println(protMods);
+		
 		ptmIdentifier.identify(bj, protMods!=null ? protMods : ProteinModification.allModifications());
+		
+		
 		Set<ModifiedCompound> modComps = ptmIdentifier.getIdentifiedModifiedCompound();
+		
+		System.out.println("We identified " + modComps.size() + " modifications on chain " + bj.getChainID());
 		for (ModifiedCompound mc : modComps) {
+			System.out.println("Modified compound: " + mc);
 			ProtModValue cv = new ProtModValue(mc);
 			Set<StructureGroup> groups = mc.getGroups();
 			for (StructureGroup group : groups) {

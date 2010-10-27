@@ -75,7 +75,7 @@ public class SequencePanel {
 		
 		// display the Pane in a frame
 		
-		JFrame frame = new JFrame("Display image");
+		JFrame frame = new JFrame("Display image " + pdbId + "." + chainId);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(scroll);
 		frame.setPreferredSize(new Dimension(400,200));

@@ -34,7 +34,7 @@ public class SequenceSegmentImpl extends AbstractSequence implements SequenceSeg
    protected SequenceSegmentImpl(SegmentedSequence sequence, ResidueId lowerBound, ResidueId upperBound, int fragmentIdx, int maxLength, int numFragments) 
    {
       super(getSequenceString(ResidueUtils.getResidueIdsBetween(lowerBound, upperBound)));
-      System.out.println("creating sequenceSegmentImpl " + lowerBound + " " + upperBound);
+      //System.out.println("creating sequenceSegmentImpl " + lowerBound + " " + upperBound);
       ResidueUtils.ensureResiduesComparable(lowerBound, upperBound);
       ResidueUtils.initDerivedResidueIdMap(getResidueIdMaps(), lowerBound, upperBound);
       this.backingSequence = sequence;

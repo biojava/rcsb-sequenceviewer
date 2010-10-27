@@ -47,7 +47,7 @@ implements Serializable, Comparable<ProtModValue> {
    }
    
    public String getDescription() {
-      return "Protein modification:\n" + modComp.toString();
+      return "Protein modification: " + modComp.getDescription() ;
    }
 
    public Character toCharacter() {

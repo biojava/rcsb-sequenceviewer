@@ -56,7 +56,7 @@ public class TestAnnotationGroup extends AbstractAnnotationGroup<String>{
 			seqId2 = Math.round((length / (float)steps) * (i+1));
 			prevE = seqId2+1;
 			
-			System.out.println(i + " " + length + " seqId1 " + seqId1 + " " + seqId2);
+			//System.out.println(i + " " + length + " seqId1 " + seqId1 + " " + seqId2);
 			ResidueId rid1 = getResidueId(proxy,  seqId1);
 			ResidueId rid2 = getResidueId(proxy,  seqId2);
 			

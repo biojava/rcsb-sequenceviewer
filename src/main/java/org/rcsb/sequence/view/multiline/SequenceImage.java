@@ -37,10 +37,10 @@ import org.rcsb.sequence.util.MapOfCollections;
 public class SequenceImage extends AbstractSequenceImage
 {
 
-	 AnnotationDrawMapper annotationDrawMapper ;
-	 
-	 private ProtModDrawerUtil modDrawerUtil;
-	
+	AnnotationDrawMapper annotationDrawMapper ;
+
+	private ProtModDrawerUtil modDrawerUtil;
+
 	/**
 	 * Constructor for creating images of a {@link SegmentedSequence}. Each <tt>SequenceSegment</tt> in the
 	 * <tt>SegmentedSequence</tt> is treated as an individual sequence and stacked.
@@ -84,41 +84,51 @@ public class SequenceImage extends AbstractSequenceImage
 	{
 		this(sequence, annotationsToView, rnsOfBottomRuler, null, fontSize, fragmentBuffer, numCharsInKey,annotationDrawMapper);
 	}
-	
+
 	public SequenceImage(List<? extends Sequence> sequences, Collection<AnnotationName> annotationsToView,
 			ResidueNumberScheme rnsOfBottomRuler, ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey, AnnotationDrawMapper annotationDrawMapper)
 	{
 
 		this.annotationDrawMapper = annotationDrawMapper;
-		
+
 		initImage(sequences, fontSize, fragmentBuffer, numCharsInKey);
 
+		System.out.println("SequneceImage has been asked to view annotations: " + annotationsToView);
+		
 		int yOffset = 0;
 		SequenceDrawer sequenceDrawer = null;
-		
-		 annotationDrawMapper.ensureInitialized();
+
+		annotationDrawMapper.ensureInitialized();
 		// this drawer does nothing except take up vertical space. it is
 		// inserted between sequence segments to create a buffer between
 		// them
 		Drawer spacer = new SpacerDrawer(fragmentBufferPx);
-		
+
 		boolean ptmAnnotationExists = false;
-		
+		Class protModClass = null;
 
 		for (Sequence s : sequences)
 		{
-			
+
 			// add renders
 			for (AnnotationName an : AnnotationRegistry.getAllAnnotations())
 			{
 
 				if (an.getName().equals("disulphide"))
 					continue;
-				if (an.getName().equals("modification"))
+				if (an.getName().equals("modification")) {
 					ptmAnnotationExists = true;
+					protModClass = an.getAnnotationClass();
+					System.out.println("found implementing class:" + protModClass.getName());
+				}
+
+
+
 				if (annotationsToView.contains(an))
 				{
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
+				} else {
+					System.out.println("Sequence Image: Not viewing: " + an.getName());
 				}
 			}
 
@@ -133,31 +143,34 @@ public class SequenceImage extends AbstractSequenceImage
 			yOffset += addRenderable(new RulerImpl(this, s, rnsOfBottomRuler, false), LOWER_RULER);
 
 			yOffset += addRenderable(spacer, SPACER);
-			
-			
+
+
 		}
-		
+
 		if (ptmAnnotationExists) {
+			System.out.println("we have a ptm annotation...");
 			// collect ptms
 			Set<ProteinModification> protMods = new HashSet<ProteinModification>();
 			for (Sequence s : sequences) {
-				ProtModAnnotationGroup clag = s.getAnnotationGroup(ProtModAnnotationGroup.class);
+				ProtModAnnotationGroup clag = (ProtModAnnotationGroup) s.getAnnotationGroup(protModClass);
+				System.out.println("got ProtModAnntoationGroup " + clag);
 				if (clag == null || !clag.hasData())
 					continue;
-				
+
 				for (ModifiedCompound mc : clag.getModCompounds()) {
+					System.out.println("got modified compound:  " + mc);
 					ProteinModification mod = mc.getModification();
 					protMods.add(mod);
 				}
 			}
-			
+
 			modDrawerUtil = new ProtModDrawerUtil(protMods);
 			modDrawerUtil.setCrosslinkLineThickness(getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS);
 			modDrawerUtil.setCrosslinkLineBendOffset(fontSize/2);
-			
+
 			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth());
-//			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
-			yOffset += addRenderable(modLegendDrawer, "ProtModLegend");
+			//			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
+			yOffset += addRenderable(modLegendDrawer, "modification");
 		}
 
 		// we use the presence of a sequence drawer after going through the
@@ -177,61 +190,76 @@ public class SequenceImage extends AbstractSequenceImage
 	public int addRenderable(Drawer r, String key)
 	{
 		orderedRenderables.add(r);
-		if (! key.equals(SPACER)) allMaps.put(key, r.getHtmlMapData());
+
+		ImageMapData imd = r.getHtmlMapData();
+
+
+		if (! key.equals(SPACER)) 
+			if ( imd == null ) {
+				System.err.println("imageMapData == null !" + key);
+			}
+			else {
+				allMaps.put(key, imd);
+			}
 		return r.getImageHeightPx();
 	}
 
-	
+
 
 
 	public BufferedImage getBufferedImage(){
+
 		BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+		try {
+			Graphics2D g2 = result.createGraphics();
 
-		Graphics2D g2 = result.createGraphics();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setBackground(Color.white);
+			g2.clearRect(0, 0, imageWidth, imageHeight);
 
-		g2.setBackground(Color.white);
-		g2.clearRect(0, 0, imageWidth, imageHeight);
+			Map<ModifiedCompound, List<Point>> crosslinkPoints = new HashMap<ModifiedCompound, List<Point>>();
 
-		Map<ModifiedCompound, List<Point>> crosslinkPoints = new HashMap<ModifiedCompound, List<Point>>();
+			int yOffset = 0;
 
-		int yOffset = 0;
-
-		// iterate through all the drawers, telling them to draw at the given y offset on the graphics object
-		for (Drawer r : orderedRenderables)
-		{
-			if (r instanceof ProtModDrawer) {
-				((ProtModDrawer)r).setModDrawerUtil(modDrawerUtil);
-				// fudge factor for working out the start y position of the dotted lines
-			}
-			
-			r.draw(g2, yOffset);
-			yOffset += r.getImageHeightPx();
-
-			// also collect the positions of all the crosslinks so we can draw the lines connecting them
-			// once we're done with this loop
-			if (r instanceof ProtModDrawer)
+			// iterate through all the drawers, telling them to draw at the given y offset on the graphics object
+			for (Drawer r : orderedRenderables)
 			{
-				Map<ModifiedCompound, List<Point>> map = ((ProtModDrawer)r).getCrosslinkPositions();
-				for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
-					ModifiedCompound mc = entry.getKey();
-					List<Point> points = crosslinkPoints.get(mc);
-					if (points==null) {
-						points = new ArrayList<Point>();
-						crosslinkPoints.put(mc, points);
+				if (r instanceof ProtModDrawer) {
+					((ProtModDrawer)r).setModDrawerUtil(modDrawerUtil);
+					// fudge factor for working out the start y position of the dotted lines
+				}
+
+				r.draw(g2, yOffset);
+				yOffset += r.getImageHeightPx();
+
+				// also collect the positions of all the crosslinks so we can draw the lines connecting them
+				// once we're done with this loop
+				if (r instanceof ProtModDrawer)
+				{
+					Map<ModifiedCompound, List<Point>> map = ((ProtModDrawer)r).getCrosslinkPositions();
+					for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
+						ModifiedCompound mc = entry.getKey();
+						List<Point> points = crosslinkPoints.get(mc);
+						if (points==null) {
+							points = new ArrayList<Point>();
+							crosslinkPoints.put(mc, points);
+						}
+						points.addAll(entry.getValue());
 					}
-					points.addAll(entry.getValue());
 				}
 			}
-		}
 
-		for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
-		{
-			ModifiedCompound crosslink = entry.getKey();
-			List<Point> points = entry.getValue();
-			modDrawerUtil.drawCrosslinks(g2, crosslink.getModification(), 
-					points);
+
+			for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
+			{
+				ModifiedCompound crosslink = entry.getKey();
+				List<Point> points = entry.getValue();
+				modDrawerUtil.drawCrosslinks(g2, crosslink.getModification(), 
+						points);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -251,7 +279,7 @@ public class SequenceImage extends AbstractSequenceImage
 		}
 		return imageBytes;
 	}
-	
+
 	/**
 	 * Get the height of the image in pixels
 	 * 
@@ -290,11 +318,19 @@ public class SequenceImage extends AbstractSequenceImage
 					int yOffset = 0;// , count = 0;
 					for (Drawer d : orderedRenderables)
 					{
-						ImageMapData hmd = d.getHtmlMapData();
-						hmd.setYOffset(yOffset);
-						addAllImageMapDataEntries(hmd.getImageMapDataEntries());
+						try {
+							ImageMapData hmd = d.getHtmlMapData();
+							if ( hmd == null) {
+								System.err.println("SequenceImage: ImageMapData == null : " + getChainIdsString() );
+								continue;
+							}
+							hmd.setYOffset(yOffset);
+							addAllImageMapDataEntries(hmd.getImageMapDataEntries());
 
-						yOffset += hmd.getImageHeightPx();
+							yOffset += hmd.getImageHeightPx();
+						} catch (Exception e){
+							e.printStackTrace();
+						}
 					}
 
 					yOffset += fragmentBufferPx;
@@ -342,7 +378,7 @@ public class SequenceImage extends AbstractSequenceImage
 	public void setAnnotationDrawMapper(AnnotationDrawMapper annotationDrawMapper) {
 		this.annotationDrawMapper = annotationDrawMapper;
 	}
-	
-	
+
+
 
 }

@@ -113,7 +113,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 		Set<AnnotationName> foo = new LinkedHashSet<AnnotationName>();
 		for(AnnotationClassification ac : AnnotationClassification.DEFAULT_CLASSIFICATIONS_TO_VIEW)
 		{
-			System.out.println("SETTING DEFAULT ANNOTATION FOR " + ac.getName() + "  " + ac.getDefaultAnnotation());
+			//System.out.println("View Parameters: SETTING DEFAULT ANNOTATION FOR " + ac.getName() + "  " + ac.getDefaultAnnotation().getName());
 			if ( ac.getDefaultAnnotation() != null)
 				foo.add(ac.getDefaultAnnotation());
 		}      

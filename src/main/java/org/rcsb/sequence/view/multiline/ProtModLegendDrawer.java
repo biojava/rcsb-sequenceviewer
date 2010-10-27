@@ -60,9 +60,12 @@ public class ProtModLegendDrawer implements Drawer {
 		setMultiLineText();
 	}
 
+	
+	
 	public void draw(Graphics2D g2, int yOffset) {
 		if (modDrawerUtil==null)
 			return;
+		
 		
 		int fontSize = font.getSize();
 		
@@ -84,19 +87,26 @@ public class ProtModLegendDrawer implements Drawer {
 			
 			ModificationCategory cat = mod.getCategory();
 			if (cat.isCrossLink() && cat!=ModificationCategory.CROSS_LINK_1) {
+				Point p1 = new Point(0, yMid);
+				Point p2 = new Point(5*fontSize, yMid);
 				List<Point> points = Arrays.asList(
-						new Point(0, yMid),
-						new Point(5*fontSize, yMid)); 
+						p1,
+						p2); 
 				modDrawerUtil.drawCrosslinks(g2, mod, points);
+				
+				//xPos, xPos += counter * fontWidth, yMin, yMax, counter));
 			}
+			
+			
 			
 			height += drawMultiLineText(g2, textLayouts, 6*fontSize, yOffset+height);
 		}
 		
 		if (height!=totalHeight)
-			System.err.println("inconsistant height for ptm lengand");
+			System.err.println("inconsistent height for ptm legend : " + height + " total: " + totalHeight);
 		
 		modDrawerUtil.setCrosslinkLineBendOffset(oldBendOffset);
+		
 	}
 	
 	private String printModification(ProteinModification mod) {
@@ -154,6 +164,8 @@ public class ProtModLegendDrawer implements Drawer {
 		
 		for (ProteinModification mod : modDrawerUtil.getProtMods()) {
 			AttributedString attributedString = new AttributedString(printModification(mod));
+			
+			
 			AttributedCharacterIterator characterIterator = attributedString.getIterator();
 			FontRenderContext fontRenderContext = g2.getFontRenderContext();
 		    LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator,
@@ -161,6 +173,7 @@ public class ProtModLegendDrawer implements Drawer {
 		    
 		    List<TextLayout> list = new ArrayList<TextLayout>();
 		    multiLineText.put(mod, list);
+		    //System.out.println(mod.getPdbccId() + " " + list);
 		    while (measurer.getPosition() < characterIterator.getEndIndex()) {
 		      TextLayout textLayout = measurer.nextLayout(imageWidth - xOffset);
 		      list.add(textLayout);
@@ -171,6 +184,28 @@ public class ProtModLegendDrawer implements Drawer {
 	}
 	
 	public ImageMapData getHtmlMapData() {
+		
+		if(mapData == null)
+		{
+			mapData = new ImageMapData("modification" + hashCode(), totalHeight)
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void populateImageMapData() {
+
+					//int yOffset = 0;
+					//int height = totalHeight;
+					
+					//for (ProteinModification mod : modDrawerUtil.getProtMods()) 
+					addImageMapDataEntry(new Entry(0, imageWidth, "Protein Modification", null)); // for now
+						
+
+				}
+			};
+		}
+		
+		//System.out.println("ProtModLegendDrawer : mapData: " + mapData.getImageMapDataEntries());
 	   return mapData;
 	}
 

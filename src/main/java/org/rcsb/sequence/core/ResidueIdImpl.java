@@ -86,6 +86,8 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
       this.seqId = residueId;
       this.insertionCode = insertionCode;
       
+      
+      //System.out.println("new residueIdImpl: " + toString());
       // if we have a non-null insertion code, we should make sure that it's allowed (e.g. this shouldn't be mmcif)
       if(this.insertionCode != null && !residueNumberScheme.hasInsertionCodes())
       {
@@ -202,6 +204,7 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
    }
 
    public void setPrevious(ResidueId previous) {
+	//   System.out.println("ResidueIdImpl: " + this + " setPrevious "  +previous);
       if(this == BEGINNING_OF_CHAIN || this == END_OF_CHAIN) return;
       this.previous = previous;
    }
@@ -216,10 +219,14 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
       if(rns == null || rid == null) throw new NullPointerException();
       if(equivalentResidues == Collections.EMPTY_MAP)
       {
-         System.out.println("Replacing empty map with proper one (although it only contains itself right now) for equivalent residues of " + this);
+         //System.out.println("Replacing empty map with proper one (although it only contains itself right now) for equivalent residues of " + this);
          equivalentResidues = new EquivalentResidues();
          equivalentResidues.put(residueNumberScheme, this);
       }
+      
+     
+     // System.out.println("adding equivalent " +rns + " residueNumberScheme " + rid + " " + equivalentResidues);
+      
       
       if(!equivalentResidues.containsKey(rns)) 
       {
@@ -262,13 +269,14 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
    public ResidueId getNextEquivalentResidueId(ResidueNumberScheme rns)
    {
       ResidueId result, aResidue = this;
-      int count = 0;
+     // int count = 0;
       while((result = aResidue.getEquivalentResidueId(rns)) == null)
       {
          aResidue = aResidue.getNext();
          this.ensureBefore(aResidue);
-         System.out.println("getNextEquivalentResidueId call " + ++count);
+         //System.out.println("getNextEquivalentResidueId call " + ++count);
       }
+      //System.out.println("getNextEquivalentresidueId: " + toString() + " " + rns  + "  " + result + " " + result.getPrevious());
       return result;
    }
 
@@ -283,12 +291,12 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
    public ResidueId getPreviousEquivalentResidueId(ResidueNumberScheme rns)
    {
       ResidueId result, aResidue = this;
-      int count = 0;
+   //   int count = 0;
       while((result = aResidue.getEquivalentResidueId(rns)) == null)
       {
          aResidue = aResidue.getPrevious();
          this.ensureAfter(aResidue);
-         System.out.println("getPreviousEquivalentResidueId call " + ++count);
+         //System.out.println("getPreviousEquivalentResidueId call " + ++count);
       }
       return result;
    }
@@ -441,6 +449,8 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
                 .append(this.residueInfo.getMonId())
                 .append(')');
         
+        
+        retValue.append(equivalentResidues);
         return retValue.toString();
     }
 
@@ -606,7 +616,8 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
       
       private ResidueId getOrPut(ResidueNumberScheme key, ResidueId value, boolean amPutting)
       {
-         ResidueId result = null;
+    	  
+    	  ResidueId result = null;
          switch(key)
          {
             case ATOM:
@@ -669,6 +680,11 @@ public final class ResidueIdImpl implements ResidueId, Serializable {
             if(rId != null) result.add(rId);
          }
          return result;
+      }
+      
+      public String toString(){
+    	  return "EQR:" + size() ;
+    	  //+ " pdbCoord:" + pdbResId.getResidueInfo() + " SEQRES:" + mmcifResId.getResidueInfo();
       }
       
    }

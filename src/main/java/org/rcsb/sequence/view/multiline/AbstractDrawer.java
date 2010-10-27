@@ -74,7 +74,7 @@ public abstract class AbstractDrawer<T> implements Drawer {
 
 		if(key.length() > numCharsInKey)
 		{
-			System.err.println("Key string too long for available space: " + key);
+			//System.err.println("Key string too long for available space: " + key);
 			String[] words = NON_WORD_PATTERN.split(key);
 			StringBuilder newKey = new StringBuilder(numCharsInKey);
 			if(words.length > 0)
