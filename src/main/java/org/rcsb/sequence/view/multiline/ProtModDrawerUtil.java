@@ -378,8 +378,17 @@ class ProtModDrawerUtil {
 			
 			Color color = colors[mapModColor.size()%colors.length];
 			
-			if ( mod.getCategory() == ModificationCategory.CROSS_LINK_2 )
-			color = Color.orange;
+			if ( mod.getCategory() == ModificationCategory.CROSS_LINK_2 ) {
+				Set<String>kws = mod.getKeywords();
+				for (String kw : kws){
+					if  ( kw.startsWith("disulfide")){
+						color = Color.orange;
+						break;
+					}
+				}
+				
+				
+			}
 			
 			mapModColor.put(mod, color);
 		}
