@@ -133,11 +133,6 @@ public class ChainView implements Serializable {
 		this.annotationSummaryCells = Collections.unmodifiableCollection(strs);
 		this.annotationsToView = Collections.unmodifiableCollection(someAnnotationsToView);
 
-		System.err.println("This chain will display the following annotations: ");
-		for ( AnnotationName anno: annotationsToView ) {
-			System.err.println("anno:" + anno.getName() );
-		}
-
 		this.chain = this.backingData.getFirstResidue().getChain();
 	}
 
