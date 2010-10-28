@@ -24,6 +24,7 @@
 
 package org.rcsb.sequence.view.multiline;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -112,11 +113,14 @@ public class ProtModLegendDrawer implements Drawer {
 	
 	private int drawMultiLineText(Graphics2D g2, List<TextLayout> textLayouts, int xOffset, int yOffset) {
 	    int deltaY = 0;
+	    Color c = g2.getColor();
+	    g2.setColor(Color.black);
 	    for (TextLayout textLayout : textLayouts) {
 	      deltaY += textLayout.getAscent();
 	      textLayout.draw(g2, xOffset, yOffset + deltaY);
 	      deltaY += textLayout.getDescent() + textLayout.getLeading();
 	    }
+	    g2.setColor(c);
 	    return deltaY;
 	}
 	
