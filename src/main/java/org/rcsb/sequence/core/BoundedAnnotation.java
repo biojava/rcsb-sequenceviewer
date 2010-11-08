@@ -32,8 +32,8 @@ public class BoundedAnnotation<T> implements Annotation<T>, Serializable
       
       this.originalAnnotation = an;
       
-      anStart = an.getSequence().getFirstResidue();
-      anEnd   = an.getSequence().getLastResidue ();
+      anStart = an.getSequence().getFirstResidue().getEquivalentResidueId(rns);
+      anEnd   = an.getSequence().getLastResidue ().getEquivalentResidueId(rns);
       beginningTruncated = anStart.isBefore(min);
       endTruncated = anEnd.isAfter(max);
       

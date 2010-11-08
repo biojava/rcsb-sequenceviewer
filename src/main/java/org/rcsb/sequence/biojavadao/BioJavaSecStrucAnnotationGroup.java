@@ -49,19 +49,25 @@ extends AbstractAnnotationGroup<Character>{
 		int prevStart = -1;
 		int prevEnd = -1;
 		int currPos = -1;
-		for (Group g : proxy.getBJChain().getAtomGroups()){
+		for (Group g : proxy.getBJChain().getSeqResGroups()){
 
-			currPos++;
+//			currPos++;
 
 
 			if ( g.getType().equals(AminoAcidImpl.type)){
 				AminoAcid aa = (AminoAcid)g;
-				Map<String,String> secStruc =aa.getSecStruc();
+
+                                String s = " ";
+
+                                if (!aa.getAtoms().isEmpty()) {
+                                    currPos = g.getResidueNumber().getSeqNum();
+                                    Map<String,String> secStruc =aa.getSecStruc();
 
 
-				String s = secStruc.get(PDBFileParser.PDB_AUTHOR_ASSIGNMENT) ;
-				if ( s == null)
-					s = " ";
+                                    s = secStruc.get(PDBFileParser.PDB_AUTHOR_ASSIGNMENT) ;
+                                    if ( s == null)
+                                            s = " ";
+                                }
 
 				if ( prevSecStr == null ) {
 					prevSecStr = s;
@@ -104,9 +110,10 @@ extends AbstractAnnotationGroup<Character>{
 	}
 	private ResidueId getResidueId(Integer id)
 	{
-		ResidueId result = chain.getResidueId(SEQRES, id);
-		if(result != null) result = result.getEquivalentResidueId(ATOM);
-		if(result == null) System.err.println("Can't find mmcif residue " + id + " on chain " + chain);
-		return result;
+            return chain.getResidueId(ATOM, id);
+//		ResidueId result = chain.getResidueId(SEQRES, id);
+//		if(result != null) result = result.getEquivalentResidueId(ATOM);
+//		if(result == null) System.err.println("Can't find mmcif residue " + id + " on chain " + chain);
+//		return result;
 	}
 }

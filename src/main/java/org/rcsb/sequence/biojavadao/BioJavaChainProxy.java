@@ -151,7 +151,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 
 			// if no pdb id, that's ok			
 			int atomPos = getAtomPosition(g);
-			if ( atomPos > 0) {
+			if ( atomPos >= 0) {
 				int authSeqNum       = pdbResNum.getSeqNum();
 				pdbkey = authSeqNum + "" + (insertionCode == null ? "" : insertionCode);
 				ATOMMAP.put(pdbkey, new ResidueIdImpl(ResidueNumberScheme.ATOM, this, 
