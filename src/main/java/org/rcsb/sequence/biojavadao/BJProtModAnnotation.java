@@ -69,9 +69,9 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 		
 		Set<ModifiedCompound> modComps = ptmIdentifier.getIdentifiedModifiedCompound();
 		
-		System.out.println("We identified " + modComps.size() + " modifications on chain " + bj.getChainID());
+		//System.out.println("We identified " + modComps.size() + " modifications on chain " + bj.getChainID());
 		for (ModifiedCompound mc : modComps) {
-			System.out.println("Modified compound: " + mc);
+			//System.out.println("Modified compound: " + mc);
 			ProtModValue cv = new ProtModValue(mc);
 			Set<StructureGroup> groups = mc.getGroups();
 			for (StructureGroup group : groups) {
