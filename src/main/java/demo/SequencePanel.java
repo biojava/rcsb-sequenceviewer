@@ -46,10 +46,14 @@ public class SequencePanel {
 //		String pdbId = "3MVJ"; // mod. res.
 //		String pdbId = "1SU6"; // crosslink6
 //		String pdbId = "1CAD"; // crosslink4
+//                String pdbId = "3NYH";
 		String chainId = "A";
 
 		String pdbId2="1a4w";
 		String chainId2 = "H";
+
+		String pdbId3 = "3KOB"; //
+                String chainId3 = "B";
 		
 		// define where PDB files are stored...
 		//System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
@@ -59,6 +63,7 @@ public class SequencePanel {
 		
 		showSeq(panel, pdbId,chainId);
 		showSeq(panel, pdbId2,chainId2);
+		showSeq(panel, pdbId3,chainId3);
 	}
 	
 	public static void showSeq(SequencePanel panel, String pdbId, String chainId){
