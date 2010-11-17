@@ -223,7 +223,7 @@ class ProtModDrawerUtil {
 		int prevYPos = 0, yBend = 0;
 		boolean lineGoesAbove = true;
 				
-				setDashed(g2, relativeThickness, mod);
+//				setDashed(g2, relativeThickness, mod);
 				
 				Color color = getMapModColor().get(mod);
 				g2.setColor(color);
