@@ -425,7 +425,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 					// annotaion that does have an equivalent
 					if(chainResAnnStart == null)
 					{
-						System.err.println("Annotation starting on a residue with no equivalent in " + rnsOfChain);
+						System.err.println("Annotation "+ a.getName().getName() + " " + a.getAnnotationValue()+ " starting on a residue with no equivalent in " + rnsOfChain);
 						chainResAnnStart = annResStart.getNextEquivalentResidueId(rnsOfChain);
 					}
 

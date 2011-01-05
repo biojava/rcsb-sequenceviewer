@@ -378,7 +378,7 @@ public abstract class AbstractSequence implements Sequence, Serializable
 				}
 				else
 				{
-					throw new RuntimeException("Residues may be out of order!");
+					throw new RuntimeException("AbstractSequence: Residues may be out of order!");
 				}
 
 				prevRidSeqRns = ridSeqRns;

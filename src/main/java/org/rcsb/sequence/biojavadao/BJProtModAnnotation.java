@@ -11,6 +11,7 @@ import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
 import org.biojava.bio.structure.Chain;
 import org.biojava3.protmod.ProteinModification;
+import org.biojava3.protmod.io.ModifiedCompoundXMLConverter;
 import org.biojava3.protmod.ProteinModificationRegistry;
 import org.biojava3.protmod.structure.ModifiedCompound;
 import org.biojava3.protmod.structure.ProteinModificationIdentifier;
@@ -70,9 +71,13 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 		
 		Set<ModifiedCompound> modComps = ptmIdentifier.getIdentifiedModifiedCompound();
 		
-		//System.out.println("We identified " + modComps.size() + " modifications on chain " + bj.getChainID());
+		System.out.println("We identified " + modComps.size() + " modifications on chain " + bj.getChainID());
+		
 		for (ModifiedCompound mc : modComps) {
-			//System.out.println("Modified compound: " + mc);
+			System.out.println("Modified compound: " + mc);
+			
+			String xml = ModifiedCompoundXMLConverter.toXML(mc);
+			System.out.println(xml);
 			if (mc.crossChains())
 				continue; // skip cross-chain modifications
 			
