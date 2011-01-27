@@ -51,6 +51,9 @@ public class ProtModLegendDrawer implements Drawer {
 	private ImageMapData mapData = null;
 	private ProtModDrawerUtil modDrawerUtil;
 	private Map<ProteinModification, List<TextLayout>> multiLineText;
+	private static final int legendHeight = 25;
+	private static final int legendOffset = 50;
+	private static final int legendSpacing = 10;
 
 	public ProtModLegendDrawer(ProtModDrawerUtil modDrawerUtil, Font font,
 			final int imageWidth) {
@@ -72,7 +75,9 @@ public class ProtModLegendDrawer implements Drawer {
 		int oldBendOffset = modDrawerUtil.getCrosslinkLineBendOffset();
 		modDrawerUtil.setCrosslinkLineBendOffset(0);
 		
-		int height = 0;
+		int height = legendHeight;
+		g2.setFont(font);
+		g2.drawString("Protein Modifications", legendOffset, yOffset+legendSpacing);
 		
 		for (ProteinModification mod : modDrawerUtil.getProtMods()) {
 			
@@ -130,7 +135,7 @@ public class ProtModLegendDrawer implements Drawer {
 		Graphics2D g2 = tmpImage.createGraphics();
 		g2.setFont(font);
 		
-		totalHeight = 0;
+		totalHeight = legendHeight;
 		
 		int xOffset = 6 * font.getSize();
 		
