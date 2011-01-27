@@ -74,8 +74,10 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 		System.out.println("We identified " + modComps.size() + " modifications on chain " + bj.getChainID());
 		
 		for (ModifiedCompound mc : modComps) {
-			System.out.println("Modified compound: " + mc);
-			
+			System.out.println("====");
+			System.out.println("Modified compound: ");
+			System.out.println(mc.toString());
+			System.out.println("    " + mc.getModification().toString());
 			String xml = ModifiedCompoundXMLConverter.toXML(mc);
 			System.out.println(xml);
 			if (mc.crossChains())

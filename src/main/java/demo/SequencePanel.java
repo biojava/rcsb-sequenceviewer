@@ -43,17 +43,17 @@ public class SequencePanel {
 //		String pdbId = "1A6L"; // crosslink3,4
 //		String pdbId = "1UIS"; // crosslink1
 //		String pdbId = "3HN3"; // attachment
-		String pdbId = "3MVJ"; // mod. res.
+		//String pdbId = "3MVJ"; // mod. res.
 //		String pdbId = "1SU6"; // crosslink6
 //		String pdbId = "1CAD"; // crosslink4
 //                String pdbId = "3NYH";
-		String chainId = "A";
+		//String chainId = "A";
 
-		String pdbId2="1a4w";
-		String chainId2 = "H";
+		String pdbId="1a4w";
+		String chainId = "H";
 
-		String pdbId3 = "3KOB"; //
-                String chainId3 = "B";
+		//String pdbId3 = "3KOB"; //
+		//String chainId3 = "B";
 		
 		// define where PDB files are stored...
 		//System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");

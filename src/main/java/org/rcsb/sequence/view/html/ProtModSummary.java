@@ -24,6 +24,7 @@
 
 package org.rcsb.sequence.view.html;
 
+import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 
 import org.rcsb.sequence.annotations.ProtModValue;
@@ -33,15 +34,54 @@ import org.rcsb.sequence.model.AnnotationValue;
 
 
 public class ProtModSummary  extends AnnotationSummaryCell<ModifiedCompound> {
-   
-   public ProtModSummary(AnnotationGroup<ModifiedCompound> ag) {
-      super(ag);
-   }
 
-   @Override
-   protected void renderAnnotation(AnnotationValue<ModifiedCompound> av, HtmlElement el) {
-	   ProtModValue pv = (ProtModValue)av;
-	   ModifiedCompound mc = pv.value();
-	   el.replaceContent("["+mc.getModification().getKeywords()+"]");
-   }
+	public ProtModSummary(AnnotationGroup<ModifiedCompound> ag) {
+		super(ag);
+	}
+
+	@Override
+	protected void renderAnnotation(AnnotationValue<ModifiedCompound> av, HtmlElement el) {
+		ProtModValue pv = (ProtModValue)av;
+		ModifiedCompound mc = pv.value();
+		//el.replaceContent("["+mc.getModification().getKeywords()+"]");
+
+
+		String protModLegend = buildHTMLLegend(mc);
+
+
+		el.replaceContent(protModLegend);
+	}
+
+	private String buildHTMLLegend(ModifiedCompound mc) {
+		StringBuilder b = new StringBuilder();
+		//b.append(mc.toString());
+		
+
+		ProteinModification mod = mc.getModification();
+		b.append(mod.toString());
+		
+		if ( mod.getResidId() != null ){
+			b.append(" RESID:<a href=\"http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?&#45;newId&#43;[RESID:'");
+			b.append(mod.getResidId());
+			b.append("']&#43;&#45;view&#43;ResidEntry&#43;&#45;page&#43;qResult\">");
+			b.append(mod.getResidId());
+			b.append("</a>");
+		}
+		if ( mod.getPsimodId() != null){
+			b.append(" PSI-MOD:<a href=\"http://www.ebi.ac.uk/ontology-lookup/?termId=");
+			b.append(mod.getPsimodId());
+			b.append("\">");
+			b.append(mod.getPsimodId());
+			b.append("</a>");		
+		}
+		if ( mod.getPdbccId() != null){
+			b.append(" PDB:<a href=\"http://www.pdb.org/pdb/ligand/ligandsummary.do?hetId=");
+			b.append(mod.getPdbccId());
+			b.append("\">");
+			b.append(mod.getPdbccId());
+			b.append("</a>");
+		
+		}
+		return b.toString();
+	}
 }
