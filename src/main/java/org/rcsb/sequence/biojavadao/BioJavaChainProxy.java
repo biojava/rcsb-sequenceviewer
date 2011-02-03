@@ -271,14 +271,14 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		// test		
 		AnnotationName scop = new AnnotationName(
 				AnnotationClassification.strdom,
-				TestAnnotationGroup.annotationName,
+				BjSCOPAnnotation.annotationName,
 				"Structural Classification Of Proteins",
 				new Reference(7723011L),
-				TestAnnotationGroup.class,
+				BjSCOPAnnotation.class,
 				PROTEIN_ONLY
 		);
 		AnnotationRegistry.registerAnnotation(scop);
-		TestAnnotationGroup test = new TestAnnotationGroup(this,AnnotationClassification.strdom,scop);
+		BjSCOPAnnotation test = new BjSCOPAnnotation(this,AnnotationClassification.strdom,scop);
 		try {
 			test.constructAnnotations();
 		}catch (Exception e){

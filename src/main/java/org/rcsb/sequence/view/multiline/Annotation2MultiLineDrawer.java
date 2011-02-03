@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
-import org.rcsb.sequence.core.ProtModAnnotationGroup;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.view.html.AnnotationSummaryCell;
@@ -53,25 +52,25 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 			new LinkedHashMap<String, Class<? extends AnnotationSummaryCell<?>>>();
 		
 		for (AnnotationName an : AnnotationRegistry.getAllAnnotations()) {
-			if ( an.getName().equals("dssp")) {
-				a2rMap.put("dssp", SecondaryStructureDrawer.class);    	  
-				a2sMap.put("dssp", SecondaryStructureSummary.class);
+			if ( an.getName().equals("DSSP")) {
+				a2rMap.put("DSSP", SecondaryStructureDrawer.class);    	  
+				a2sMap.put("DSSP", SecondaryStructureSummary.class);
 			}
-			else if ( an.getName().equals("stride")){
-				a2rMap.put("stride", SecondaryStructureDrawer.class);
-				a2sMap.put("stride", SecondaryStructureSummary.class);
+			else if ( an.getName().equals("STRIDE")){
+				a2rMap.put("STRIDE", SecondaryStructureDrawer.class);
+				a2sMap.put("STRIDE", SecondaryStructureSummary.class);
 			}
 			else if  ( an.getName().equals("authorSecStr")) {
 				a2rMap.put("authorSecStr", AuthorSecondaryStructureDrawer.class);
 				a2sMap.put("authorSecStr", SecondaryStructureSummary.class);
 			}
-			else if ( an.getName().equals("scop")) {
-				a2rMap.put("scop", LabelledBoxAnnotationDrawer.class);
-				a2sMap.put("scop", DomainSummary.class);
+			else if ( an.getName().equals("SCOP")) {
+				a2rMap.put("SCOP", LabelledBoxAnnotationDrawer.class);
+				a2sMap.put("SCOP", DomainSummary.class);
 			}
-			else if ( an.getName().equals("cath")) {          
-				a2rMap.put("cath", LabelledBoxAnnotationDrawer.class);
-				a2sMap.put("cath", DomainSummary.class);
+			else if ( an.getName().equals("CATH")) {          
+				a2rMap.put("CATH", LabelledBoxAnnotationDrawer.class);
+				a2sMap.put("CATH", DomainSummary.class);
 			}
 			else if ( an.getName().equals("proteinDomainParser")) {
 				a2rMap.put("proteinDomainParser" , LabelledBoxAnnotationDrawer.class);
@@ -81,16 +80,16 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 				a2rMap.put("domainParser"  , LabelledBoxAnnotationDrawer.class);
 				a2sMap.put("domainParser", DomainSummary.class);
 			}
-			else if ( an.getName().equals("pfam")) {
-				a2rMap.put("pfam", LabelledBoxAnnotationDrawer.class);
-				a2sMap.put("pfam", DomainSummary.class);
+			else if ( an.getName().equals("PFAM")) {
+				a2rMap.put("PFAM", LabelledBoxAnnotationDrawer.class);
+				a2sMap.put("PFAM", DomainSummary.class);
 			}
-			else if ( an.getName().equals("interpro")) {
-				a2rMap.put("interpro", LabelledBoxAnnotationDrawer.class);
+			else if ( an.getName().equals("Interpro")) {
+				a2rMap.put("Interpro", LabelledBoxAnnotationDrawer.class);
 				a2sMap.put("interpro", DomainSummary.class);
 			}
-			else if ( an.getName().equals("csa")) {
-				a2rMap.put("csa", BoxAnnotationDrawer.class);
+			else if ( an.getName().equals("CSA")) {
+				a2rMap.put("CSA", BoxAnnotationDrawer.class);
 				a2sMap.put("csa", CSASummary.class);
 			}
 			else if ( an.getName().equals("ligcr")){

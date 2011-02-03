@@ -1,6 +1,6 @@
 package org.rcsb.sequence.biojavadao;
 
-import static org.rcsb.sequence.conf.AnnotationClassification.structuralFeature;
+import static org.rcsb.sequence.conf.AnnotationClassification.strdom;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
 
@@ -34,7 +34,7 @@ extends AbstractAnnotationGroup<ResidueId> implements DisulfideAnnotationGroup{
 
 	
 	public BioJavaDisulfideAnnotationGroup(Sequence sequence){
-	    super(structuralFeature, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
+	    super(strdom, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
 	}
 	
 	/**
