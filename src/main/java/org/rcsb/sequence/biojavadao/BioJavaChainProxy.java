@@ -288,7 +288,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		
 		// protein modifications
 
-		AnnotationClassification mrac = AnnotationClassification.protmod;
+		AnnotationClassification mrac = AnnotationClassification.structuralFeature;
 		Reference mrref = new Reference(-1L);
 
 		AnnotationName mrName = new AnnotationName(

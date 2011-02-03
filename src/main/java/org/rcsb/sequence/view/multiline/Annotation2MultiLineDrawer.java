@@ -86,19 +86,19 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 			}
 			else if ( an.getName().equals("Interpro")) {
 				a2rMap.put("Interpro", LabelledBoxAnnotationDrawer.class);
-				a2sMap.put("interpro", DomainSummary.class);
+				a2sMap.put("Interpro", DomainSummary.class);
 			}
 			else if ( an.getName().equals("CSA")) {
 				a2rMap.put("CSA", BoxAnnotationDrawer.class);
-				a2sMap.put("csa", CSASummary.class);
+				a2sMap.put("CSA", CSASummary.class);
 			}
 			else if ( an.getName().equals("ligcr")){
 				a2rMap.put("ligcr", BoxAnnotationDrawer.class);
 				a2sMap.put("ligcr", LigCRSummary.class);
 			}
-			else if ( an.getName().equals("modification")) {
-				a2rMap.put("modification", ProtModDrawer.class);
-				a2sMap.put("modification", ProtModSummary.class);
+			else if ( an.getName().equals("Protein modification")) {
+				a2rMap.put("Protein modification", ProtModDrawer.class);
+				a2sMap.put("Protein modification", ProtModSummary.class);
 			}
 		}
 		

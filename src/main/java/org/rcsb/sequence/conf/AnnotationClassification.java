@@ -75,6 +75,7 @@ public enum AnnotationClassification implements Serializable{
       foo.add(strdom);
       foo.add(secstr);
       foo.add(protmod);
+      foo.add(structuralFeature);
       DEFAULT_CLASSIFICATIONS_TO_VIEW = Collections.unmodifiableCollection(foo);
    }
 }

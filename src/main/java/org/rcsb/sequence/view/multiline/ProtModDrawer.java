@@ -85,7 +85,7 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 
 	@Override
 	public boolean canDrawAnnotation(AnnotationName anAnnotationName) {
-		return anAnnotationName.getClassification() == AnnotationClassification.protmod;
+		return anAnnotationName.getClassification() == AnnotationClassification.structuralFeature;
 	}
 
 	@Override

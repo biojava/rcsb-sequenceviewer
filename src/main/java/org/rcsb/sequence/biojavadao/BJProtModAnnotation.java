@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-import static org.rcsb.sequence.conf.AnnotationClassification.protmod;
+import static org.rcsb.sequence.conf.AnnotationClassification.structuralFeature;
 import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
@@ -33,7 +33,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 	private BioJavaChainProxy proxy ;
 	private Set<ProteinModification> protMods;
 	
-	public static final String annotationName = "modification"; 
+	public static final String annotationName = "Protein modification"; 
 	
 	public BJProtModAnnotation(BioJavaChainProxy chain,AnnotationClassification ac, 
 			AnnotationName name){
@@ -47,7 +47,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 	}
 	
 	public BJProtModAnnotation(Sequence sequence){
-	    super(protmod, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
+	    super(structuralFeature, AnnotationRegistry.getAnnotationByName(annotationName), SEQRES, sequence);
 	}
 	
 	@Override

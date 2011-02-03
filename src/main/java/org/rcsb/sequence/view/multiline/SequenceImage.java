@@ -118,7 +118,7 @@ public class SequenceImage extends AbstractSequenceImage
 
 				if (an.getName().equals("disulphide"))
 					continue;
-				if (an.getName().equals("modification")) {
+				if (an.getName().equals("Protein modification")) {
 					ptmAnnotationExists = true;
 					protModClass = an.getAnnotationClass();
 					debug("found implementing class:" + protModClass.getName());
@@ -173,7 +173,7 @@ public class SequenceImage extends AbstractSequenceImage
 
 			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth());
 			//			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
-			yOffset += addRenderable(modLegendDrawer, "modification");
+			yOffset += addRenderable(modLegendDrawer, "Protein modification");
 		}
 
 		// we use the presence of a sequence drawer after going through the

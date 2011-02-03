@@ -166,7 +166,7 @@ public class ProtModLegendDrawer implements Drawer {
 		
 		if(mapData == null)
 		{
-			mapData = new ImageMapData("modification" + hashCode(), totalHeight)
+			mapData = new ImageMapData("Protein modification" + hashCode(), totalHeight)
 			{
 				private static final long serialVersionUID = 1L;
 
