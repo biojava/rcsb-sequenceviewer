@@ -3,6 +3,7 @@ package org.rcsb.sequence.biojavadao;
 
 import static org.rcsb.sequence.model.PolymerType.PROTEIN_ONLY;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -250,12 +251,13 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		// TODO...
 
 		AnnotationClassification cla = AnnotationClassification.secstr;
-		Reference ssref1 = new Reference(-1L);
+		//Reference ssref1 = new Reference(-1L);
+		List<Reference> authorRef = new ArrayList<Reference>();
 		AnnotationName secName = new AnnotationName(
 				cla,
 				BioJavaSecStrucAnnotationGroup.annotationName,
 				"Author",
-				ssref1,
+				authorRef,
 				BioJavaSecStrucAnnotationGroup.class,
 				PolymerType.PROTEIN_ONLY);
 		
@@ -268,12 +270,16 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		}
 		addAnnotationGroup(secanno);
 		
+		
+		List<Reference> scopRefs = new ArrayList<Reference>();
+		Reference scopref = new Reference(7723011L);
+		scopRefs.add(scopref);
 		// test		
 		AnnotationName scop = new AnnotationName(
 				AnnotationClassification.strdom,
 				BjSCOPAnnotation.annotationName,
 				"Structural Classification Of Proteins",
-				new Reference(7723011L),
+				scopRefs,
 				BjSCOPAnnotation.class,
 				PROTEIN_ONLY
 		);
@@ -289,13 +295,18 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		// protein modifications
 
 		AnnotationClassification mrac = AnnotationClassification.structuralFeature;
-		Reference mrref = new Reference(-1L);
-
+		
+		List<Reference> references  =new ArrayList<Reference>();
+		Reference resid = new Reference(15174122L);
+		references.add(resid);
+		Reference psimod = new Reference(18688235L);
+		references.add(psimod);
+		
 		AnnotationName mrName = new AnnotationName(
 				mrac,
 				BJProtModAnnotation.annotationName, 
 				BJProtModAnnotation.annotationName, 
-				mrref, 
+				references, 
 				BJProtModAnnotation.class,
 				PolymerType.PROTEIN_ONLY);
 		
