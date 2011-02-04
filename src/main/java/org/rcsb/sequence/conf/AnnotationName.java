@@ -4,6 +4,7 @@ package org.rcsb.sequence.conf;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 
+import java.util.List;
 import java.util.Set;
 
 import org.rcsb.sequence.model.AnnotationGroup;
@@ -27,7 +28,7 @@ public class AnnotationName implements Serializable, Comparable<AnnotationName>{
 	private   AnnotationClassification classification;
 	private  String name;
 	private  String description;
-	private  Reference reference;
+	private  List<Reference> references;
 	private  Class<? extends AnnotationGroup<?>> annotationGroupClass;
 	private  Set<PolymerType> applicablePolymerTypes;
 
@@ -35,7 +36,7 @@ public class AnnotationName implements Serializable, Comparable<AnnotationName>{
 	public AnnotationName(AnnotationClassification ac, 
 			String name, 
 			String description, 
-			Reference reference, 
+			List<Reference> references, 
 			Class<? extends AnnotationGroup<?>> annotationGroupClass,
 					Set<PolymerType> applicablePolymerTypes)
 	{
@@ -43,7 +44,7 @@ public class AnnotationName implements Serializable, Comparable<AnnotationName>{
 		ac.addToAnnotationsClassifiedThus(this); // tell the classification about this annotation
 		this.name = name;
 		this.description = description;
-		this.reference = reference;
+		this.references = references;
 		this.annotationGroupClass = annotationGroupClass;
 		this.applicablePolymerTypes = applicablePolymerTypes;
 	}
@@ -58,8 +59,8 @@ public class AnnotationName implements Serializable, Comparable<AnnotationName>{
 	public String getName() {
 		return name;
 	}
-	public Reference getReference() {
-		return reference;
+	public List<Reference> getReferences() {
+		return references;
 	}
 	public boolean mayAnnotate(Chain chain)
 	{
