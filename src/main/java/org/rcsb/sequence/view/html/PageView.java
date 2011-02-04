@@ -297,7 +297,8 @@ public class PageView implements Serializable {
                   a.put("displayName", an.getName());
                   a.put("classification", an.getClassification().getName());
                   a.put("isVisible", visible);
-                  a.put("ref", ReferenceJsonObject.get(an));
+                  JSONArray refArr = ReferenceJsonObject.get(an);
+                  a.put("ref", refArr);
                   annotationOrder.put(a);
                }
             }
