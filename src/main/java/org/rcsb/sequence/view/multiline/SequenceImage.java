@@ -93,10 +93,10 @@ public class SequenceImage extends AbstractSequenceImage
 		this.annotationDrawMapper = annotationDrawMapper;
 
 		initImage(sequences, fontSize, fragmentBuffer, numCharsInKey);
-		
-		for ( AnnotationName name : annotationsToView){
-			System.out.println("SequenceImage viewing:  " + name.getName());	
-		}
+//		
+//		for ( AnnotationName name : annotationsToView){
+//			System.out.println("SequenceImage viewing:  " + name.getName());	
+//		}
 		
 		
 		debug("SequneceImage has been asked to view annotations: " + annotationsToView);
@@ -132,11 +132,10 @@ public class SequenceImage extends AbstractSequenceImage
 
 
 				if (annotationsToView.contains(an))
-				{		
-					System.out.println("adding to view: " + an.getName());
+				{					
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
 				} else {
-					System.out.println("missing from view: " + an.getName());
+				
 					debug("Sequence Image: Not viewing: " + an.getName());
 				}
 			}

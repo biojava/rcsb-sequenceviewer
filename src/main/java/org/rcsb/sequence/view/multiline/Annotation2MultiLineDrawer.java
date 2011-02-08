@@ -101,7 +101,6 @@ public class Annotation2MultiLineDrawer implements AnnotationDrawMapper {
 				a2sMap.put("Protein modification", ProtModSummary.class);
 			}
 			else if ( an.getName().equals("SITE record")) {
-				System.out.println("displaying SITE records");
 				a2rMap.put("SITE record", ProtModDrawer.class);
 				a2sMap.put("SITE record", ProtModSummary.class);
 			} else {
