@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ProteinModification;
@@ -70,6 +71,12 @@ public class ProtModLegendDrawer implements Drawer {
 			return;
 		
 		
+		Set<ProteinModification> protmods = modDrawerUtil.getProtMods();
+		
+		if ( protmods.size() < 1)
+			return;
+		
+
 		int fontSize = font.getSize();
 		
 		int oldBendOffset = modDrawerUtil.getCrosslinkLineBendOffset();
@@ -79,8 +86,8 @@ public class ProtModLegendDrawer implements Drawer {
 		g2.setFont(font);
 		g2.drawString("Protein Modifications", legendOffset, yOffset+legendSpacing);
 		
-		for (ProteinModification mod : modDrawerUtil.getProtMods()) {
-			
+		for (ProteinModification mod : protmods ) {
+									
 			List<TextLayout> textLayouts = multiLineText.get(mod);
 			
 			float lineHeight = textLayouts.get(0).getAscent() 
