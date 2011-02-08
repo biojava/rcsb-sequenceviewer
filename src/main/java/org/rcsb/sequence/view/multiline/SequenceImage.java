@@ -118,7 +118,7 @@ public class SequenceImage extends AbstractSequenceImage
 
 				if (an.getName().equals("disulphide"))
 					continue;
-				if (an.getName().equals("Protein modification")) {
+				if (an.getName().equals("Protein modification") && annotationsToView.contains(an)) {
 					ptmAnnotationExists = true;
 					protModClass = an.getAnnotationClass();
 					debug("found implementing class:" + protModClass.getName());
