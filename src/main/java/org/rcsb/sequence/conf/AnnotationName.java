@@ -41,12 +41,14 @@ public class AnnotationName implements Serializable, Comparable<AnnotationName>{
 					Set<PolymerType> applicablePolymerTypes)
 	{
 		this.classification = ac;
-		ac.addToAnnotationsClassifiedThus(this); // tell the classification about this annotation
+		
 		this.name = name;
 		this.description = description;
 		this.references = references;
 		this.annotationGroupClass = annotationGroupClass;
 		this.applicablePolymerTypes = applicablePolymerTypes;
+		
+		ac.addToAnnotationsClassifiedThus(this); // tell the classification about this annotation
 	}
 
 

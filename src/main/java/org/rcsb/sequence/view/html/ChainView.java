@@ -94,7 +94,7 @@ public class ChainView implements Serializable {
 		{
 
 			if ( an == null) {
-				System.err.println("got NULL instead of annotation name!");
+				System.err.println("ChainView: got NULL instead of annotation name!");
 				continue;
 			}
 			if (DEBUG){
@@ -183,7 +183,7 @@ public class ChainView implements Serializable {
 		if(sequenceImage == null)
 		{
 			this.sequenceImage = new SequenceImage(backingData, annotationsToView, params.getDesiredBottomRulerRns(), params.getDesiredTopRulerRns(), params.getFontSize(), params.getFragmentBuffer(), params.getNumCharsInKey(), annotationDrawMapper);
-
+			
 		}
 
 		return sequenceImage;

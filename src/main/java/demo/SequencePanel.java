@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 
 import java.awt.image.BufferedImage;
+import java.lang.annotation.AnnotationFormatError;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -17,6 +21,8 @@ import org.rcsb.sequence.biojavadao.BioJavaPubMedFactory;
 import org.rcsb.sequence.biojavadao.BioJavaResidueInfoFactory;
 import org.rcsb.sequence.biojavadao.BioJavaSequenceCollectionFactory;
 
+import org.rcsb.sequence.conf.AnnotationName;
+import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.PubMedProvider;
 import org.rcsb.sequence.core.ResidueProvider;
 import org.rcsb.sequence.core.SequenceCollectionFactory;
@@ -39,7 +45,7 @@ public class SequencePanel {
 	
 	public static void main(String[] args){
 
-//		String pdbId = "1cdg"; // crosslink2
+		String pdbId = "1b0p"; // crosslink2
 //		String pdbId = "1A6L"; // crosslink3,4
 //		String pdbId = "1UIS"; // crosslink1
 //		String pdbId = "3HN3"; // attachment
@@ -47,10 +53,10 @@ public class SequencePanel {
 //		String pdbId = "1SU6"; // crosslink6
 //		String pdbId = "1CAD"; // crosslink4
 //                String pdbId = "3NYH";
-		//String chainId = "A";
+		String chainId = "A";
 
-		String pdbId="1a4w";
-		String chainId = "H";
+		//String pdbId="7kme";
+		//String chainId = "H";
 
 		//String pdbId3 = "3KOB"; //
 		//String chainId3 = "B";
@@ -107,9 +113,20 @@ public class SequencePanel {
 //		Annotation2MultiLineDrawer a2h = new Annotation2MultiLineDrawer();
 		
 				
-		ChainView view = new ChainView(s, params);
+		
+		Collection<AnnotationName > annos = params.getAnnotations();
+		
+		List<AnnotationName> newAnnos = new ArrayList<AnnotationName>();
+		for ( AnnotationName anno : annos){
+			newAnnos.add(anno);
+		}
+		
+		newAnnos.add(AnnotationRegistry.getAnnotationByName("SITE record"));
+		params.setAnnotations(newAnnos);
+		
 //		view.setAnnotationDrawMapper(a2h);
 		
+		ChainView view = new ChainView(s, params);
 		SequenceImage image = view.getSequenceImage();
 
 		BufferedImage buf = image.getBufferedImage();

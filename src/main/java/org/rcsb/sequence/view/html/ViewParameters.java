@@ -113,9 +113,14 @@ public final class ViewParameters implements Serializable, Cloneable {
 		Set<AnnotationName> foo = new LinkedHashSet<AnnotationName>();
 		for(AnnotationClassification ac : AnnotationClassification.DEFAULT_CLASSIFICATIONS_TO_VIEW)
 		{
-			//System.out.println("View Parameters: SETTING DEFAULT ANNOTATION FOR " + ac.getName() + "  " + ac.getDefaultAnnotation().getName());
-			if ( ac.getDefaultAnnotation() != null)
+			System.out.println("View Parameters: SETTING DEFAULT ANNOTATION FOR " + ac.getName() + ":");
+			
+			if ( ac.getDefaultAnnotation() != null) {
+				System.out.println(ac.getDefaultAnnotation().getName());
 				foo.add(ac.getDefaultAnnotation());
+			} else {
+				System.out.println("Unknown default annotation for  " + ac);
+			}
 		}      
 		DEFAULT_ANNOTATIONS_TO_VIEW = Collections.unmodifiableCollection(foo);
 	}
@@ -217,6 +222,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	 * @return a <tt>Collection</tt> of <tt>AnnotationName</tt>s representing desired annotations
 	 */
 	public Collection<AnnotationName> getAnnotations() {
+				
 		return Collections.unmodifiableCollection(annotationsToView);
 	}
 

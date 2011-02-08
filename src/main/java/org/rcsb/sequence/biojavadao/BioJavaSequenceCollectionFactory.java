@@ -24,6 +24,7 @@ SequenceCollectionFactory {
 		if ( !(tmp.endsWith(lineSplit) ) )
 			tmp = tmp + lineSplit;
 
+		System.out.println(tmp);
 		AtomCache cache = new AtomCache(tmp, true);
 
 		FileParsingParameters params = new FileParsingParameters();
@@ -32,12 +33,13 @@ SequenceCollectionFactory {
 		params.setHeaderOnly(false);
 		params.setParseSecStruc(true);
 		
+		
 		cache.setFileParsingParams(params);		
 		cache.setAutoFetch(true);
 		
 		try {
 			Structure structure = cache.getStructure(structureId);
-	
+			System.out.println("structure sites: " + structure.getSites());
 			BioJavaSequenceCollection collection = new BioJavaSequenceCollection();
 			collection.setStructure(structure);
 

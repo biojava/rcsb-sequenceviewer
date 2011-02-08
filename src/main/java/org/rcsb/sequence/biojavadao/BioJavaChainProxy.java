@@ -294,7 +294,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		
 		// protein modifications
 
-		AnnotationClassification mrac = AnnotationClassification.structuralFeature;
+		AnnotationClassification structuralFeature = AnnotationClassification.structuralFeature;
 		
 		List<Reference> references  =new ArrayList<Reference>();
 		Reference resid = new Reference(15174122L);
@@ -303,7 +303,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		references.add(psimod);
 		
 		AnnotationName mrName = new AnnotationName(
-				mrac,
+				structuralFeature,
 				BJProtModAnnotation.annotationName, 
 				BJProtModAnnotation.annotationName, 
 				references, 
@@ -315,7 +315,7 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		ProtModAnnotationGroup mrag =
 			new BJProtModAnnotation(
 					this,
-					mrac,
+					structuralFeature,
 					mrName);
 		
 		try {
@@ -324,6 +324,32 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 			e.printStackTrace();
 		}
 		addAnnotationGroup(mrag);
+		
+		
+		List<Reference> SITEreferences  =new ArrayList<Reference>();
+		
+		AnnotationName siteName = new AnnotationName(
+				structuralFeature,
+				SiteAnnotation.annotationName, 
+				SiteAnnotation.annotationName, 
+				SITEreferences, 
+				SiteAnnotation.class,
+				PolymerType.PROTEIN_ONLY);
+		
+		AnnotationRegistry.registerAnnotation(siteName);
+		
+		SiteAnnotation siteG =
+			new SiteAnnotation(
+					this,
+					structuralFeature,
+					siteName);
+		
+		try {
+			siteG.constructAnnotations();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		addAnnotationGroup(siteG);
 		
 //		// disulfid bridges..
 //

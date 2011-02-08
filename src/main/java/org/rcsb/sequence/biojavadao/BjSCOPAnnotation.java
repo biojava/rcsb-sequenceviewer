@@ -5,17 +5,13 @@ import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.biojava.bio.structure.align.ce.AbstractUserArgumentProcessor;
 import org.biojava.bio.structure.scop.ScopDomain;
 import org.biojava.bio.structure.scop.ScopInstallation;
-import org.biojava3.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.annotations.DomainDefinitionValue;
 
 
