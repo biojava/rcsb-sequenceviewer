@@ -41,9 +41,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ProteinModification;
+import org.rcsb.sequence.conf.AnnotationRegistry;
 
 public class ProtModLegendDrawer implements Drawer {
 	private Font font;
@@ -55,13 +57,18 @@ public class ProtModLegendDrawer implements Drawer {
 	private static final int legendHeight = 25;
 	private static final int legendOffset = 50;
 	private static final int legendSpacing = 10;
-
+	Set<ProteinModification> protmods;
+	
 	public ProtModLegendDrawer(ProtModDrawerUtil modDrawerUtil, Font font,
-			final int imageWidth) {
+			final int imageWidth, Set<ProteinModification> protMods) {
+		
 		this.modDrawerUtil = modDrawerUtil;
 		this.imageWidth = imageWidth;
 		this.font = font;
+		this.protmods = protMods;
+		
 		setMultiLineText();
+		
 	}
 
 	
@@ -70,10 +77,7 @@ public class ProtModLegendDrawer implements Drawer {
 		if (modDrawerUtil==null)
 			return;
 		
-		
-		Set<ProteinModification> protmods = modDrawerUtil.getProtMods();
-		
-		if ( protmods.size() < 1)
+		if ( protmods == null || protmods.size() < 1)
 			return;
 		
 
@@ -86,15 +90,18 @@ public class ProtModLegendDrawer implements Drawer {
 		g2.setFont(font);
 		g2.drawString("Protein Modifications", legendOffset, yOffset+legendSpacing);
 		
+		if ( multiLineText == null)
+			setMultiLineText();
+		
 		for (ProteinModification mod : protmods ) {
-									
+			
 			List<TextLayout> textLayouts = multiLineText.get(mod);
 			
 			float lineHeight = textLayouts.get(0).getAscent() 
 					+ textLayouts.get(0).getDescent() + textLayouts.get(0).getLeading();
 			int yMid = yOffset + height + (int)lineHeight/2;
 			
-			modDrawerUtil.drawProtMod(g2, mod, 2*fontSize, 
+			modDrawerUtil.drawProtMod(g2,protmods, mod, 2*fontSize, 
 					yMid-fontSize/2, 3*fontSize, yMid+fontSize/2);
 			
 			ModificationCategory cat = mod.getCategory();
@@ -104,7 +111,7 @@ public class ProtModLegendDrawer implements Drawer {
 				List<Point> points = Arrays.asList(
 						p1,
 						p2); 
-				modDrawerUtil.drawCrosslinks(g2, mod, points);
+				modDrawerUtil.drawCrosslinks(g2, protmods, mod, points);
 				
 				//xPos, xPos += counter * fontWidth, yMin, yMax, counter));
 			}
@@ -146,9 +153,14 @@ public class ProtModLegendDrawer implements Drawer {
 		
 		int xOffset = 6 * font.getSize();
 		
-		multiLineText = new HashMap<ProteinModification,List<TextLayout>>(modDrawerUtil.getProtMods().size());
+		if ( protmods == null) {
+			System.err.println("!! ProtModLegendDrawer: protMods == null");
+			protmods = new TreeSet<ProteinModification>();
+		}
+			
+		multiLineText = new HashMap<ProteinModification,List<TextLayout>>(protmods.size());
 		
-		for (ProteinModification mod : modDrawerUtil.getProtMods()) {
+		for (ProteinModification mod : protmods) {
 			AttributedString attributedString = new AttributedString(mod.toString());
 			
 			

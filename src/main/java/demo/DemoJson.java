@@ -1,11 +1,15 @@
 package demo;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.rcsb.sequence.biojavadao.BioJavaPubMedFactory;
 import org.rcsb.sequence.biojavadao.BioJavaResidueInfoFactory;
 import org.rcsb.sequence.biojavadao.BioJavaSequenceCollectionFactory;
 import org.rcsb.sequence.conf.AnnotationName;
+import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.PubMedProvider;
 import org.rcsb.sequence.core.ResidueProvider;
 import org.rcsb.sequence.core.SequenceCollectionFactory;
@@ -38,7 +42,16 @@ public class DemoJson {
 		s.ensureAnnotated();
 
 		ViewParameters params = new ViewParameters();
-
+		Collection<AnnotationName > annos = params.getAnnotations();
+		
+		List<AnnotationName> newAnnos = new ArrayList<AnnotationName>();
+		for ( AnnotationName anno : annos){
+			newAnnos.add(anno);
+		}
+		
+		newAnnos.add(AnnotationRegistry.getAnnotationByName("SITE record"));
+		params.setAnnotations(newAnnos);
+		
 		PageView pv = new PageView(0, params);
 
 

@@ -33,11 +33,12 @@ import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.AbstractAnnotationGroup;
+import org.rcsb.sequence.core.ProtModAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
 
-public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> {
+public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> implements ProtModAnnotationGroup{
 
 	private static final long serialVersionUID = -7395869127810790810L;
 

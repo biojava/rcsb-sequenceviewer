@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 public class AnnotationRegistry {
@@ -23,6 +25,16 @@ public class AnnotationRegistry {
 			availableAnnotations.add(an);
 		}
 		
+	}
+	
+	public static Set<AnnotationName> getAnnotationByClassification(AnnotationClassification classification){
+		Set<AnnotationName> annos = new TreeSet<AnnotationName>();
+		for (AnnotationName an : availableAnnotations){
+			if (an.getClassification().equals(classification)){
+				annos.add(an);
+			}
+		}
+		return annos;
 	}
 	
 	public static AnnotationName getAnnotationByName(String name){

@@ -89,7 +89,7 @@ public class SequencePanel {
 		JFrame frame = new JFrame("Display image " + pdbId + "." + chainId);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(scroll);
-		frame.setPreferredSize(new Dimension(400,200));
+		frame.setPreferredSize(new Dimension(600,600));
 		frame.pack();
 		frame.setVisible(true);
 	}

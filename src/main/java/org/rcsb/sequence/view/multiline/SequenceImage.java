@@ -18,8 +18,11 @@ import java.util.Set;
 import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 
+import org.rcsb.sequence.annotations.ProtModValue;
+import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
+import org.rcsb.sequence.core.AbstractAnnotationGroup;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
 import org.rcsb.sequence.core.ProtModAnnotationGroup;
 
@@ -41,7 +44,9 @@ public class SequenceImage extends AbstractSequenceImage
 	AnnotationDrawMapper annotationDrawMapper ;
 
 	private ProtModDrawerUtil modDrawerUtil;
+	private Collection<AnnotationName> annotationsToView;
 
+	private String proteinModification = "Protein modification";
 	/**
 	 * Constructor for creating images of a {@link SegmentedSequence}. Each <tt>SequenceSegment</tt> in the
 	 * <tt>SegmentedSequence</tt> is treated as an individual sequence and stacked.
@@ -91,16 +96,16 @@ public class SequenceImage extends AbstractSequenceImage
 	{
 
 		this.annotationDrawMapper = annotationDrawMapper;
-
+		this.annotationsToView = annotationsToView;
 		initImage(sequences, fontSize, fragmentBuffer, numCharsInKey);
-//		
-//		for ( AnnotationName name : annotationsToView){
-//			System.out.println("SequenceImage viewing:  " + name.getName());	
-//		}
-		
-		
+		//		
+		//		for ( AnnotationName name : annotationsToView){
+		//			System.out.println("SequenceImage viewing:  " + name.getName());	
+		//		}
+
+
 		debug("SequneceImage has been asked to view annotations: " + annotationsToView);
-		
+
 		int yOffset = 0;
 		SequenceDrawer sequenceDrawer = null;
 
@@ -111,9 +116,9 @@ public class SequenceImage extends AbstractSequenceImage
 		Drawer spacer = new SpacerDrawer(fragmentBufferPx);
 
 		boolean ptmAnnotationExists = false;
-		@SuppressWarnings("rawtypes")
-		Class protModClass = null;
 
+
+		Class protModClass = null;
 		for (Sequence s : sequences)
 		{
 
@@ -123,19 +128,16 @@ public class SequenceImage extends AbstractSequenceImage
 
 				if (an.getName().equals("disulphide"))
 					continue;
-				if (an.getName().equals("Protein modification") && annotationsToView.contains(an)) {
+				if (an.getName().equals(proteinModification) && annotationsToView.contains(an)) {
 					ptmAnnotationExists = true;
 					protModClass = an.getAnnotationClass();
-					debug("found implementing class:" + protModClass.getName());
 				}
-
-
 
 				if (annotationsToView.contains(an))
 				{					
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
 				} else {
-				
+
 					debug("Sequence Image: Not viewing: " + an.getName());
 				}
 			}
@@ -157,29 +159,16 @@ public class SequenceImage extends AbstractSequenceImage
 
 		if (ptmAnnotationExists) {
 			debug("we have a ptm annotation...");
-			// collect ptms
-			Set<ProteinModification> protMods = new HashSet<ProteinModification>();
-			for (Sequence s : sequences) {
-				@SuppressWarnings("unchecked")
-				ProtModAnnotationGroup clag = (ProtModAnnotationGroup) s.getAnnotationGroup(protModClass);
-				debug("got ProtModAnntoationGroup " + clag);
-				if (clag == null || !clag.hasData())
-					continue;
 
-				for (ModifiedCompound mc : clag.getModCompounds()) {
-					debug("got modified compound:  " + mc);
-					ProteinModification mod = mc.getModification();
-					protMods.add(mod);
-				}
-			}
-
-			modDrawerUtil = new ProtModDrawerUtil(protMods);
+			modDrawerUtil = new ProtModDrawerUtil();
 			modDrawerUtil.setCrosslinkLineThickness(getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS);
 			modDrawerUtil.setCrosslinkLineBendOffset(fontSize/2);
 
-			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth());
+			Set<ProteinModification> protMods = getProtMods(protModClass);
+			System.out.println("Sequence image got protMods: " + protMods.size());
+			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth(), protMods);
 			//			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
-			yOffset += addRenderable(modLegendDrawer, "Protein modification");
+			yOffset += addRenderable(modLegendDrawer, proteinModification);
 		}
 
 		// we use the presence of a sequence drawer after going through the
@@ -194,6 +183,24 @@ public class SequenceImage extends AbstractSequenceImage
 			System.err.println("Uh oh -- the sequence image for " + sequences + " didn't get drawn right");
 			this.imageHeight = 0;
 		}
+	}
+
+	private Set<ProteinModification> getProtMods(Class protModClass) {
+		Set<ProteinModification> protMods =	new HashSet<ProteinModification>();
+		for (Sequence s : sequences) {
+			@SuppressWarnings("unchecked")
+			ProtModAnnotationGroup clag = (ProtModAnnotationGroup) s.getAnnotationGroup(protModClass);
+			debug("got ProtModAnntoationGroup " + clag);
+			if (clag == null || !clag.hasData())
+				continue;
+
+			for (ModifiedCompound mc : clag.getModCompounds()) {
+				debug("got modified compound:  " + mc);
+				ProteinModification mod = mc.getModification();
+				protMods.add(mod);
+			}
+		}
+		return protMods;
 	}
 
 	public int addRenderable(Drawer r, String key)
@@ -229,7 +236,11 @@ public class SequenceImage extends AbstractSequenceImage
 
 			Map<ModifiedCompound, List<Point>> crosslinkPoints = new HashMap<ModifiedCompound, List<Point>>();
 
+
+
+
 			int yOffset = 0;
+
 
 			// iterate through all the drawers, telling them to draw at the given y offset on the graphics object
 			for (Drawer r : orderedRenderables)
@@ -246,32 +257,96 @@ public class SequenceImage extends AbstractSequenceImage
 				// once we're done with this loop
 				if (r instanceof ProtModDrawer)
 				{
-					Map<ModifiedCompound, List<Point>> map = ((ProtModDrawer)r).getCrosslinkPositions();
-					for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
-						ModifiedCompound mc = entry.getKey();
-						List<Point> points = crosslinkPoints.get(mc);
-						if (points==null) {
-							points = new ArrayList<Point>();
-							crosslinkPoints.put(mc, points);
+
+					List<Class> protModsClasses = getStructuralFeatureClasses();
+					
+					for ( Class protModClass: protModsClasses){
+
+						Set<ProteinModification> protMods = getProtMods(protModClass);
+
+						if( protMods == null) {
+							//System.out.println("no protmods for " + protModClass.getName());
+							continue;
 						}
-						points.addAll(entry.getValue());
+						
+						((ProtModDrawer)r).setProtMods(protMods);
+
+
+
+
+						Map<ModifiedCompound, List<Point>> map = ((ProtModDrawer)r).getCrosslinkPositions();
+						for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
+
+							ModifiedCompound mc = entry.getKey();
+							List<Point> points = crosslinkPoints.get(mc);
+							
+							if (points==null) {
+								points = new ArrayList<Point>();
+								crosslinkPoints.put(mc, points);
+							}
+							for (Point p : entry.getValue())
+								if ( ! points.contains(p))
+									points.add(p);
+						}
 					}
 				}
 			}
+
+			drawProteinModifications(g2, crosslinkPoints);
+
+
+
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private void drawProteinModifications(Graphics2D g2,
+			Map<ModifiedCompound, List<Point>> crosslinkPoints) {
+		// collect ptms
+
+		List<Class> protModsClasses = getStructuralFeatureClasses();
+
+		for ( Class protModClass: protModsClasses){
+
+			Set<ProteinModification> protMods = getProtMods(protModClass);
+
 
 
 			for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
 			{
 				ModifiedCompound crosslink = entry.getKey();
 				List<Point> points = entry.getValue();
-				modDrawerUtil.drawCrosslinks(g2, crosslink.getModification(), 
+				if ( points == null)
+					continue;
+				modDrawerUtil.drawCrosslinks(g2, protMods,crosslink.getModification(), 
 						points);
 			}
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-		return result;
+		}	
 	}
+
+	private List<Class> getStructuralFeatureClasses() {
+
+
+		List<Class> classes = new ArrayList<Class>();
+
+		// add renders
+		for (AnnotationName an : AnnotationRegistry.getAnnotationByClassification(AnnotationClassification.structuralFeature))
+		{
+
+			
+			// we only work with the displayed annotations
+			if (! annotationsToView.contains(an))
+				continue;
+			
+				classes.add(an.getAnnotationClass());
+
+		}		
+
+		return classes;
+	}
+
 	/**
 	 * <p>
 	 * Gets the image encoded as a <tt>byte[]</tt>.
@@ -387,7 +462,7 @@ public class SequenceImage extends AbstractSequenceImage
 	public void setAnnotationDrawMapper(AnnotationDrawMapper annotationDrawMapper) {
 		this.annotationDrawMapper = annotationDrawMapper;
 	}
-	
+
 	private void debug(String msg){
 		if (DEBUG)
 			System.out.println(msg);

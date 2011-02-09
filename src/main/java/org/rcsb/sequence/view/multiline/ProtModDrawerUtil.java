@@ -44,14 +44,14 @@ import org.biojava3.protmod.ProteinModification;
 import org.rcsb.sequence.util.ColorUtils;
 
 class ProtModDrawerUtil {
-	private Set<ProteinModification> mods;
+	
 	private Map<ProteinModification, Color> mapModColor = null;
 	
 	private float relativeThickness;
 	private int yBendOffset;
 	
-	ProtModDrawerUtil(Set<ProteinModification> mods) {
-		this.mods = mods;
+	ProtModDrawerUtil() {
+		
 		this.relativeThickness = 2;
 		this.yBendOffset = 5;
 	}
@@ -72,18 +72,14 @@ class ProtModDrawerUtil {
 		return yBendOffset;
 	}
 	
-	Set<ProteinModification> getProtMods() {
-		if (mods==null)
-			return Collections.emptySet();
-		
-		return mods;
-	}
+	
 	
 	void drawProtMod(Graphics2D g2,
+			Set<ProteinModification> mods,
 			ProteinModification mod,
 			int xMin, int yMin, int xMax, int yMax) {
 		
-		Color color =  getMapModColor().get(mod);
+		Color color =  getMapModColor(mods).get(mod);
 		
 		if (color==null)
 			color = Color.red;
@@ -214,7 +210,7 @@ class ProtModDrawerUtil {
 		return new Polygon(x, y, nPoint);
 	}
 	
-	void drawCrosslinks(Graphics2D g2, ProteinModification mod,
+	void drawCrosslinks(Graphics2D g2, Set<ProteinModification> mods, ProteinModification mod,
 			List<Point> points)
 	{
 		Point pa, pb;
@@ -225,7 +221,7 @@ class ProtModDrawerUtil {
 				
 //				setDashed(g2, relativeThickness, mod);
 				
-				Color color = getMapModColor().get(mod);
+				Color color = getMapModColor(mods).get(mod);
 				g2.setColor(color);
 				
 				int n = points.size();
@@ -367,7 +363,7 @@ class ProtModDrawerUtil {
 		
 	}
 	
-	private Map<ProteinModification, Color> getMapModColor() {
+	private Map<ProteinModification, Color> getMapModColor(Set<ProteinModification> mods) {
 		if (mods == null)
 			return Collections.emptyMap();
 		

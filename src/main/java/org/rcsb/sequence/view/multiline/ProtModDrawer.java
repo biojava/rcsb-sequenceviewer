@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
@@ -60,6 +61,7 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	
 	protected static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
 	
+	Set<ProteinModification> protMods = null;
 	
 	public ProtModDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<ModifiedCompound>> annotationGroupClass) {
 		this(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
@@ -92,20 +94,29 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 	protected void drawAnnotationFragment(Graphics2D g2,
 			AnnotationValue<ModifiedCompound> annotation, int sequenceLength, int xMin, int yMin, int xMax,
 			int yMax, boolean startIsNotStart, boolean endIsNotEnd) {
+		
 		ModifiedCompound mc = annotation.value();
 		
 		if (modDrawerUtil==null)
-			modDrawerUtil = new ProtModDrawerUtil(null);
+			modDrawerUtil = new ProtModDrawerUtil();
+		
 		
 		ProteinModification mod = mc.getModification();
-		modDrawerUtil.drawProtMod(g2, mod, xMin, yMin, xMax, yMax);
+		
+		modDrawerUtil.drawProtMod(g2, protMods, mod, xMin, yMin, xMax, yMax);
 		
 		if (mod.getCategory().isCrossLink()) {
+		
 			List<Point> points = crosslinkPositions.get(mc);
+			
 			if (points==null) {
+			
 				points = new ArrayList<Point>();
+			
 				crosslinkPositions.put(mc, points);
+		
 			}
+			
 			points.add(new Point((xMin+xMax)/2,(yMin+yMax)/2));
 		}
 	}
@@ -134,4 +145,14 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		Rectangle rect = new Rectangle(xMin, yStart, xWidth, yHeight);
 		g2.fill(rect);
 	}
+
+	public Set<ProteinModification> getProtMods() {
+		return protMods;
+	}
+
+	public void setProtMods(Set<ProteinModification> protMods) {
+		this.protMods = protMods;
+	}
+	
+	
 }
