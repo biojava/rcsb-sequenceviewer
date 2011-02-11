@@ -92,7 +92,7 @@ public class PageView implements Serializable {
          chainViews = new LinkedHashMap<String, ChainView>();
          for(Chain c : chains)
          {
-        	 System.out.println( "PageView: " + id + "creating new ChainView: " + c.getChainId());
+        	 //System.out.println( "PageView: " + id + "creating new ChainView: " + c.getChainId());
             chainViews.put(c.getChainId(), new ChainView(c, params));
          }
          
@@ -276,7 +276,7 @@ public class PageView implements Serializable {
                anHeights.put(an.getName(), image.getAnnotationHeightPx(an));
             }
             
-            System.out.println("PageView " + id + " sending JSON image width, height: " + image.getImageWidth() + " " + image.getImageHeight());
+          //  System.out.println("PageView " + id + " sending JSON image width, height: " + image.getImageWidth() + " " + image.getImageHeight());
            
             imageObj.put("height", image.getImageHeight());
             imageObj.put("width", image.getImageWidth());

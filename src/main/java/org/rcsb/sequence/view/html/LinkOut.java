@@ -12,7 +12,7 @@ public class LinkOut extends HtmlElement {
 	      
 	      HtmlElement linkImg = (new HtmlElement("span"))
 	             .addAttribute("class", "iconSet-main icon-external")
-	             .addAttribute("title", altText);
+	             .addAttribute("title", altText).appendToContent("&nbsp;");
 	      
 	      addChild(linkImg);
 	   }

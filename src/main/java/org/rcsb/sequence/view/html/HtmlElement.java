@@ -9,7 +9,7 @@ import java.util.Set;
 
 
 /**
- * Really simple HTML assemling class
+ * Really simple HTML assembling class
  * @author mulvaney
  *
  */
@@ -71,11 +71,18 @@ public class HtmlElement {
                .append('"');
       }
       
+      // PROBLEM for name == span, div, p, a, table, td, tr, th, ol, ul, li
+      // then <span /> is not allowed...
+      
       if(children.size() == 0 && (content == null || content.length() == 0))
       {
          result.append(' ')
-               .append('/')
                .append('>');
+         
+         result.append('<')
+         	.append('/')
+         	.append(name)
+         	.append('>');
       }
       
       else
