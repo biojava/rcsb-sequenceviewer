@@ -22,6 +22,7 @@ import org.rcsb.sequence.core.AbstractAnnotationGroup;
 
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.AnnotationConstants;
 
 
 
@@ -32,7 +33,7 @@ public class BjSCOPAnnotation extends AbstractAnnotationGroup<String>implements 
 	 */
 	private static final long serialVersionUID = -6349610585974414220L;
 	
-	public static final String annotationName = "SCOP";
+	public static final String annotationName = AnnotationConstants.SCOP;
 	
 	protected Map<String, ScopDomain> sns;
 	

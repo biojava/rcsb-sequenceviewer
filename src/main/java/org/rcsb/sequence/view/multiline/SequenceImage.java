@@ -14,22 +14,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 
-import org.rcsb.sequence.annotations.ProtModValue;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
-import org.rcsb.sequence.core.AbstractAnnotationGroup;
+
 import org.rcsb.sequence.core.AnnotationDrawMapper;
 import org.rcsb.sequence.core.ProtModAnnotationGroup;
 
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.AnnotationConstants;
 import org.rcsb.sequence.util.MapOfCollections;
+
+
 
 /**
  * <tt>SequenceImage</tt> is responsible for creating a png bitmap image for a given {@link Sequence},
@@ -45,8 +48,9 @@ public class SequenceImage extends AbstractSequenceImage
 
 	private ProtModDrawerUtil modDrawerUtil;
 	private Collection<AnnotationName> annotationsToView;
-
-	private String proteinModification = "Protein modification";
+	AtomicBoolean building ;
+	
+	
 	/**
 	 * Constructor for creating images of a {@link SegmentedSequence}. Each <tt>SequenceSegment</tt> in the
 	 * <tt>SegmentedSequence</tt> is treated as an individual sequence and stacked.
@@ -95,13 +99,17 @@ public class SequenceImage extends AbstractSequenceImage
 			ResidueNumberScheme rnsOfBottomRuler, ResidueNumberScheme rnsOfTopRuler, int fontSize, float fragmentBuffer, int numCharsInKey, AnnotationDrawMapper annotationDrawMapper)
 	{
 
+		building = new AtomicBoolean(true);
 		this.annotationDrawMapper = annotationDrawMapper;
 		this.annotationsToView = annotationsToView;
+		
+		//System.out.println("SequenceImage got # sequences: " + sequences.size());
+		
 		initImage(sequences, fontSize, fragmentBuffer, numCharsInKey);
-		//		
-		//		for ( AnnotationName name : annotationsToView){
-		//			System.out.println("SequenceImage viewing:  " + name.getName());	
-		//		}
+				
+				for ( AnnotationName name : annotationsToView){
+					debug("SequenceImage viewing:  " + name.getName());	
+				}
 
 
 		debug("SequneceImage has been asked to view annotations: " + annotationsToView);
@@ -116,31 +124,39 @@ public class SequenceImage extends AbstractSequenceImage
 		Drawer spacer = new SpacerDrawer(fragmentBufferPx);
 
 		boolean ptmAnnotationExists = false;
-
-
 		Class protModClass = null;
+		
+		boolean siteAnnotationsExists = false;
+		Class siteClass = null;
+		
 		for (Sequence s : sequences)
 		{
 
+			Collection<AnnotationName> allAnnotations = AnnotationRegistry.getAllAnnotations();
+			
 			// add renders
-			for (AnnotationName an : AnnotationRegistry.getAllAnnotations())
+			for (AnnotationName an :allAnnotations )
 			{
-
-				if (an.getName().equals("disulphide"))
+			
+				if (an.getName().equals(AnnotationConstants.disulphide))
 					continue;
-				if (an.getName().equals(proteinModification) && annotationsToView.contains(an)) {
+				if (an.getName().equals(AnnotationConstants.proteinModification) && annotationsToView.contains(an)) {
 					ptmAnnotationExists = true;
 					protModClass = an.getAnnotationClass();
+				} else if (an.getName().equals(AnnotationConstants.siteRecord) && annotationsToView.contains(an)){
+					siteAnnotationsExists = true;
+					siteClass = an.getAnnotationClass();
 				}
 
 				if (annotationsToView.contains(an))
 				{					
 					yOffset += addRenderable(annotationDrawMapper.createAnnotationRenderer(this, an, s), an.getName());
 				} else {
-
+					
 					debug("Sequence Image: Not viewing: " + an.getName());
 				}
 			}
+			
 
 			if (rnsOfTopRuler != null)
 			{
@@ -149,26 +165,36 @@ public class SequenceImage extends AbstractSequenceImage
 
 			sequenceDrawer = new SequenceDrawer(this, s);
 			yOffset += addRenderable(sequenceDrawer, SEQUENCE);
-
+			
 			yOffset += addRenderable(new RulerImpl(this, s, rnsOfBottomRuler, false), LOWER_RULER);
-
+			
 			yOffset += addRenderable(spacer, SPACER);
-
+			
 
 		}
 
 		if (ptmAnnotationExists) {
 			debug("we have a ptm annotation...");
-
-			modDrawerUtil = new ProtModDrawerUtil();
+			if ( modDrawerUtil == null)
+				modDrawerUtil = new ProtModDrawerUtil();
 			modDrawerUtil.setCrosslinkLineThickness(getFontSize() * RELATIVE_DISULPHIDE_LINE_THICKNESS);
 			modDrawerUtil.setCrosslinkLineBendOffset(fontSize/2);
 
 			Set<ProteinModification> protMods = getProtMods(protModClass);
-			System.out.println("Sequence image got protMods: " + protMods.size());
-			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth(), protMods);
+			
+			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth(), protMods, AnnotationConstants.proteinModification);
 			//			modLegendDrawer.setModDrawerUtil(modDrawerUtil);
-			yOffset += addRenderable(modLegendDrawer, proteinModification);
+			yOffset += addRenderable(modLegendDrawer, AnnotationConstants.proteinModification);
+		}
+		
+		if ( siteAnnotationsExists){
+		
+			if ( modDrawerUtil == null)
+				modDrawerUtil = new ProtModDrawerUtil();
+			Set<ProteinModification> protMods = getProtMods(siteClass);
+			ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth(), protMods, AnnotationConstants.siteRecord);
+			yOffset += addRenderable(modLegendDrawer, AnnotationConstants.siteRecord);
+			
 		}
 
 		// we use the presence of a sequence drawer after going through the
@@ -183,12 +209,35 @@ public class SequenceImage extends AbstractSequenceImage
 			System.err.println("Uh oh -- the sequence image for " + sequences + " didn't get drawn right");
 			this.imageHeight = 0;
 		}
+		
+		//System.out.println("sequence image will have heigth: " +imageHeight);
+		building.set(false);
 	}
 
+	public static Boolean implementsInterface(Class first, Class interf){
+	    for (Class c : first.getInterfaces()) {
+	        if (c.equals(interf)) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+	public boolean isBuilding(){
+		return building.get();
+	}
+	
 	private Set<ProteinModification> getProtMods(Class protModClass) {
+		
 		Set<ProteinModification> protMods =	new HashSet<ProteinModification>();
+		
+		if ( ! implementsInterface(protModClass, ProtModAnnotationGroup.class)) {
+			System.err.println("Class " + protModClass + " does not implements " + ProtModAnnotationGroup.class.getName() );
+				return protMods;
+		}
+		
 		for (Sequence s : sequences) {
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings("unchecked")			
 			ProtModAnnotationGroup clag = (ProtModAnnotationGroup) s.getAnnotationGroup(protModClass);
 			debug("got ProtModAnntoationGroup " + clag);
 			if (clag == null || !clag.hasData())
@@ -271,9 +320,6 @@ public class SequenceImage extends AbstractSequenceImage
 						
 						((ProtModDrawer)r).setProtMods(protMods);
 
-
-
-
 						Map<ModifiedCompound, List<Point>> map = ((ProtModDrawer)r).getCrosslinkPositions();
 						for (Map.Entry<ModifiedCompound, List<Point>> entry : map.entrySet()) {
 
@@ -292,6 +338,7 @@ public class SequenceImage extends AbstractSequenceImage
 				}
 			}
 
+			
 			drawProteinModifications(g2, crosslinkPoints);
 
 
@@ -299,6 +346,10 @@ public class SequenceImage extends AbstractSequenceImage
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+		
+		if ( DEBUG )
+			System.out.println("SequenceImage dimensions: " + result.getWidth() + " x " + result.getHeight());
+		
 		return result;
 	}
 
@@ -308,19 +359,20 @@ public class SequenceImage extends AbstractSequenceImage
 
 		List<Class> protModsClasses = getStructuralFeatureClasses();
 
+		if ( modDrawerUtil == null)
+			modDrawerUtil = new ProtModDrawerUtil();
+		
 		for ( Class protModClass: protModsClasses){
 
-			Set<ProteinModification> protMods = getProtMods(protModClass);
-
-
-
+			
 			for (Map.Entry<ModifiedCompound, List<Point>> entry : crosslinkPoints.entrySet())
 			{
 				ModifiedCompound crosslink = entry.getKey();
 				List<Point> points = entry.getValue();
 				if ( points == null)
 					continue;
-				modDrawerUtil.drawCrosslinks(g2, protMods,crosslink.getModification(), 
+							
+				modDrawerUtil.drawCrosslinks(g2, crosslink.getModification(), 
 						points);
 			}
 		}	

@@ -183,8 +183,6 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
                }
                else if(resRns == ATOM || resRns == DBREF)
                {
-                                  
-                 
                   
                   sb.append(rid.getResidueInfo().getMonId())
                   .append(' ') 

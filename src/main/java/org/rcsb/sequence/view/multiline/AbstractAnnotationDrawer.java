@@ -41,6 +41,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 	static {
 		ResourceManager rm = new ResourceManager("sequenceview");
 		MIN_DISPLAY_LABEL = Integer.parseInt(rm.getString("MIN_DISPLAY_LABEL"));
+		
 	}
 
 
@@ -156,15 +157,18 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		drawAnnotationFragment(g2, annotation.getAnnotationValue(), annotation.getSequence().getSequenceLength(), xMin, yMin, xMax, yMax, startIsNotStart, endIsNotEnd);
 		String label = getLabelString(annotation);
 
+		// This displays the text in the middle of the image
+		// this is not the left hand side label
 		if(displayLabel()) {
 
 			if (labelFits(xMin, xMax, label)) {
 				//PdbLogger.warn("fits " + xMin + " " + xMax + " " + label);
+				//System.out.println("fits " + xMin + " " + xMax + " " + label);
 				int labelXpos = xMin + ((xMax - xMin - (label.length() * getImage().getFontWidth())) / 2);
 				renderLabel(g2, label, labelXpos, yMin + getLabelYpos());
 
 			}	else {
-				//PdbLogger.warn("does not fit " + (xMax - xMin ) + " " + label + " required: " +  label.length() * getImage().getFontWidth() + " string length: "+ label.length() + " font: " + getImage().getFontWidth());
+				//System.out.println("does not fit " + (xMax - xMin ) + " " + label + " required: " +  label.length() * getImage().getFontWidth() + " string length: "+ label.length() + " font: " + getImage().getFontWidth());
 
 				// DRAW A SHORTENED LABEL
 				// label does not fit,  but perhaps the description line is so long that we need to truncate it

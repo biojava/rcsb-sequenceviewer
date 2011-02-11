@@ -86,7 +86,7 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
 		this.fontMetrics = FOR_FONT_METRICS.getFontMetrics(this.font);
 		this.fontHeight  = fontMetrics.getHeight();
 		this.fontAscent  = fontMetrics.getAscent();
-		this.fontWidth   = fontMetrics.charWidth('A')+2;
+		this.fontWidth   = fontMetrics.charWidth('A');
 		//this.fontWidth   = fontMetrics.getMaxAdvance();
 
 		this.smallFontSize = (int) (fontSize * 0.75);
@@ -96,7 +96,7 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
 		this.smallFontMetrics = FOR_FONT_METRICS.getFontMetrics(this.smallFont);
 		this.smallFontHeight  = smallFontMetrics.getHeight();
 		this.smallFontAscent  = smallFontMetrics.getAscent();
-		this.smallFontWidth   = smallFontMetrics.charWidth('A')+2;
+		this.smallFontWidth   = smallFontMetrics.charWidth('A');
 		
 		this.numCharsInKey = numCharsInKey;
 		
@@ -105,6 +105,8 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
 
 		// imageWidth = space for the key + font width in pixels * maximum number of residues
 		this.imageWidth = imageWidthOffset + fontWidth * sequences.get(0).getSequenceLength();
+		
+	
 		
 		
 		

@@ -115,6 +115,8 @@ public abstract class ImageMapData implements Serializable
       public Entry(int x1, int x2, String title, Annotation<?> a)
       {
          this(x1, 0, x2, getImageHeightPx(), title, getValueString(a));
+         
+         
       }
 
       public Entry(int x1, int y1, int x2, int y2, String title, Annotation<?> a)
@@ -129,6 +131,7 @@ public abstract class ImageMapData implements Serializable
          this.y1 = y1;
          this.y2 = y2;
          this.title = title;
+                  
          this.annotationValue = annotationValue;
       }
 

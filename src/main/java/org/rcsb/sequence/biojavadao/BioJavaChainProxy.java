@@ -17,6 +17,7 @@ import org.biojava.bio.structure.ResidueNumber;
 import org.biojava.bio.structure.Structure;
 //import org.biojava.bio.structure.StructureTools;
 
+import org.biojava.bio.structure.io.mmcif.chem.ResidueType;
 import org.biojava.bio.structure.io.mmcif.model.ChemComp;
 
 import org.rcsb.sequence.conf.AnnotationClassification;
@@ -51,10 +52,16 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		annotated.set(false);
 		
 		this.bj = bj;
-		Group g = bj.getAtomGroup(0);
-		ChemComp cc = g.getChemComp();
-		polymerType = PolymerType.polymerTypeFromString(cc.getPolymerType().name());
-	
+		for (int i =0 ; i < bj.getAtomGroups().size(); i++){
+			
+			Group g = bj.getAtomGroup(i);
+		
+			ChemComp cc = g.getChemComp();
+			if ( cc.getPolymerType() == null)
+				continue;
+			polymerType = PolymerType.polymerTypeFromString(cc.getPolymerType().name());
+			break;
+		}
 		
 	}
 

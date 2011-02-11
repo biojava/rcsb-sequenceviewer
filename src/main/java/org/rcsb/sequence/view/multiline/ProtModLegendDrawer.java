@@ -45,7 +45,8 @@ import java.util.TreeSet;
 
 import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ProteinModification;
-import org.rcsb.sequence.conf.AnnotationRegistry;
+import org.rcsb.sequence.util.AnnotationConstants;
+
 
 public class ProtModLegendDrawer implements Drawer {
 	private Font font;
@@ -56,16 +57,19 @@ public class ProtModLegendDrawer implements Drawer {
 	private Map<ProteinModification, List<TextLayout>> multiLineText;
 	private static final int legendHeight = 25;
 	private static final int legendOffset = 50;
-	private static final int legendSpacing = 10;
+	private static final int legendSpacing = 20;
 	Set<ProteinModification> protmods;
 	
+	String annotationName ;
+	
 	public ProtModLegendDrawer(ProtModDrawerUtil modDrawerUtil, Font font,
-			final int imageWidth, Set<ProteinModification> protMods) {
+			final int imageWidth, Set<ProteinModification> protMods, String annotationName) {
 		
 		this.modDrawerUtil = modDrawerUtil;
 		this.imageWidth = imageWidth;
 		this.font = font;
 		this.protmods = protMods;
+		this.annotationName = annotationName;
 		
 		setMultiLineText();
 		
@@ -74,22 +78,27 @@ public class ProtModLegendDrawer implements Drawer {
 	
 	
 	public void draw(Graphics2D g2, int yOffset) {
+		
+		
+		
 		if (modDrawerUtil==null)
 			return;
 		
 		if ( protmods == null || protmods.size() < 1)
 			return;
 		
-
+	
 		int fontSize = font.getSize();
 		
 		int oldBendOffset = modDrawerUtil.getCrosslinkLineBendOffset();
 		modDrawerUtil.setCrosslinkLineBendOffset(0);
 		
 		int height = legendHeight;
+		Color c = g2.getColor();
+		g2.setColor(Color.black);
 		g2.setFont(font);
-		g2.drawString("Protein Modifications", legendOffset, yOffset+legendSpacing);
-		
+		g2.drawString(annotationName + " Legend", legendOffset, yOffset+legendSpacing);
+		g2.setColor(c);
 		if ( multiLineText == null)
 			setMultiLineText();
 		
@@ -101,28 +110,31 @@ public class ProtModLegendDrawer implements Drawer {
 					+ textLayouts.get(0).getDescent() + textLayouts.get(0).getLeading();
 			int yMid = yOffset + height + (int)lineHeight/2;
 			
-			modDrawerUtil.drawProtMod(g2,protmods, mod, 2*fontSize, 
+			modDrawerUtil.drawProtMod(g2, mod, 2*fontSize, 
 					yMid-fontSize/2, 3*fontSize, yMid+fontSize/2);
 			
 			ModificationCategory cat = mod.getCategory();
-			if (cat.isCrossLink() && cat!=ModificationCategory.CROSS_LINK_1) {
+			
+			if (cat.isCrossLink() && cat!=ModificationCategory.CROSS_LINK_1 && 
+					annotationName.equals(AnnotationConstants.proteinModification)) {
+				
 				Point p1 = new Point(0, yMid);
 				Point p2 = new Point(5*fontSize, yMid);
+				
 				List<Point> points = Arrays.asList(
 						p1,
 						p2); 
-				modDrawerUtil.drawCrosslinks(g2, protmods, mod, points);
+				modDrawerUtil.drawCrosslinks(g2,  mod, points);
 				
 				//xPos, xPos += counter * fontWidth, yMin, yMax, counter));
 			}
 			
-			
-			
+						
 			height += drawMultiLineText(g2, textLayouts, 6*fontSize, yOffset+height);
 		}
 		
 		if (height!=totalHeight)
-			System.err.println("inconsistent height for ptm legend : " + height + " total: " + totalHeight);
+			System.err.println("inconsistent height for "+ annotationName + " legend : " + height + " total: " + totalHeight);
 		
 		modDrawerUtil.setCrosslinkLineBendOffset(oldBendOffset);
 		
@@ -185,7 +197,7 @@ public class ProtModLegendDrawer implements Drawer {
 		
 		if(mapData == null)
 		{
-			mapData = new ImageMapData("Protein modification" + hashCode(), totalHeight)
+			mapData = new ImageMapData(AnnotationConstants.proteinModification+ hashCode(), totalHeight)
 			{
 				private static final long serialVersionUID = 1L;
 
@@ -196,7 +208,7 @@ public class ProtModLegendDrawer implements Drawer {
 					//int height = totalHeight;
 					
 					//for (ProteinModification mod : modDrawerUtil.getProtMods()) 
-					addImageMapDataEntry(new Entry(0, imageWidth, "Protein Modification", null)); // for now
+					addImageMapDataEntry(new Entry(0, imageWidth, AnnotationConstants.proteinModification, null)); // for now
 						
 
 				}

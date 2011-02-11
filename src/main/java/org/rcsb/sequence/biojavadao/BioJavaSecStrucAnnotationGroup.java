@@ -19,6 +19,7 @@ import org.rcsb.sequence.core.AbstractAnnotationGroup;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.AnnotationConstants;
 
 public class BioJavaSecStrucAnnotationGroup 
 extends AbstractAnnotationGroup<Character>{
@@ -28,7 +29,7 @@ extends AbstractAnnotationGroup<Character>{
 	 */
 	private static final long serialVersionUID = -1698453992883973704L;
 
-	public static final String annotationName="authorSecStr";
+	public static final String annotationName= AnnotationConstants.authorSecStruc;
 
 	BioJavaChainProxy proxy ;
 

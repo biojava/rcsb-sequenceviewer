@@ -25,6 +25,7 @@ import org.rcsb.sequence.core.ProtModAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.AnnotationConstants;
 
 public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompound> implements ProtModAnnotationGroup {
 	
@@ -33,7 +34,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 	private BioJavaChainProxy proxy ;
 	private Set<ProteinModification> protMods;
 	
-	public static final String annotationName = "Protein modification"; 
+	public static final String annotationName =  AnnotationConstants.proteinModification; 
 	
 	public BJProtModAnnotation(BioJavaChainProxy chain,AnnotationClassification ac, 
 			AnnotationName name){
@@ -97,7 +98,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 	@Override
 	public boolean annotationsMayOverlap()
 	{
-		return true;
+		return false;
 	}
 	
 	public Set<ModifiedCompound> getModCompounds() {

@@ -46,7 +46,7 @@ public enum AnnotationClassification implements Serializable{
    }
    void addToAnnotationsClassifiedThus(AnnotationName an)
    {
-	   System.out.println(" setting default annotation for classification " +  name + " " + an.getName());
+	   //System.out.println(" setting default annotation for classification " +  name + " " + an.getName());
       this.annotationsClassifiedThus.add(an);
       if(defaultAnnotation == null)
       {

@@ -15,9 +15,9 @@ import java.awt.geom.RoundRectangle2D;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.ColorWheelUtil;
 import org.rcsb.sequence.util.ColorUtils;
 import org.rcsb.sequence.util.ResourceManager;
-import org.rcsb.sequence.view.html.ColorUtil;
 
 public class BoxAnnotationDrawer<T> extends AbstractAnnotationDrawer<T> {
 
@@ -41,7 +41,7 @@ public class BoxAnnotationDrawer<T> extends AbstractAnnotationDrawer<T> {
 		
 		
 		
-		g2.setColor( ColorUtil.getArbitraryColor(annotation) );
+		g2.setColor( ColorWheelUtil.getArbitraryColor(annotation) );
 
 		g2.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -61,7 +61,7 @@ public class BoxAnnotationDrawer<T> extends AbstractAnnotationDrawer<T> {
 		final int rectXmin = startIsNotStart ? xMin + fontWidth/2 : xMin;
 		final int rectXmax = endIsNotEnd     ? xMax - fontWidth/2 : xMax;
 
-		Color coreColor = ColorUtil.getArbitraryColor(annotation);
+		Color coreColor = ColorWheelUtil.getArbitraryColor(annotation);
 		Color light     = ColorUtils.lighter(coreColor, 0.7);
 		
 		int lineHeight = yMax - yMin;

@@ -103,7 +103,7 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 		
 		ProteinModification mod = mc.getModification();
 		
-		modDrawerUtil.drawProtMod(g2, protMods, mod, xMin, yMin, xMax, yMax);
+		modDrawerUtil.drawProtMod(g2,  mod, xMin, yMin, xMax, yMax);
 		
 		if (mod.getCategory().isCrossLink()) {
 		
@@ -152,6 +152,10 @@ public class ProtModDrawer extends AbstractAnnotationDrawer<ModifiedCompound> {
 
 	public void setProtMods(Set<ProteinModification> protMods) {
 		this.protMods = protMods;
+	}
+	
+	public boolean canDrawAnnotationsThatOverlap() {
+		return false;
 	}
 	
 	

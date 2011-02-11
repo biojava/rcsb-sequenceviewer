@@ -13,13 +13,12 @@ import org.rcsb.sequence.core.AnnotationDrawMapper;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Sequence;
 
+import org.rcsb.sequence.util.AnnotationConstants;
 import org.rcsb.sequence.view.html.AnnotationSummaryCell;
 import org.rcsb.sequence.view.html.DomainSummary;
 import org.rcsb.sequence.view.html.SecondaryStructureSummary;
 import org.rcsb.sequence.view.multiline.AnnotationDrawer;
-import org.rcsb.sequence.view.multiline.AuthorSecondaryStructureDrawer;
-import org.rcsb.sequence.view.multiline.LabelledBoxAnnotationDrawer;
-import org.rcsb.sequence.view.multiline.SecondaryStructureDrawer;
+
 import org.rcsb.sequence.view.multiline.SequenceImage;
 
 public class Annotation2SingleLineDrawer implements AnnotationDrawMapper{
@@ -56,12 +55,12 @@ public class Annotation2SingleLineDrawer implements AnnotationDrawMapper{
 				new LinkedHashMap<String, Class<? extends AnnotationSummaryCell<?>>>();
 			
 			for (AnnotationName an : AnnotationRegistry.getAllAnnotations()) {
-				 if  ( an.getName().equals("authorSecStr")) {
-					a2rMap.put("authorSecStr", SecondaryStructureDrawer1Line.class);
-					a2sMap.put("authorSecStr", SecondaryStructureSummary.class);
-				} else if ( an.getName().equals("scop")) {
-					a2rMap.put("scop", LabelledBoxAnntoationDrawer1Line.class);
-					a2sMap.put("scop", DomainSummary.class);
+				 if  ( an.getName().equals(AnnotationConstants.authorSecStruc)) {
+					a2rMap.put(AnnotationConstants.authorSecStruc, SecondaryStructureDrawer1Line.class);
+					a2sMap.put(AnnotationConstants.authorSecStruc, SecondaryStructureSummary.class);
+				} else if ( an.getName().equals(AnnotationConstants.SCOP)) {
+					a2rMap.put(AnnotationConstants.SCOP, LabelledBoxAnntoationDrawer1Line.class);
+					a2sMap.put(AnnotationConstants.SCOP, DomainSummary.class);
 				}
 				
 			}

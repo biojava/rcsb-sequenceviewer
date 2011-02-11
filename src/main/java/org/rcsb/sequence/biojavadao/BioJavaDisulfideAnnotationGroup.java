@@ -18,13 +18,14 @@ import org.rcsb.sequence.model.ResidueId;
 
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.model.SequenceCollection;
+import org.rcsb.sequence.util.AnnotationConstants;
 
 public class  BioJavaDisulfideAnnotationGroup 
 extends AbstractAnnotationGroup<ResidueId> implements DisulfideAnnotationGroup{
 
 	BioJavaChainProxy proxy ;
 
-	public static final String annotationName = "disulphide"; 
+	public static final String annotationName = AnnotationConstants.disulphide; 
 	
 	public BioJavaDisulfideAnnotationGroup(BioJavaChainProxy chain,AnnotationClassification ac, AnnotationName name){
 

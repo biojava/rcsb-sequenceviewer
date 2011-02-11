@@ -19,16 +19,18 @@ import org.biojava.bio.structure.Site;
 import org.biojava3.protmod.Component;
 import org.biojava3.protmod.ComponentType;
 import org.biojava3.protmod.ModificationCategory;
+import org.biojava3.protmod.ModificationCondition;
 import org.biojava3.protmod.ModificationConditionImpl;
+import org.biojava3.protmod.ModificationLinkage;
 import org.biojava3.protmod.ModificationOccurrenceType;
 import org.biojava3.protmod.ProteinModification;
-import org.biojava3.protmod.ProteinModificationImpl;
 import org.biojava3.protmod.ProteinModificationRegistry;
 import org.biojava3.protmod.structure.ModifiedCompound;
 import org.biojava3.protmod.structure.ModifiedCompoundImpl;
 
 import org.biojava3.protmod.structure.StructureGroup;
 import org.rcsb.sequence.annotations.ProtModValue;
+import org.rcsb.sequence.annotations.SimpleSiteModification;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
@@ -37,6 +39,7 @@ import org.rcsb.sequence.core.ProtModAnnotationGroup;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.AnnotationConstants;
 
 public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> implements ProtModAnnotationGroup{
 
@@ -44,7 +47,7 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 
 	private BioJavaChainProxy proxy ;
 
-	public static final String annotationName = "SITE record"; 
+	public static final String annotationName = AnnotationConstants.siteRecord; 
 
 	public SiteAnnotation(BioJavaChainProxy chain,AnnotationClassification ac, 
 			AnnotationName name){
@@ -84,7 +87,7 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 			}
 
 			if ( matchingSite){
-				System.out.println("found a site: " + s);
+				//System.out.println("found a site: " + s);
 
 
 				Set<StructureGroup> sgroups = new TreeSet<StructureGroup>();
@@ -105,10 +108,12 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 				
 
 				ModifiedCompound mc = new ModifiedCompoundImpl();
-				ProteinModification modi = getModificationBySize(groups.size());
+				
+				ProteinModification modi = getProteinModification(bj.getParent().getPDBCode(), bj.getChainID(), s, groups);
+				
 				mc.setDescription("SITE " + s.getDescription());
 				mc.setGroups(sgroups);
-				System.out.println("modification:" + modi);
+				//System.out.println("modification:" + modi);
 				mc.setModification(modi);
 				
 		
@@ -120,7 +125,7 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 					if (group.isAminoAcid()) {
 						ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
 						addAnnotation(cv, resId);
-						System.out.println("Adding annotation : " + cv + " " + resId);
+						//System.out.println("Adding annotation : " + cv + " " + resId);
 					}
 				}
 
@@ -135,48 +140,54 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 
 	}
 
-	private static ProteinModification getModificationBySize(int groupSize) {
-		
-		
-		//if (groupSize < 1 || groupSize > 8) {
-			
-			Set<ProteinModification> mods = ProteinModificationRegistry.getByCategory(ModificationCategory.UNDEFINED);		
-			ProteinModification empty = mods.iterator().next();
-			return empty;
-		//}  
-		
-		
-//		String s = "crosslink" + groupSize;
-//		
-//		ModificationCategory cat = ModificationCategory.getByLabel(s);
-//		
-//		Set<ProteinModification> mods = ProteinModificationRegistry.getByCategory(cat);
-//		if ( ! mods.isEmpty()) {
-//			ProteinModification empty = mods.iterator().next();
-//			return empty;
-//		}
-//		
-//		String id = "SITE: "+ s;
-//		ModificationOccurrenceType occType = ModificationOccurrenceType.HYPOTHETICAL;
-//		
-//		List<Component> components = new ArrayList<Component>();
-//		for ( Component c : Component.allComponents()){
-//			components.add(c);
-//		}
-//		ModificationConditionImpl condition = new ModificationConditionImpl( components, Collections.EMPTY_LIST);
-//		ProteinModificationImpl.Builder modBuilder =  new ProteinModificationImpl.Builder(id, cat, occType, condition);
-//		ProteinModification newModi = modBuilder.build();
-//		ProteinModificationRegistry.register(newModi);
-//		return newModi;
-//		
-		
+	private ProteinModification getProteinModification(String pdbId, String chainId, Site s,
+			List<Group> groups) {
+
+
+		String key = chain.getStructureId() + "_" + chain.getPdbChainId()+"_" + s.getSiteID()+"_"+groups.size();
+
+		ProteinModification p = ProteinModificationRegistry.getById(key);
+		if ( p != null)
+			return p;
+
+		SimpleSiteModification pm = new SimpleSiteModification();
+		pm.setId(key);
+
+		ModificationCategory category = ModificationCategory.CROSS_LINK_1;
+//		if ( groups.size() > 0 && groups.size()< 8) {
+//			String label = "crosslink" + groups.size();
+//			category = ModificationCategory.getByLabel(label);
+//		} else if ( groups.size() > 7)
+//			category = ModificationCategory.CROSS_LINK_8_OR_LARGE;
+		pm.setCategory(category);
+		pm.setOccurrence(ModificationOccurrenceType.HYPOTHETICAL);
+
+		List<Component> components = new ArrayList<Component>(2);
+		components.add(Component.of("COMP1", ComponentType.AMINOACID));
+		components.add(Component.of("COMP2", ComponentType.AMINOACID, true, false));
+
+		ModificationLinkage linkage = new ModificationLinkage(components, 0, "ATOM1", 1, "ATOM2");
+
+		ModificationCondition condition = new ModificationConditionImpl(components, Collections.singletonList(linkage));
+		pm.setCondition(condition);		
+		pm.setKeywords(Collections.EMPTY_SET);
+		pm.setDescription(s.getDescription() + " (" + s.getEvCode() + ")");
+		try {
+			//ProteinModificationRegistry.register(pm);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return pm;
+
+
 	}
+
 	
 	
 	@Override
 	public boolean annotationsMayOverlap()
 	{
-		return true;
+		return false;
 	}
 
 	public Set<ModifiedCompound> getModCompounds() {

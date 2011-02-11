@@ -64,10 +64,13 @@ public class SequencePanel {
 		// define where PDB files are stored...
 		//System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
 		System.setProperty(InputStreamProvider.CACHE_PROPERTY, "true");
-		 
-		SequencePanel panel = new SequencePanel();		
 		
+	
+		SequencePanel panel = new SequencePanel();		
+
 		showSeq(panel, pdbId,chainId);
+	
+
 //		showSeq(panel, pdbId2,chainId2);
 //		showSeq(panel, pdbId3,chainId3);
 	}

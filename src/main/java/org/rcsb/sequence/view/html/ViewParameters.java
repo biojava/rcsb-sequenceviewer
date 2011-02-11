@@ -51,7 +51,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private static final int FRAGMENT_LENGTH_DEFAULT = 60;
 	private static final int FONT_SIZE_DEFAULT       = 12;
 	private static final int FONT_SIZE_MAX           = 64;
-	private static final int NUM_CHARS_IN_KEY        = 8; // affects the white space on the left side of the image.
+	private static final int NUM_CHARS_IN_KEY        = 20; // affects the white space on the left side of the image.
 
 	private static final int DEFAULT_JMOL_WIDTH      = 450;
 	private static final int DEFAULT_JMOL_HEIGHT     = 450;
@@ -87,7 +87,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private boolean showNextBestAnnotationIfPossible = DEFAULT_SHOW_NEXTBEST_AN;
 
 	private Collection<AnnotationName> disabledAnnotations = null;
-	private Collection<AnnotationName> annotationsToView   = DEFAULT_ANNOTATIONS_TO_VIEW;
+	
 
 	private int fontSize       = FONT_SIZE_DEFAULT;
 	private int fragmentLength = FRAGMENT_LENGTH_DEFAULT;
@@ -107,9 +107,11 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private int jmolHeight     = DEFAULT_JMOL_HEIGHT;
 	
 	
-	public static final Collection<AnnotationName> DEFAULT_ANNOTATIONS_TO_VIEW;
-
-	static {
+	
+	
+	private Collection<AnnotationName> annotationsToView   ;
+	
+	private Collection<AnnotationName>  getDefaultAnnotations() {
 		Set<AnnotationName> foo = new LinkedHashSet<AnnotationName>();
 		for(AnnotationClassification ac : AnnotationClassification.DEFAULT_CLASSIFICATIONS_TO_VIEW)
 		{
@@ -122,8 +124,16 @@ public final class ViewParameters implements Serializable, Cloneable {
 				System.out.println("Unknown default annotation for  " + ac);
 			}
 		}      
-		DEFAULT_ANNOTATIONS_TO_VIEW = Collections.unmodifiableCollection(foo);
+		
+		return Collections.unmodifiableCollection(foo);
 	}
+	
+	public ViewParameters(){
+			
+		annotationsToView = getDefaultAnnotations();
+	}
+	
+	
 	
 	/**
 	 * Is Jmol to be displayed?
@@ -223,6 +233,8 @@ public final class ViewParameters implements Serializable, Cloneable {
 	 */
 	public Collection<AnnotationName> getAnnotations() {
 				
+		if ( annotationsToView == null)
+			checkDisabledAnnotations();
 		return Collections.unmodifiableCollection(annotationsToView);
 	}
 
@@ -232,7 +244,7 @@ public final class ViewParameters implements Serializable, Cloneable {
 	 */
 	public void setAnnotations(
 			Collection<AnnotationName> desiredAnnotations) {
-		//System.out.println("ViewParameters setAnnotations ... " + desiredAnnotations.size());
+		
 		this.annotationsToView = desiredAnnotations;
 	}
 
@@ -291,7 +303,10 @@ public final class ViewParameters implements Serializable, Cloneable {
 	 */
 	public void setDisabledAnnotationsStr(String an)
 	{
-		if(annotationsToView == DEFAULT_ANNOTATIONS_TO_VIEW)
+		
+		
+		
+		if(annotationsToView == getDefaultAnnotations())
 		{
 			annotationsToView = Collections.emptySet();
 		}
@@ -732,11 +747,13 @@ public final class ViewParameters implements Serializable, Cloneable {
 		
 		ViewParameters cloned = (ViewParameters) super.clone();
 
+		//cloned.disabledAnnotations = new TreeSet<AnnotationName>(disabledAnnotations);
 		cloned.annotationsToView = new TreeSet<AnnotationName>(annotationsToView);
-		cloned.disabledAnnotations = new TreeSet<AnnotationName>(disabledAnnotations);
-
+		cloned.disabledAnnotations = null;
 		return cloned;
 	}
 
+	
+	
 
 }

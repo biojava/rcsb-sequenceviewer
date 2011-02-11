@@ -3,6 +3,7 @@ package org.rcsb.sequence.view.multiline;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.regex.Pattern;
@@ -53,20 +54,35 @@ public abstract class AbstractDrawer<T> implements Drawer {
 		String key = shortenKey(getKey());
 		if(key == null || key.length() == 0) return;
 
-		final int keyLenPx = key.length() * image.getSmallFontWidth();
-		final int startXpos = Math.max(xMin, xMax - keyLenPx - image.getImageOffsetBuffer());
+		FontMetrics fontMetrix = g2.getFontMetrics(image.getSmallFont());
+		
+		final int keyLenPx = fontMetrix.stringWidth(key);
+		// left border... image.getImageOffsetBuffer()
+		final int startXpos = Math.max(xMin, xMax - keyLenPx );
 		final int startYpos = yMin + image.getSmallFontAscent() + ((imageHeight - image.getSmallFontHeight()) / 2);
+		
 		Color tmpCol = g2.getColor();
 		Font tmpFont = g2.getFont();
+		
 		g2.setFont(image.getSmallFont());
 		g2.setColor(GREY);
+		
+		//System.out.println(" key:" + key + " startx: " + startXpos + " keylen: " + keyLenPx + " xMin:" + xMin + " xMax:" + xMax + " sum:" + (xMax - keyLenPx ) + " offset: " + image.getImageWidthOffset() + " buffer: " + image.getImageOffsetBuffer() );
+		
 		g2.drawString(key, startXpos, startYpos);
+		
 		g2.setColor(tmpCol);
 		g2.setFont(tmpFont);
 	}
 
+	
 	private static final Pattern NON_WORD_PATTERN = Pattern.compile("\\W");
 
+	/** shorten the key that is displayed on the left side of the display
+	 * 
+	 * @param key
+	 * @return
+	 */
 	private String shortenKey(String key)
 	{
 		if(key == null) return null;

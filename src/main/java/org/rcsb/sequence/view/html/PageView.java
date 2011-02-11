@@ -44,8 +44,12 @@ public class PageView implements Serializable {
    
    private static final boolean DEBUG = false;
 
+	static  int counter = 0;
+	public int id ;
    public PageView(int page, ViewParameters params)
    {
+	   counter++;
+	   id = counter;
       this.chains = new TreeSet<Chain>(params.getChainSortStrategy().comparator);
       this.page = page;
       this.params = params;
@@ -81,13 +85,14 @@ public class PageView implements Serializable {
       return chainViews.values();
    }
    
-   private void initChainViews()
+   private  void initChainViews()
    {
       if(chainViews == null || chainViews.size() != chains.size())
       {
          chainViews = new LinkedHashMap<String, ChainView>();
          for(Chain c : chains)
          {
+        	 System.out.println( "PageView: " + id + "creating new ChainView: " + c.getChainId());
             chainViews.put(c.getChainId(), new ChainView(c, params));
          }
          
@@ -192,6 +197,9 @@ public class PageView implements Serializable {
          for(ChainView cv : getChainViews())
          {
             SequenceImage image 			= cv.getSequenceImage();
+            while (image.isBuilding()){
+            	System.out.println("waiting for image building...");
+            }
             //SequenceSummaryImage sumImage 	= cv.getSequenceSummaryImage();
             
             JSONObject chainObj 		= new JSONObject();
@@ -268,6 +276,8 @@ public class PageView implements Serializable {
                anHeights.put(an.getName(), image.getAnnotationHeightPx(an));
             }
             
+            System.out.println("PageView " + id + " sending JSON image width, height: " + image.getImageWidth() + " " + image.getImageHeight());
+           
             imageObj.put("height", image.getImageHeight());
             imageObj.put("width", image.getImageWidth());
             imageObj.put("seqHeight", image.getSequenceHeightPx());

@@ -49,11 +49,15 @@ public class ChainView implements Serializable {
 	private final Chain chain;
 	private final ViewParameters params;
 
-	private SequenceImage 		sequenceImage 			= null;
+	
 	private SequenceSummaryImage sequenceSummaryImage 	= null;
 	AnnotationDrawMapper annotationDrawMapper ;
+	
+	static  int counter = 0;
+	int id ;
 	public ChainView(Sequence sequence, ViewParameters params)
 	{
+		
 		this(sequence.getSegmentedSequence(params.getFragmentLength(), getBestRns(sequence, params.getDesiredSequenceRns())), params);
 
 	}
@@ -61,12 +65,15 @@ public class ChainView implements Serializable {
 
 	public ChainView(SegmentedSequence segmentedSequence, ViewParameters params)
 	{
+		counter++;
+		id = counter;
 //		System.err.println("In ChainView constructor for " + segmentedSequence.getChainId());
 //		System.err.println("segments: " + segmentedSequence.getSegmentCount());
 //		System.err.println("params: " + params);
 
 		this.params = params;
 		this.backingData = segmentedSequence;
+
 		annotationDrawMapper = new Annotation2MultiLineDrawer();
 
 
@@ -134,6 +141,7 @@ public class ChainView implements Serializable {
 		this.annotationsToView = Collections.unmodifiableCollection(someAnnotationsToView);
 
 		this.chain = this.backingData.getFirstResidue().getChain();
+		
 	}
 
 	private static ResidueNumberScheme getBestRns(Sequence s, ResidueNumberScheme rns)
@@ -174,25 +182,34 @@ public class ChainView implements Serializable {
 		return sequenceSummaryImage;
 	}
 
-	public SequenceImage getSequenceImage() {
+	public synchronized SequenceImage getSequenceImage() {
 		//	   System.out.println("chainview: getSequenceImage " + sequenceImage );
 		//	   System.out.println("params: " +params);
 		//	   System.out.println("backinData: " + backingData);
 		//	   System.out.println("annotationsToView: " + annotationsToView);
 
+		 SequenceImage 		sequenceImage 			= null;
+		if ( DEBUG) {
+			System.out.println("ChainView " + id + " returning sequenceImage " + sequenceImage);
+			System.out.println("ChainView backing data: " + backingData.getSequenceLength());
+		}
+		
 		if(sequenceImage == null)
 		{
-			this.sequenceImage = new SequenceImage(backingData, annotationsToView, params.getDesiredBottomRulerRns(), params.getDesiredTopRulerRns(), params.getFontSize(), params.getFragmentBuffer(), params.getNumCharsInKey(), annotationDrawMapper);
 			
-		}
+			sequenceImage = new SequenceImage(backingData, annotationsToView, params.getDesiredBottomRulerRns(), params.getDesiredTopRulerRns(), params.getFontSize(), params.getFragmentBuffer(), params.getNumCharsInKey(), annotationDrawMapper);
+			//System.out.println("ChainView " + id + " new sequenceImage: " + sequenceImage.getImageHeight() + " " + sequenceImage.getImageHeight());
+			
+		} 
 
+		//System.out.println("ChainView params: # annotations: " +params.getAnnotations().size() + " annotations2View: " + annotationsToView.size());
 		return sequenceImage;
 	}
 
-	void resetSequenceImage()
-	{
-		sequenceImage = null;
-	}
+//	void resetSequenceImage()
+//	{
+//		sequenceImage = null;
+//	}
 
 	public SegmentedSequence getSegmentedSequence()
 	{

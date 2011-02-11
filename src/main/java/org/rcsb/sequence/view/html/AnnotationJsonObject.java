@@ -10,6 +10,7 @@ import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.ColorWheelUtil;
 
 import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
 
@@ -62,7 +63,7 @@ public class AnnotationJsonObject extends JSONObject {
          aJson.put("label", annotationValue);
          put(annotationValue, aJson);
          
-         Color c = ColorUtil.getArbitraryColor(a);
+         Color c = ColorWheelUtil.getArbitraryColor(a);
          JSONObject aColor = new JSONObject();
          aJson.put("colour", aColor); // server-side: American, client-side: British
          

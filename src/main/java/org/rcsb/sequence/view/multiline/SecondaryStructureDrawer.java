@@ -22,8 +22,8 @@ import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 import org.rcsb.sequence.model.Sequence;
+import org.rcsb.sequence.util.ColorWheelUtil;
 import org.rcsb.sequence.util.ColorUtils;
-import org.rcsb.sequence.view.html.ColorUtil;
 
 
 
@@ -375,14 +375,14 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 	static
 	{
 		Map<SecondaryStructureValue, Color> foo = new HashMap<SecondaryStructureValue, Color>();
-		foo.put(SecondaryStructureValue.G, ColorUtil.pdbRED.brighter().brighter());
-		foo.put(SecondaryStructureValue.H, ColorUtil.pdbRED);
+		foo.put(SecondaryStructureValue.G, ColorWheelUtil.pdbRED.brighter().brighter());
+		foo.put(SecondaryStructureValue.H, ColorWheelUtil.pdbRED);
 		foo.put(SecondaryStructureValue.I, Color.red.darker().darker());
 
-		foo.put(SecondaryStructureValue.E, ColorUtil.pdbYELLOW);
-		foo.put(SecondaryStructureValue.B, ColorUtil.pdbYELLOW.darker().darker());
+		foo.put(SecondaryStructureValue.E, ColorWheelUtil.pdbYELLOW);
+		foo.put(SecondaryStructureValue.B, ColorWheelUtil.pdbYELLOW.darker().darker());
 
-		foo.put(SecondaryStructureValue.T, ColorUtil.pdbPURPLE);
+		foo.put(SecondaryStructureValue.T, ColorWheelUtil.pdbPURPLE);
 
 		foo.put(SecondaryStructureValue.empty, Color.black);
 		foo.put(SecondaryStructureValue.S, Color.black);

@@ -4,6 +4,7 @@ import org.rcsb.sequence.annotations.DomainDefinitionValue;
 import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
+import org.rcsb.sequence.util.ColorWheelUtil;
 
 public class DomainSummary extends AnnotationSummaryCell<String> {
    
@@ -19,13 +20,18 @@ public class DomainSummary extends AnnotationSummaryCell<String> {
       Integer numFrags;
       
       colouredDomId = new HtmlElement("span");
-      colouredDomId.addAttribute("style", "background-color: " + ColorUtil.getArbitraryHexColor(ddv.value()));
+  	colouredDomId.addAttribute("style", "tooltip");
+	colouredDomId.addAttribute("title", "View in Jmol");
+      colouredDomId.addAttribute("style", "background-color: " + ColorWheelUtil.getArbitraryHexColor(ddv.value()));
       colouredDomId.addAttribute("onclick", Annotation2Jmol.getOnclick(ag, av));
       colouredDomId.addAttribute("class", "clickableIfJmol");
       colouredDomId.appendToContent("&nbsp;")
                    .appendToContent(av.value().toString())
                    .appendToContent("&nbsp;");
+    
       el.addChild(colouredDomId);
+      
+      
       
       
       domDesc = new HtmlElement("span");

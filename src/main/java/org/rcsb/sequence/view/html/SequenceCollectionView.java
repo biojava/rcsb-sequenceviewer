@@ -58,11 +58,9 @@ public class SequenceCollectionView implements Serializable {
    {
 	  
       this(SequenceCollectionProvider.get(structureId), new ViewParameters());
-      
-      
-      
+                 
       if ( DEBUG)
-		   System.out.println("SequenceCollectionView: " + structureId);
+		   System.out.println("SequenceCollectionView: " + structureId + " with DEFAULT parameters");
 	   
    }
    
@@ -73,7 +71,8 @@ public class SequenceCollectionView implements Serializable {
     */
    public SequenceCollectionView(SequenceCollection sequenceCollection, ViewParameters viewParams)
    {
-	   
+	   if ( DEBUG)
+		   System.out.println("SequenceCollectionView: init collection with parameters as argument");
 	 
 	   
 	   if ( sequenceCollection == null) {
@@ -116,6 +115,7 @@ public class SequenceCollectionView implements Serializable {
       
       theChains = new TreeSet<Chain>(params.getChainSortStrategy().comparator);
     
+     
       // get the correct initial set
       switch( params.getChainEntityStrategy() )
       {

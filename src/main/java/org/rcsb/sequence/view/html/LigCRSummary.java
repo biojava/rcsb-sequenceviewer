@@ -5,6 +5,7 @@ import org.rcsb.sequence.annotations.Ligand;
 import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
+import org.rcsb.sequence.util.ColorWheelUtil;
 
 public class LigCRSummary extends AnnotationSummaryCell<Ligand> {
 
@@ -18,7 +19,7 @@ public class LigCRSummary extends AnnotationSummaryCell<Ligand> {
       //LigandContactResidueValue lcrv = (LigandContactResidueValue)av;
       
       HtmlElement colouredHetId = new HtmlElement("span");
-      colouredHetId.addAttribute("style", "background-color: " + ColorUtil.getArbitraryHexColor(av.value()));
+      colouredHetId.addAttribute("style", "background-color: " + ColorWheelUtil.getArbitraryHexColor(av.value()));
       colouredHetId.addAttribute("onclick", Annotation2Jmol.getOnclick(ag, av));
       colouredHetId.addAttribute("class", "clickableIfJmol");
       colouredHetId.appendToContent("&nbsp;")

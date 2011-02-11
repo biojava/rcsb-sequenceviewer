@@ -13,7 +13,7 @@ public class SequenceCollectionProvider {
 		factory = fact;
 	}
 	
-	public static SequenceCollection get(String structureId) {
+	public static synchronized SequenceCollection get(String structureId) {
 		return factory.get(structureId);
 	}
 	

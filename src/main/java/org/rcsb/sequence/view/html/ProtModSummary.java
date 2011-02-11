@@ -28,8 +28,12 @@ import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.structure.ModifiedCompound;
 
 import org.rcsb.sequence.annotations.ProtModValue;
+import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
+
+import org.rcsb.sequence.util.ColorWheelUtil;
+import org.rcsb.sequence.view.multiline.ProtModDrawerUtil;
 
 
 
@@ -41,26 +45,49 @@ public class ProtModSummary  extends AnnotationSummaryCell<ModifiedCompound> {
 
 	@Override
 	protected void renderAnnotation(AnnotationValue<ModifiedCompound> av, HtmlElement el) {
+				
+		//System.out.println("renderAnntoation " + av);
 		ProtModValue pv = (ProtModValue)av;
 		ModifiedCompound mc = pv.value();
 		//el.replaceContent("["+mc.getModification().getKeywords()+"]");
 
+		
+		
+		HtmlElement colouredDomId;
+		colouredDomId = new HtmlElement("span");
+		colouredDomId.addAttribute("style", "tooltip");
+		colouredDomId.addAttribute("title", "View in Jmol");
+		colouredDomId.addAttribute("style", "background-color: " + ColorWheelUtil.getColorHex(ProtModDrawerUtil.getColor(mc.getModification())));
+		colouredDomId.addAttribute("onclick", Annotation2Jmol.getOnclick(ag, av));
+		colouredDomId.addAttribute("class", "clickableIfJmol");
+		colouredDomId.appendToContent("&nbsp;")
+		.appendToContent(mc.getModification().getId())
+		.appendToContent("&nbsp;");
+		el.addChild(colouredDomId);
+
+		HtmlElement text = new HtmlElement("span");
 
 		String protModLegend = buildHTMLLegend(mc);
-
-
-		el.replaceContent(protModLegend);
+		
+		text.appendToContent(protModLegend).appendToContent("&nbsp;");
+		
+		el.addChild(text);
+		
+		//System.out.println(el.toString());
+		//el.replaceContent(protModLegend);
 	}
 
 	private String buildHTMLLegend(ModifiedCompound mc) {
 		StringBuilder b = new StringBuilder();
 		//b.append(mc.toString());
-		
+
+
+
 
 		ProteinModification mod = mc.getModification();
-		
+
 		b.append(mod.toString());
-		
+
 		if ( mod.getResidId() != null ){
 			b.append(" <i>RESID</i>:<a target=\"_blank\" href=\"http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?&#45;newId&#43;[RESID:'");
 			b.append(mod.getResidId());
@@ -81,7 +108,7 @@ public class ProtModSummary  extends AnnotationSummaryCell<ModifiedCompound> {
 			b.append("\">");
 			b.append(mod.getPdbccId());
 			b.append("</a>");
-		
+
 		}
 		return b.toString();
 	}

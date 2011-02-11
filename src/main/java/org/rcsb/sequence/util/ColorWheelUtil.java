@@ -1,4 +1,4 @@
-package org.rcsb.sequence.view.html;
+package org.rcsb.sequence.util;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -6,10 +6,9 @@ import java.util.Map;
 
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.AnnotationValue;
-import org.rcsb.sequence.util.ResourceManager;
 
 
-public class ColorUtil {
+public class ColorWheelUtil {
 
 
 	public static final Color pdbRED;
