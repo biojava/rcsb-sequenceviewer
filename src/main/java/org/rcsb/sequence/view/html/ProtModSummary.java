@@ -93,14 +93,14 @@ public class ProtModSummary  extends AnnotationSummaryCell<ModifiedCompound> {
 			b.append(mod.getResidId());
 			b.append("']&#43;&#45;view&#43;ResidEntry&#43;&#45;page&#43;qResult\">");
 			b.append(mod.getResidId());			
-			b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></a>");
+			b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></span></a>");
 		}
 		if ( mod.getPsimodId() != null){
 			b.append(" <i>PSI-MOD</i>:<a target=\"_blank\" href=\"http://www.ebi.ac.uk/ontology-lookup/?termId=");
 			b.append(mod.getPsimodId());
 			b.append("\">");
 			b.append(mod.getPsimodId());
-			b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></a>");
+			b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></span></a>");
 		}
 		if ( mod.getPdbccId() != null){
 			b.append(" <i>PDB</i>:<a href=\"http://www.pdb.org/pdb/ligand/ligandsummary.do?hetId=");
