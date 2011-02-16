@@ -24,8 +24,10 @@
 
 package org.rcsb.sequence.view.multiline;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -139,34 +141,73 @@ public class ProtModDrawerUtil {
 		int yCenter = (yMin + yMax) / 2;
 		double radius = 0.4 * (yMax - yMin);
 
-		Polygon polygon = getAsterisk(xCenter, yCenter, 6, radius, radius*0.2, 0);
+		Color c = g2.getColor();
+		Color tmp = ColorUtils.darker(c, 0.3);		
+		g2.setColor(tmp);
+		g2.setStroke(new BasicStroke(1));
+		Composite comp = g2.getComposite();
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.8f));
+		Polygon polygon = getAsterisk(xCenter, yCenter, 8, radius, radius*0.1, 0);
 		g2.fill(polygon);
 
-		Color c = g2.getColor();		
-		Color tmp = ColorUtils.darker(c, 0.3);		
-		g2.setColor(tmp);		
+		//Color c = g2.getColor();
+	
 		g2.draw(polygon);
 		g2.setColor(c);
+		g2.setComposite(comp);
+		
+
+//		Font f = g2.getFont();
+//		System.out.println(f);
+//		g2.setColor(Color.red);
+//		
+//		FontRenderContext frc =  g2.getFontMetrics().getFontRenderContext();
+//		
+//		
+//		
+//		GlyphVector v = f.createGlyphVector(frc, "*");
+//		Shape s = v.getOutline();
+//		if ( s instanceof GeneralPath){
+//			System.out.println(s);
+//			GeneralPath p = (GeneralPath) s;
+//			p.moveTo(xMin,yMin);
+//			g2.fill(p);
+//			g2.draw(p);
+//			
+//			Rectangle r = v.getPixelBounds(frc, xMin, yMin);
+//			//g2.fill(r);
+//			g2.draw(r);
+//		
 	}
 
-	private Polygon getAsterisk(int xCenter, int yCenter, int n, double largeRadius, double smallRadius, double startAngle) {		
+	private Polygon getAsterisk(
+			int xCenter, 
+			int yCenter, 
+			int n, 
+			double largeRadius, 
+			double smallRadius, 
+			double startAngle) {		
+		
 		double pie = 2 * Math.PI / n;
 
 		int[] x = new int[3*n];
 		int[] y = new int[3*n];
 
 		for (int i=0; i<n; i++) {
+			
 			double angle = startAngle + i * pie;
 			double theta1 = angle - pie / 4;
-			x[3*i] = (int) (xCenter + smallRadius * Math.cos(theta1));
-			y[3*i] = (int) (yCenter + smallRadius * Math.sin(theta1));
+			
+			x[3*i] =  (int) (xCenter + Math.round(smallRadius * Math.cos(theta1)));
+			y[3*i] =  (int) (yCenter + Math.round(smallRadius * Math.sin(theta1)));
 
-			x[3*i+1] = (int) (xCenter + largeRadius * Math.cos(theta1));
-			y[3*i+1] = (int) (yCenter + largeRadius * Math.sin(theta1));
+			x[3*i+1] = (int) (xCenter + Math.round(largeRadius * Math.cos(theta1)));
+			y[3*i+1] =  (int) (yCenter + Math.round(largeRadius * Math.sin(theta1)));
 
-			double theta2 = angle + pie / 4;
-			x[3*i+2] = (int) (xCenter + largeRadius * Math.cos(theta2));
-			y[3*i+2] = (int) (yCenter + largeRadius * Math.sin(theta2));
+			double theta2 = angle - pie / 4;
+			x[3*i+2] =  (int) (xCenter + Math.round(largeRadius * Math.cos(theta2)));
+			y[3*i+2] =  (int) (yCenter + Math.round(largeRadius * Math.sin(theta2)));
+		
 		}
 
 		return new Polygon(x, y, 3*n);
