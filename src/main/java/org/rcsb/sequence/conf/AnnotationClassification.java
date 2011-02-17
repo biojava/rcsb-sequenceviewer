@@ -11,22 +11,22 @@ import java.util.Set;
 
 public enum AnnotationClassification implements Serializable{
    
-   secstr("secondary structure",
+   secstr("Secondary Structure",
          "Assignment of secondary structure types -- for example: alpha helices; beta strands and sheets; turns -- to regions of a chain according to the geometry and hydrogen bonding interactions of their backbone"),
    
-   structuralFeature("structural feature", 
+   structuralFeature("Structural Feature", 
          "Property of the structure (e.g. Disulphide bond)"),
          
-   strdom("domain assignment",
+   strdom("Domain Assignment",
          "The structure is divided into domains using information derived from structure"),
                
-   func("assigment of function",
+   func("Assigment of Function",
          "Function is assigned to the structure or a portion of it"),
    
-   seqdom("domain assignment from sequence",
+   seqdom("Domain Assignment from Sequence",
          "The structure is divided into domains using information derived from multiple sequence alignment"),
    
-   protmod("protein modification",
+   protmod("Protein Modification",
 		 "Identification of protein modifications in a structure");
    
    AnnotationClassification(String name, String description)
