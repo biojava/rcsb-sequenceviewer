@@ -10,6 +10,7 @@ import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
 
 import org.biojava.bio.structure.Chain;
+import org.biojava3.protmod.ComponentType;
 import org.biojava3.protmod.ProteinModification;
 import org.biojava3.protmod.io.ModifiedCompoundXMLConverter;
 import org.biojava3.protmod.ProteinModificationRegistry;
@@ -85,11 +86,11 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 				continue; // skip cross-chain modifications
 			
 			ProtModValue cv = new ProtModValue(mc);
-			Set<StructureGroup> groups = mc.getGroups();
+			Set<StructureGroup> groups = mc.getGroups(ComponentType.AMINOACID);
 			for (StructureGroup group : groups) {
-				if (group.isAminoAcid()) {
-					ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
-					addAnnotation(cv, resId);
+				ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
+				if (!addAnnotation(cv, resId)) {
+					System.err.println("Failed to add annotation for "+mc.toString());
 				}
 			}
 		}
@@ -98,7 +99,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 	@Override
 	public boolean annotationsMayOverlap()
 	{
-		return false;
+		return true;
 	}
 	
 	public Set<ModifiedCompound> getModCompounds() {

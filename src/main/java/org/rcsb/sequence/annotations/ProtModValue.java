@@ -82,6 +82,9 @@ implements Serializable, Comparable<ProtModValue> {
 	   
 	   if (it2.hasNext())
 		   return -1;
+
+           if (modComp!=aValue.modComp)
+               return 1;
 	   
 	   return 0;
    }

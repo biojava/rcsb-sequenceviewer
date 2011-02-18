@@ -75,20 +75,19 @@
 		<dependency>
 			<groupId>org.biojava</groupId>
 			<artifactId>biojava3-core</artifactId>
-			<version>3.0</version>
+			<version>3.0.2-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.biojava</groupId>
+			<artifactId>biojava3-alignment</artifactId>
+			<version>3.0.2-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.biojava</groupId>
 			<artifactId>biojava3-protmod</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.biojava</groupId>
-			<artifactId>biojava3-structure</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
-			<type>pom</type>
+			<version>3.0.2-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

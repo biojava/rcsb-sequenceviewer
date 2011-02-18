@@ -546,7 +546,13 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
          result = o1.getSequence().getLastResidue().compareTo(o2.getSequence().getLastResidue());
          if(result != EQUAL) return result;
 
-         return o1.getAnnotationValue().toString().compareTo(o2.getAnnotationValue().toString());
+         AnnotationValue av1 = o1.getAnnotationValue();
+         AnnotationValue av2 = o2.getAnnotationValue();
+         if (av1 instanceof Comparable && av2 instanceof Comparable) {
+            return ((Comparable)av1).compareTo((Comparable)av2);
+         } else {
+            return av1.toString().compareTo(av2.toString());
+         }
       }
    }
 }
