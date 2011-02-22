@@ -20,6 +20,7 @@ public class DomainSummary extends AnnotationSummaryCell<String> {
       Integer numFrags;
       
       colouredDomId = new HtmlElement("span");
+      colouredDomId.addAttribute("class", "tooltip");
   	colouredDomId.addAttribute("style", "tooltip");
 	colouredDomId.addAttribute("title", "View in Jmol");
       colouredDomId.addAttribute("style", "background-color: " + ColorWheelUtil.getArbitraryHexColor(ddv.value()));
