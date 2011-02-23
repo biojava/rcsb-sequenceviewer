@@ -253,7 +253,11 @@ public class SequenceImage extends AbstractSequenceImage
 	}
 
 	public int addRenderable(Drawer r, String key)
+
 	{
+		
+		if ( r == null)
+			return 0;
 		orderedRenderables.add(r);
 
 		ImageMapData imd = r.getHtmlMapData();
