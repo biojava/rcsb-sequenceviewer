@@ -65,10 +65,13 @@ implements Serializable, Comparable<ProtModValue> {
    }
    
    public int compareTo(ProtModValue aValue) {
+	   
 	   TreeSet<StructureGroup> groups1 = new TreeSet<StructureGroup>(modComp.getGroups());
 	   TreeSet<StructureGroup> groups2 = new TreeSet<StructureGroup>(aValue.modComp.getGroups());
+	   
 	   Iterator<StructureGroup> it1 = groups1.iterator();
 	   Iterator<StructureGroup> it2 = groups2.iterator();
+	   
 	   while (it1.hasNext() && it2.hasNext()) {
 		   StructureGroup g1 = it1.next();
 		   StructureGroup g2 = it2.next();
