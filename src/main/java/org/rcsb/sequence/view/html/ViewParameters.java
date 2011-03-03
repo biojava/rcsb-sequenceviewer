@@ -53,8 +53,8 @@ public final class ViewParameters implements Serializable, Cloneable {
 	private static final int FONT_SIZE_MAX           = 64;
 	private static final int NUM_CHARS_IN_KEY        = 20; // affects the white space on the left side of the image.
 
-	private static final int DEFAULT_JMOL_WIDTH      = 450;
-	private static final int DEFAULT_JMOL_HEIGHT     = 450;
+	private static final int DEFAULT_JMOL_WIDTH      = 300;
+	private static final int DEFAULT_JMOL_HEIGHT     = 300;
 	private static final int MAX_JMOL_WIDTH     	 = 2000;
 	private static final int MAX_JMOL_HEIGHT    	 = 2000;
 	private static final int MIN_JMOL_WIDTH    		 = 50;
