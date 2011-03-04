@@ -9,6 +9,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+
 import javax.swing.JScrollPane;
 
 import org.rcsb.sequence.conf.AnnotationName;
@@ -20,6 +22,8 @@ import org.rcsb.sequence.view.html.ChainView;
 import org.rcsb.sequence.view.html.ViewParameters;
 import org.rcsb.sequence.view.multiline.SequenceImage;
 
+import org.biojava.bio.structure.align.gui.JPrintPanel;
+import org.biojava.bio.structure.align.gui.MenuCreator;
 
 public class ImageWrapper {
 
@@ -33,16 +37,21 @@ public class ImageWrapper {
 		
 		
 		// now wrap the bufferedImage:
-		JLabel icon = new JLabel(new ImageIcon(img));
+		//JLabel icon = new JLabel(new ImageIcon(img));
 		
-		JScrollPane scroll = new JScrollPane(icon);
 		
+		JPrintPanel panel = new JPrintPanel();
+		panel.add(new JLabel(new ImageIcon(img)));
+		JScrollPane scroll = new JScrollPane(panel);
 		// display the Pane in a frame
 		
 		JFrame frame = new JFrame("Display image " + pdbId + "." + chainId);
+		
+		JMenuBar menu = MenuCreator.getAlignmentTextMenu(frame, panel, null);
+		frame.setJMenuBar(menu);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(scroll);
-		frame.setPreferredSize(new Dimension(600,600));
+		//scroll.setPreferredSize(new Dimension(600,600));
 		frame.pack();
 		frame.setVisible(true);
 		return frame;
