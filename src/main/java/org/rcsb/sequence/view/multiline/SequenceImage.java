@@ -277,7 +277,8 @@ public class SequenceImage extends AbstractSequenceImage
 
 
 	public BufferedImage getBufferedImage(){
-
+		if ( imageHeight < 1)
+			imageHeight = 1;
 		BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
 		try {
 			Graphics2D g2 = result.createGraphics();
