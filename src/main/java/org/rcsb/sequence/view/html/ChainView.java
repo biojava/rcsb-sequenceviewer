@@ -140,7 +140,11 @@ public class ChainView implements Serializable {
 		this.annotationSummaryCells = Collections.unmodifiableCollection(strs);
 		this.annotationsToView = Collections.unmodifiableCollection(someAnnotationsToView);
 
-		this.chain = this.backingData.getFirstResidue().getChain();
+		if ( this.backingData.getFirstResidue() != null){
+			this.chain = this.backingData.getFirstResidue().getChain();
+		} else {
+			this.chain = segmentedSequence.getChain();
+		}
 		
 	}
 
