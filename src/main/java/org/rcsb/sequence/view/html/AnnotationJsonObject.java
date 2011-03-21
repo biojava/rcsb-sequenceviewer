@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.rcsb.sequence.annotations.SecondaryStructureValue;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.AnnotationGroup;
@@ -103,7 +102,7 @@ public class AnnotationJsonObject extends JSONObject {
       aRange.put("endRes", seq.getLastResidue(ATOM).getSeqIdWithInsertionCode());
    }
    
-   public Color getSecStrucColor(AnnotationValue a){
+   public Color getSecStrucColor(@SuppressWarnings("rawtypes") AnnotationValue a){
 	   return SecondaryStructureDrawer.SST_TO_COLOR_MAP.get(a);
 	  
 	   
