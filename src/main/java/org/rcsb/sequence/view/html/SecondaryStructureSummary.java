@@ -1,7 +1,6 @@
 package org.rcsb.sequence.view.html;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import org.rcsb.sequence.annotations.SecondaryStructureType;
@@ -73,7 +72,7 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<String> {
 
 		Collection<SecondaryStructureValue> annotationValues = new LinkedList<SecondaryStructureValue>();
 		if(helixCount  > 0)  annotationValues.add   ( new SecondaryStructureValue( SecondaryStructureType.H));
-		if(strandCount == 0) annotationValues.remove( new SecondaryStructureValue( SecondaryStructureType.E));
+		if(strandCount > 0) annotationValues.add( new SecondaryStructureValue( SecondaryStructureType.E));
 
 		//System.out.println("SecondaryStructureSummary: helixCount : " + helixCount + " helixResidueCount: " + helixResidueCount + " totalResidues: " + totalResidues);
 		
@@ -85,6 +84,7 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<String> {
 	protected void renderAnnotation(AnnotationValue<String> av, HtmlElement el) {
 		// convention: first char of value in annotations is always secstruc...
 		SecondaryStructureType ssv = SecondaryStructureType.getTypeFromCharCode(av.value().charAt(0));
+		
 		StringBuilder someContent;
 		int resCount, elementCount, percent;
 		String ssName, elementName;
@@ -104,7 +104,8 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<String> {
 			elementCount = strandCount;
 			break;
 		default:
-			throw new RuntimeException("Only helix and sheet allowed");
+			System.err.println("Only helix and sheet allowed, but got " + ssv);
+			return;
 		}
 
 		percent = (int)(100 * (float)resCount / (float)totalResidues);
