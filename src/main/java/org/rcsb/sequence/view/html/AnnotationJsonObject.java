@@ -55,9 +55,7 @@ public class AnnotationJsonObject extends JSONObject {
 	  
 	   
       String annotationValue = String.valueOf(a.getAnnotationValue().value());
-      
-      
-	   
+      	   
       // either this is the first time we've seen this annotationValue, so we need to 
       // create the json object to represent it, or we've seen it before and just need
       // to add another residue range

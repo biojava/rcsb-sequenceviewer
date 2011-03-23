@@ -4,12 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.rcsb.sequence.annotations.SecondaryStructureType;
 import org.rcsb.sequence.annotations.SecondaryStructureValue;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 
 
-public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> {
+public class SecondaryStructureSummary extends AnnotationSummaryCell<String> {
 
 	protected int helixCount = 0;
 	protected int helixResidueCount = 0;
@@ -17,7 +18,7 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 	protected int strandResidueCount = 0;
 	protected int totalResidues = 0;
 
-	public SecondaryStructureSummary(AnnotationGroup<Character> ag) {
+	public SecondaryStructureSummary(AnnotationGroup<String> ag) {
 		super(ag);
 		
 	}
@@ -36,7 +37,7 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 		Integer val;
 		
 		// we need to combine stats for GHI into 'helices' and EB into 'sheets'
-		for(SecondaryStructureValue ssv : SecondaryStructureValue.values())
+		for(SecondaryStructureType ssv : SecondaryStructureType.allTypes)
 		{
 			//System.out.println(ssv);
 			//System.out.println(ag.getAnnotationValueCount().get(ssv));
@@ -44,17 +45,17 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 			{
 			case G:
 			case H:
-				helixCount         += (val = ag.getAnnotationValueCount().get(ssv)) == null ? 0 : val;
-				helixResidueCount  += (val = ag.getResiduesPerAnnotationValue().get(ssv)) == null ? 0 : val;
+				helixCount         += (val = ag.getAnnotationValueCount().get(new SecondaryStructureValue(ssv))) == null ? 0 : val;
+				helixResidueCount  += (val = ag.getResiduesPerAnnotationValue().get(new SecondaryStructureValue(ssv))) == null ? 0 : val;
 				break;
 			case I:
-				helixCount         += (val = ag.getAnnotationValueCount().get(ssv)) == null ? 0 : val;
-				helixResidueCount  += (val = ag.getResiduesPerAnnotationValue().get(ssv)) == null ? 0 : val;
+				helixCount         += (val = ag.getAnnotationValueCount().get(new SecondaryStructureValue(ssv))) == null ? 0 : val;
+				helixResidueCount  += (val = ag.getResiduesPerAnnotationValue().get(new SecondaryStructureValue(ssv))) == null ? 0 : val;
 				break;
 			case B:
 			case E:
-				strandCount        += (val = ag.getAnnotationValueCount().get(ssv)) == null ? 0 : val;
-				strandResidueCount += (val = ag.getResiduesPerAnnotationValue().get(ssv)) == null ? 0 : val;
+				strandCount        += (val = ag.getAnnotationValueCount().get(new SecondaryStructureValue(ssv))) == null ? 0 : val;
+				strandResidueCount += (val = ag.getResiduesPerAnnotationValue().get(new SecondaryStructureValue(ssv))) == null ? 0 : val;
 				break;
 			case S:
 			case T:
@@ -70,9 +71,9 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 
 		totalResidues = ag.getSequence().getSequenceLength();
 
-		Collection<SecondaryStructureValue> annotationValues = new LinkedList<SecondaryStructureValue>(AV_COL);
-		if(helixCount  == 0) annotationValues.remove(SecondaryStructureValue.H);
-		if(strandCount == 0) annotationValues.remove(SecondaryStructureValue.E);
+		Collection<SecondaryStructureValue> annotationValues = new LinkedList<SecondaryStructureValue>();
+		if(helixCount  > 0)  annotationValues.add   ( new SecondaryStructureValue( SecondaryStructureType.H));
+		if(strandCount == 0) annotationValues.remove( new SecondaryStructureValue( SecondaryStructureType.E));
 
 		//System.out.println("SecondaryStructureSummary: helixCount : " + helixCount + " helixResidueCount: " + helixResidueCount + " totalResidues: " + totalResidues);
 		
@@ -81,8 +82,9 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 
 	//   @SuppressWarnings("cast")
 	@Override
-	protected void renderAnnotation(AnnotationValue<Character> av, HtmlElement el) {
-		SecondaryStructureValue ssv = (SecondaryStructureValue)av;
+	protected void renderAnnotation(AnnotationValue<String> av, HtmlElement el) {
+		// convention: first char of value in annotations is always secstruc...
+		SecondaryStructureType ssv = SecondaryStructureType.getTypeFromCharCode(av.value().charAt(0));
 		StringBuilder someContent;
 		int resCount, elementCount, percent;
 		String ssName, elementName;
@@ -124,12 +126,13 @@ public class SecondaryStructureSummary extends AnnotationSummaryCell<Character> 
 		el.replaceContent(someContent);
 	}
 
-	protected static final Collection<SecondaryStructureValue> AV_COL;
-	static
-	{
-		Collection<SecondaryStructureValue> foo = new LinkedList<SecondaryStructureValue>();
-		foo.add(SecondaryStructureValue.H);
-		foo.add(SecondaryStructureValue.E);
-		AV_COL = Collections.unmodifiableCollection(foo);
-	}
+//	protected static final Collection<SecondaryStructureValue> AV_COL;
+//	static
+//	{
+//		Collection<SecondaryStructureValue> foo = new LinkedList<SecondaryStructureValue>();
+//		
+//		//foo.add(SecondaryStructureType.H);
+//		//foo.add(SecondaryStructureType.E);
+//		AV_COL = Collections.unmodifiableCollection(foo);
+//	}
 }

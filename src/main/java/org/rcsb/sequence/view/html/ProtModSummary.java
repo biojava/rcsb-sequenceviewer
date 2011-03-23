@@ -86,7 +86,7 @@ public class ProtModSummary  extends AnnotationSummaryCell<ModifiedCompound> {
 
 		ProteinModification mod = mc.getModification();
 
-		b.append(mod.toString());
+		b.append(mod.getDescription());
 
 		if ( mod.getResidId() != null ){
 			b.append(" <i>RESID</i>:<a target=\"_blank\" href=\"http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?&#45;newId&#43;[RESID:'");

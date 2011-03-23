@@ -38,6 +38,7 @@ public class PageView implements Serializable {
    
    protected final SortedSet<Chain> chains;
    protected transient Map<String, ChainView> chainViews = null;
+   
    protected StringBuffer pdbChainList = new StringBuffer();
    
    protected final ViewParameters params;
@@ -137,6 +138,10 @@ public class PageView implements Serializable {
          }
       }
       return result;
+   }
+   
+   public String getShowJmol(){
+	   return params.isShowJmol() +"";
    }
    
    public String getAnnotationJson()

@@ -9,7 +9,8 @@ public class SecondaryStructureDrawer1Line extends SecondaryStructureDrawer {
 
 	public static final int annotationHeight = 20;
 
-	public SecondaryStructureDrawer1Line(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<Character>> annotationGroupClass) {
+	public SecondaryStructureDrawer1Line(SequenceImage image, Sequence sequence, 
+			Class<? extends AnnotationGroup<String>> annotationGroupClass) {
 		super(image, sequence, annotationGroupClass, annotationHeight);
 
 		

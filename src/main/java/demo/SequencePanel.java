@@ -46,7 +46,10 @@ public class SequencePanel {
 //		String pdbId = "3NYH";
 //		String chainId = "A";
 
-		String pdbId="117E";
+		// missing in loader:
+//		String pdbId="1ibb";
+		
+		String pdbId ="1cc4";
 		String chainId = "A";
 
 		//String pdbId3 = "3KOB"; //

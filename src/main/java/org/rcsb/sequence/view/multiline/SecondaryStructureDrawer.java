@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import org.rcsb.sequence.annotations.SecondaryStructureType;
 import org.rcsb.sequence.annotations.SecondaryStructureValue;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
@@ -27,7 +28,7 @@ import org.rcsb.sequence.util.ColorUtils;
 
 
 
-public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character> {
+public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 
 	// Calibrate the stroke size
 	// (fontWidth of 8 gives a stroke size of 3)
@@ -36,17 +37,17 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 	
 	private static final double RELATIVE_HEIGHT = 1.8;
 	
-	private SecondaryStructureValue previousSsv = SecondaryStructureValue.empty;
+	private SecondaryStructureType previousSsv = SecondaryStructureType.empty;
 	private boolean previousHelixEndedWithCurveGoingUp = false;
 	
 	protected static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
 	
 	
-	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<Character>> annotationGroupClass) {
+	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<String>> annotationGroupClass) {
 		this(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
 	}
 
-	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<Character>> annotationGroupClass, int annotationHeight) {
+	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<String>> annotationGroupClass, int annotationHeight) {
 		super(image, sequence, annotationGroupClass, (int)((float)image.getFontHeight() * RELATIVE_HEIGHT));
 
 		final int fontWidth = image.getFontWidth();
@@ -81,16 +82,18 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 
 	@Override
 	protected void drawAnnotationFragment(Graphics2D g2,
-			AnnotationValue<Character> annotation, int sequenceLength, int xMin, int yMin, int xMax,
+			AnnotationValue<String> annotation, int sequenceLength, int xMin, int yMin, int xMax,
 			int yMax, boolean startIsNotStart, boolean endIsNotEnd) {
 
 	
 		
 		// we will cast to the concrete class because it is an enum and we can switch on it
-		SecondaryStructureValue ssv = (SecondaryStructureValue)annotation; // we know this'll work because of canRenderAnnotation()... right?
+		SecondaryStructureValue ssvAnno = (SecondaryStructureValue)annotation; // we know this'll work because of canRenderAnnotation()... right?
 
+		SecondaryStructureType ssv = ssvAnno.getType();
+		
 		// draw connecting line if previous fragment was helical and this one isn't
-		if(SecondaryStructureValue.isHelical(previousSsv) && ! SecondaryStructureValue.isHelical(ssv))
+		if(SecondaryStructureType.isHelical(previousSsv) && ! SecondaryStructureType.isHelical(ssv))
 		{
 			renderLine(g2, previousSsv, xMin - getImage().getFontWidth()/2, yMin, xMin, yMax);
 		}
@@ -121,14 +124,14 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 		setPreviousSsv(ssv);
 	}
 
-	private void setPreviousSsv(SecondaryStructureValue ssv)
+	private void setPreviousSsv(SecondaryStructureType ssv)
 	{
 		previousSsv = ssv;
-		if(! SecondaryStructureValue.isHelical(ssv)) previousHelixEndedWithCurveGoingUp = false;      
+		if(! SecondaryStructureType.isHelical(ssv)) previousHelixEndedWithCurveGoingUp = false;      
 	}
 
 	protected void drawHelixFragment(Graphics2D g2,
-			SecondaryStructureValue ssv, int sequenceLength, 
+			SecondaryStructureType ssv, int sequenceLength, 
 			int xMin, int yMin, int xMax, int yMax,
 			boolean startIsNotStart, boolean endIsNotEnd, boolean makeAbuttingHelicesLookContiguous)
 	{
@@ -158,7 +161,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 			sequenceLength++;
 		}
 
-		if(makeAbuttingHelicesLookContiguous && SecondaryStructureValue.isHelical(previousSsv))
+		if(makeAbuttingHelicesLookContiguous && SecondaryStructureType.isHelical(previousSsv))
 		{
 			// we know that there is at least one residue's worth of space before xMin.
 
@@ -215,7 +218,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 	}
 
 	protected void drawStrandFragment(Graphics2D g2,
-			SecondaryStructureValue ssv,
+			SecondaryStructureType ssv,
 			int xMin, int yMin, int xMax, int yMax, boolean endIsNotEnd)
 	{      
 				
@@ -270,7 +273,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 	}
 
 	protected void drawTurnFragment(Graphics2D g2,
-			SecondaryStructureValue ssv, int sequenceLength,
+			SecondaryStructureType ssv, int sequenceLength,
 			int xMin, int yMin, int xMax, int yMax,
 			boolean startIsNotStart, boolean endIsNotEnd)
 	{
@@ -279,7 +282,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 		// if the turn is only one residue long, that is silly. just render a black line and be done with it
 		if(!(startIsNotStart || endIsNotEnd) && sequenceLength == 1)
 		{
-			drawNoSSFragment(g2, SecondaryStructureValue.empty, xMin, yMin, xMax, yMax);
+			drawNoSSFragment(g2, SecondaryStructureType.empty, xMin, yMin, xMax, yMax);
 			return;
 		}
 
@@ -334,14 +337,14 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 	}
 
 	protected void drawNoSSFragment(Graphics2D g2,
-			SecondaryStructureValue ssv,
+			SecondaryStructureType ssv,
 			int xMin, int yMin, int xMax, int yMax)
 	{
 		renderLine(g2, ssv, xMin, yMin, xMax, yMax);
 	}
 
 	private void renderLine(Graphics2D g2,
-			SecondaryStructureValue ssv,
+			SecondaryStructureType ssv,
 			int xMin, int yMin, int xMax, int yMax)
 	{
 		Color c = SST_TO_COLOR_MAP.get(ssv);
@@ -371,23 +374,23 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<Character
 	//
 	// AP: getting the colors changed to use the ones from ColoUtils.java
 
-	private static final Map<SecondaryStructureValue, Color> SST_TO_COLOR_MAP;
+	public static final Map<SecondaryStructureType, Color> SST_TO_COLOR_MAP;
 	static
 	{
-		Map<SecondaryStructureValue, Color> foo = new HashMap<SecondaryStructureValue, Color>();
-		foo.put(SecondaryStructureValue.G, ColorWheelUtil.pdbRED.brighter().brighter());
-		foo.put(SecondaryStructureValue.H, ColorWheelUtil.pdbRED);
-		foo.put(SecondaryStructureValue.I, Color.red.darker().darker());
+		Map<SecondaryStructureType, Color> foo = new HashMap<SecondaryStructureType, Color>();
+		foo.put(SecondaryStructureType.G, ColorWheelUtil.pdbRED.brighter().brighter());
+		foo.put(SecondaryStructureType.H, ColorWheelUtil.pdbRED);
+		foo.put(SecondaryStructureType.I, Color.red.darker().darker());
 
-		foo.put(SecondaryStructureValue.E, ColorWheelUtil.pdbYELLOW);
-		foo.put(SecondaryStructureValue.B, ColorWheelUtil.pdbYELLOW.darker().darker());
+		foo.put(SecondaryStructureType.E, ColorWheelUtil.pdbYELLOW);
+		foo.put(SecondaryStructureType.B, ColorWheelUtil.pdbYELLOW.darker().darker());
 
-		foo.put(SecondaryStructureValue.T, ColorWheelUtil.pdbPURPLE);
+		foo.put(SecondaryStructureType.T, ColorWheelUtil.pdbPURPLE);
 
-		foo.put(SecondaryStructureValue.empty, Color.black);
-		foo.put(SecondaryStructureValue.S, Color.black);
+		foo.put(SecondaryStructureType.empty, Color.black);
+		foo.put(SecondaryStructureType.S, Color.black);
 
-		foo.put(SecondaryStructureValue.error, Color.pink);
+		foo.put(SecondaryStructureType.error, Color.pink);
 		SST_TO_COLOR_MAP = Collections.unmodifiableMap(foo);
 	}
 

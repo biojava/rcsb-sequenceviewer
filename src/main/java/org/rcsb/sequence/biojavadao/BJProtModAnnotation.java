@@ -65,9 +65,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 		final ProteinModificationIdentifier ptmIdentifier = new ProteinModificationIdentifier();
 		
 		ptmIdentifier.setRecordAdditionalAttachments(false);
-				
-		System.out.println(protMods);
-		
+						
 		ptmIdentifier.identify(bj, protMods!=null ? protMods : ProteinModificationRegistry.allModifications());
 		
 		

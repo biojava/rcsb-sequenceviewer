@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.core.SequenceCollectionProvider;
+
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.model.SequenceCollection;
 import org.rcsb.sequence.view.html.ChainView;
@@ -67,9 +68,8 @@ public class ImageWrapper {
 		
 		ViewParameters params = new ViewParameters();
 		
-//		params.setDesiredSequenceRns(ResidueNumberScheme.ATOM);
+		//params.setDesiredSequenceRns(ResidueNumberScheme.ATOM);
 		
-	
 		// register the anntation mapper for th emulti line view
 		
 //		Annotation2MultiLineDrawer a2h = new Annotation2MultiLineDrawer();
@@ -87,6 +87,8 @@ public class ImageWrapper {
 		params.setAnnotations(newAnnos);
 		
 //		view.setAnnotationDrawMapper(a2h);
+		System.out.println("seq: " + s.getSequenceLength());
+		
 		
 		ChainView view = new ChainView(s, params);
 		SequenceImage image = view.getSequenceImage();

@@ -11,6 +11,7 @@ import org.biojava.bio.structure.AminoAcid;
 import org.biojava.bio.structure.AminoAcidImpl;
 import org.biojava.bio.structure.Group;
 import org.biojava.bio.structure.io.PDBFileParser;
+import org.rcsb.sequence.annotations.SecondaryStructureType;
 import org.rcsb.sequence.annotations.SecondaryStructureValue;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
@@ -22,7 +23,7 @@ import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.util.AnnotationConstants;
 
 public class BioJavaSecStrucAnnotationGroup 
-extends AbstractAnnotationGroup<Character>{
+extends AbstractAnnotationGroup<String>{
 
 	/**
 	 * 
@@ -99,12 +100,12 @@ extends AbstractAnnotationGroup<Character>{
 		ResidueId start = getResidueId(prevStart);
 		ResidueId end   = getResidueId(prevEnd);
 		if ( prevSecStr.equals(" "))
-			addAnnotation(SecondaryStructureValue.empty, start, end);
+			addAnnotation(new SecondaryStructureValue(SecondaryStructureType.empty), start, end);
 		else {
 			if ( prevSecStr.equals(PDBFileParser.STRAND)) {
-				addAnnotation(SecondaryStructureValue.E, start, end);
+				addAnnotation(new SecondaryStructureValue(SecondaryStructureType.E), start, end);
 			} else if ( prevSecStr.equals(PDBFileParser.HELIX)) {
-				addAnnotation(SecondaryStructureValue.H, start, end);
+				addAnnotation(new SecondaryStructureValue(SecondaryStructureType.H), start, end);
 			}
 		}
 

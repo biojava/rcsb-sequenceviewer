@@ -100,11 +100,15 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
 		
 		this.numCharsInKey = numCharsInKey;
 		
-		this.imageWidthOffset  = (FOR_FONT_METRICS.getFontMetrics(smallFont).charWidth('A')+1) * numCharsInKey;
+		this.imageWidthOffset  = (FOR_FONT_METRICS.getFontMetrics(smallFont).charWidth('W')+1) * numCharsInKey;
 		this.imageOffsetBuffer = 0;
 
 		// imageWidth = space for the key + font width in pixels * maximum number of residues
-		this.imageWidth = imageWidthOffset + fontWidth * sequences.get(0).getSequenceLength();
+		if ( sequences.size() > 0) {
+			this.imageWidth = imageWidthOffset + fontWidth * sequences.get(0).getSequenceLength();
+		} else {
+			this.imageWidth = imageWidthOffset + fontWidth;
+		}
 		
 	
 		

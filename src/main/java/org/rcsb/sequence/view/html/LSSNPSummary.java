@@ -58,7 +58,7 @@ public class LSSNPSummary  extends AnnotationSummaryCell<ModifiedCompound> {
 		colouredDomId.addAttribute("onclick", Annotation2Jmol.getOnclick(ag, av));
 		colouredDomId.addAttribute("class", "clickableIfJmol");
 		colouredDomId.appendToContent("&nbsp;")
-		.appendToContent(txt)
+		.appendToContent(av.value().getDescription())
 		.appendToContent("&nbsp;");
 		el.addChild(colouredDomId);
 
