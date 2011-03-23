@@ -19,9 +19,9 @@ public abstract class AnnotationSummaryCell<T> {
 		this.ag = ag;
 
 		valueCell = new HtmlElement("span");
-		Collection<? extends AnnotationValue<T>> av = annotationValues();
-
-		// if there's no actual data to display, don't render all the stuff.
+		
+		Collection<? extends AnnotationValue<T>> av = annotationValues(); 
+				// if there's no actual data to display, don't render all the stuff.
 		if(av.size() == 0)
 		{
 			//PdbLogger.warn("There is nothing in the value cell for " + ag.getName().name() + " on " + ag.getSequence().getStructureId() + ag.getSequence().getChainId());
@@ -29,12 +29,12 @@ public abstract class AnnotationSummaryCell<T> {
 			keyCell = new HtmlElement("span");
 			return;
 		}
-
 		hasData = true;
 
 		List<String> knownElements = new ArrayList<String>();
 		for(AnnotationValue<T> a : av)
 		{
+						
 			HtmlElement el = new HtmlElement("div");
 
 			renderAnnotation(a, el);
@@ -122,7 +122,7 @@ public abstract class AnnotationSummaryCell<T> {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
