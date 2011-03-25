@@ -74,13 +74,9 @@ public class ProtModLegendDrawer implements Drawer {
 		setMultiLineText();
 		
 	}
-
-	
 	
 	public void draw(Graphics2D g2, int yOffset) {
-		
-		
-		
+				
 		if (modDrawerUtil==null)
 			return;
 		
@@ -173,7 +169,7 @@ public class ProtModLegendDrawer implements Drawer {
 		multiLineText = new HashMap<ProteinModification,List<TextLayout>>(protmods.size());
 		
 		for (ProteinModification mod : protmods) {
-			AttributedString attributedString = new AttributedString(mod.toString());
+			AttributedString attributedString = new AttributedString(mod.getDescription());
 			
 			
 			AttributedCharacterIterator characterIterator = attributedString.getIterator();
