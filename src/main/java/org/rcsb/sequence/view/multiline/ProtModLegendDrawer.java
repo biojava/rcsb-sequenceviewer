@@ -58,6 +58,10 @@ public class ProtModLegendDrawer implements Drawer {
 	private static final int legendHeight = 25;
 	private static final int legendOffset = 50;
 	private static final int legendSpacing = 20;
+	
+	
+	private static final int some_factor = 6;
+	
 	Set<ProteinModification> protmods;
 	
 	String annotationName ;
@@ -126,7 +130,7 @@ public class ProtModLegendDrawer implements Drawer {
 			}
 			
 						
-			height += drawMultiLineText(g2, textLayouts, 6*fontSize, yOffset+height);
+			height += drawMultiLineText(g2, textLayouts, some_factor*fontSize, yOffset+height) ;
 		}
 		
 		if (height!=totalHeight)
@@ -159,7 +163,7 @@ public class ProtModLegendDrawer implements Drawer {
 		
 		totalHeight = legendHeight;
 		
-		int xOffset = 6 * font.getSize();
+		int xOffset = some_factor * font.getSize();
 		
 		if ( protmods == null) {
 			System.err.println("!! ProtModLegendDrawer: protMods == null");
@@ -181,10 +185,10 @@ public class ProtModLegendDrawer implements Drawer {
 		    multiLineText.put(mod, list);
 		    //System.out.println(mod.getPdbccId() + " " + list);
 		    while (measurer.getPosition() < characterIterator.getEndIndex()) {
-		      TextLayout textLayout = measurer.nextLayout(imageWidth - xOffset);
+		      TextLayout textLayout = measurer.nextLayout(imageWidth - xOffset );
 		      list.add(textLayout);
 		      
-		      totalHeight += textLayout.getAscent() + textLayout.getDescent() + textLayout.getLeading();
+		      totalHeight += textLayout.getAscent() + textLayout.getDescent() + textLayout.getLeading() - 1;
 		    }
 		}
 	}
