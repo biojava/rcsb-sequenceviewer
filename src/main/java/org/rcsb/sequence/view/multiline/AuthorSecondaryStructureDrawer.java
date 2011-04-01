@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 
 
 import org.rcsb.sequence.annotations.SecondaryStructureType;
-import org.rcsb.sequence.annotations.SecondaryStructureValue;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Sequence;
 
@@ -18,8 +17,11 @@ public class AuthorSecondaryStructureDrawer extends
       super(image, sequence, annotationGroupClass);
    }
 
-   @Override
+   @ Override
    protected void drawSpaceBetweenAnnotations(Graphics2D g2, int sequenceLength, int xMin, int yMin, int xMax, int yMax) {
-      drawNoSSFragment(g2, SecondaryStructureType.empty, xMin, yMin, xMax, yMax);
+	   
+	   final int fontWidth = getImage().getFontWidth();
+	   
+      drawNoSSFragment(g2, SecondaryStructureType.empty, xMin-fontWidth/2, yMin, xMax-fontWidth/2, yMax);
    }
 }
