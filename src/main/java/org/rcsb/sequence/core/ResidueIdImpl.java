@@ -20,7 +20,7 @@ import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.ResidueType;
 
-public final class ResidueIdImpl implements ResidueId, Serializable {
+public final class ResidueIdImpl implements ResidueId, Serializable, Comparable<ResidueId> {
    
    private static final long serialVersionUID = 1L;
    
