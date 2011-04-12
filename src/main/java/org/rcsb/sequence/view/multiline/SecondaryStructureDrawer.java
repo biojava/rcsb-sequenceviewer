@@ -95,7 +95,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 		// draw connecting line if previous fragment was helical and this one isn't
 		if(SecondaryStructureType.isHelical(previousSsv) && ! SecondaryStructureType.isHelical(ssv))
 		{
-			renderLine(g2, previousSsv, xMin - getImage().getFontWidth()/2, yMin, xMin, yMax);
+			renderLine(g2, previousSsv, xMin - getImage().getFontWidth()/2 +1, yMin, xMin, yMax);
 		}
 
 		switch(ssv)
