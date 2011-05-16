@@ -17,7 +17,6 @@ import org.biojava.bio.structure.Chain;
 import org.biojava.bio.structure.Group;
 import org.biojava.bio.structure.Site;
 import org.biojava3.protmod.Component;
-import org.biojava3.protmod.ComponentType;
 import org.biojava3.protmod.ModificationCategory;
 import org.biojava3.protmod.ModificationCondition;
 import org.biojava3.protmod.ModificationConditionImpl;
@@ -99,7 +98,7 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 						sg.setInsCode(g.getResidueNumber().getInsCode());
 						sg.setResidueNumber(g.getResidueNumber().getSeqNum());
 						sg.setPDBName(g.getPDBName());
-						sg.setType(ComponentType.AMINOACID);
+						sg.setIsAminoAcid(true);
 						sgroups.add(sg);
 					}
 
@@ -163,8 +162,8 @@ public class SiteAnnotation extends AbstractAnnotationGroup<ModifiedCompound> im
 		pm.setOccurrence(ModificationOccurrenceType.HYPOTHETICAL);
 
 		List<Component> components = new ArrayList<Component>(2);
-		components.add(Component.of("COMP1", ComponentType.AMINOACID));
-		components.add(Component.of("COMP2", ComponentType.AMINOACID, true, false));
+		components.add(Component.of("COMP1"));
+		components.add(Component.of("COMP2", true, false));
 
 		ModificationLinkage linkage = new ModificationLinkage(components, 0, "ATOM1", 1, "ATOM2");
 
