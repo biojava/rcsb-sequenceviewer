@@ -112,7 +112,7 @@ public class Annotation2Jmol {
 	public static String getOnclick(String chainId, AnnotationName an, AnnotationValue<?> av)
 	{
 		if(an == null || av == null || chainId == null) return "";
-		return String.format("sp.jmolScripter.highlight('%s','%s','%s')", chainId, an.getName(), av.value());
+		return String.format("proxyHighlight('%s','%s','%s')", chainId, an.getName(), av.value());
 	}
 
 	private static final Map<AnnotationClassification, Class<? extends AnnotationJsonObject>> ANNOTATION_CLASSIFICATION_TO_JSON_DATA_MAP;
