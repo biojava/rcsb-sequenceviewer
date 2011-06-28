@@ -217,7 +217,7 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
       for(ResidueId r : getSequence().getResidueIds())
       {         
          g2.setColor(r.hasStructuralData() ? residueWithStructure : residueNoStructure);
-         
+         Color c = g2.getColor();
          if(r.hasDbrefMismatch())
          {
             g2.setColor(residueUniProtMismatch);
@@ -234,6 +234,7 @@ public class SequenceDrawer extends AbstractDrawer<Object> {
          
          g2.drawString(String.valueOf(r.getResidueInfo().getOneLetterCode()), xPos+centerPos, yOffset + image.getFontAscent());
          xPos += fontWidth;
+         g2.setColor(c);
       }
    }
 
