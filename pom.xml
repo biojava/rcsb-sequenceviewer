@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biojava</groupId>
 	<artifactId>sequenceui</artifactId>
 	<name>protein-sequence-gui</name>
-	<version>2011.10-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<description>A GUI for showing protein sequences</description>
 	<repositories>
 		<repository>
@@ -102,6 +103,7 @@
 		<jdk.version>1.6</jdk.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.targetEncoding>UTF-8</project.build.targetEncoding>
+		<maxmem>512M</maxmem>
 	</properties>
 	<build>
 		<plugins>
@@ -118,16 +120,49 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+		<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
+				<version>2.7</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<minmemory>140m</minmemory>
+					<maxmemory>140m</maxmemory>
+					<breakiterator>true</breakiterator>
+					<quiet>true</quiet>
+					<source>1.6</source>
+					<verbose>false</verbose>
+					<linksource>true</linksource>
+					<!-- <detectLinks>true</detectLinks> -->
+					<links>
+						<!-- JSE -->
+						<link>http://java.sun.com/j2se/1.6.0/docs/api/</link>
+
+						<!-- Libraries -->
+						<!-- <link>http://jakarta.apache.org/commons/collections/apidocs</link> 
+							<link>http://jakarta.apache.org/commons/logging/apidocs/</link> <link>http://www.junit.org/junit/javadoc/</link> -->
+						<link>http://logging.apache.org/log4j/docs/api/</link>
+						<link>http://jakarta.apache.org/regexp/apidocs/</link>
+						<link>http://jakarta.apache.org/velocity/api/</link>
+					</links>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
 			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.1</version>
+					<configuration>
+						<tagBase>svn+ssh://dev.open-bio.org/home/svn-repositories/biojava/RCSB_SequenceViewer/tags</tagBase>
+						<remoteTagging>true</remoteTagging>
+						<preparationGoals>clean install</preparationGoals>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+					</configuration>
+
+				</plugin>
 		</plugins>
 	</build>
 </project>
