@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.biojava</groupId>
 	<artifactId>sequenceui</artifactId>
 	<name>protein-sequence-gui</name>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>2011.09</version>
 	<description>A GUI for showing protein sequences</description>
 	<repositories>
 		<repository>
@@ -31,9 +30,9 @@
 		</repository>			
 	</repositories>
 	<scm>
-		<connection>scm:svn:svn://code.open-bio.org/biojava/RCSB_SequenceViewer/trunk</connection>
-		<developerConnection>scm:svn:svn+ssh://dev.open-bio.org/home/svn-repositories/biojava/RCSB_SequenceViewer/trunk</developerConnection>
-		<url>http://code.open-bio.org/svnweb/index.cgi/biojava/browse//RCSB_SequenceViewer/trunk</url>
+		<connection>scm:svn:svn://code.open-bio.org/biojava/RCSB_SequenceViewer/tags/sequenceui-2011.09</connection>
+		<developerConnection>scm:svn:svn+ssh://dev.open-bio.org/home/svn-repositories/biojava/RCSB_SequenceViewer/tags/sequenceui-2011.09</developerConnection>
+		<url>http://code.open-bio.org/svnweb/index.cgi/biojava/browse//RCSB_SequenceViewer/tags/sequenceui-2011.09</url>
 	</scm>
 	<distributionManagement>
 		<site>
