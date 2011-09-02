@@ -31,7 +31,7 @@
 		</repository>			
 	</repositories>
 	<scm>
-		<connection>scm:svn:svn://code.open-bio.org/biojava//RCSB_SequenceViewer/trunk</connection>
+		<connection>scm:svn:svn://code.open-bio.org/biojava/RCSB_SequenceViewer/trunk</connection>
 		<developerConnection>scm:svn:svn+ssh://dev.open-bio.org/home/svn-repositories/biojava/RCSB_SequenceViewer/trunk</developerConnection>
 		<url>http://code.open-bio.org/svnweb/index.cgi/biojava/browse//RCSB_SequenceViewer/trunk</url>
 	</scm>
