@@ -186,6 +186,8 @@ public interface Sequence
     */
    public abstract Collection<AnnotationGroup<?>> getAvailableAnnotationGroups();
    
+   public Collection<AnnotationGroup<?>> getLoadedAnnotationGroups();
+   
    /**
     * Gets a collection of available {@link AnnotationGroup}s that have useful annotation information
     * @return

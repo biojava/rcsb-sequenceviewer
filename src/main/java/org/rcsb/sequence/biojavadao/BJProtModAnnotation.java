@@ -77,13 +77,14 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 			System.out.println("Modified compound: ");
 			System.out.println(mc.toString());
 			System.out.println("    " + mc.getModification().toString());
-			String xml = ModifiedCompoundXMLConverter.toXML(mc);
-			System.out.println(xml);
+			//String xml = ModifiedCompoundXMLConverter.toXML(mc);
+			//System.out.println(xml);
 			if (mc.crossChains())
 				continue; // skip cross-chain modifications
 			
 			ProtModValue cv = new ProtModValue(mc);
 			Set<StructureGroup> groups = mc.getGroups(true);
+
 			for (StructureGroup group : groups) {
 				ResidueId resId = chain.getResidueId(ATOM, group.getResidueNumber());
 				if (!addAnnotation(cv, resId)) {
@@ -96,7 +97,7 @@ public class BJProtModAnnotation extends AbstractAnnotationGroup<ModifiedCompoun
 	@Override
 	public boolean annotationsMayOverlap()
 	{
-		return true;
+		return false;
 	}
 	
 	public Set<ModifiedCompound> getModCompounds() {

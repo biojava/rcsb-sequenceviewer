@@ -108,7 +108,7 @@ extends AbstractAnnotationGroup<String>{
 				addAnnotation(new SecondaryStructureValue(SecondaryStructureType.H), start, end);
 			}
 		}
-
+		//System.out.println(" now got " + annotations.size()  + " annotations " + getAnnotationCount() + " " + getAnnotationValueCount());
 	}
 	private ResidueId getResidueId(Integer id)
 	{
