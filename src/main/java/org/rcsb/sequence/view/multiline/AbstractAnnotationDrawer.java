@@ -559,6 +559,7 @@ public abstract class AbstractAnnotationDrawer<T> extends AbstractDrawer<T> impl
 		AnnotationGroup<T> annotationGroup = getAnnotationGroup();
 		if(!annotationGroup.annotationsDoOverlap())
 		{
+			
 			return Collections.singleton(collection);
 		}
 		if(!annotationGroup.annotationsMayOverlap())

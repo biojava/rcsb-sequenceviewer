@@ -515,8 +515,9 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
    }
 
    @SuppressWarnings("unchecked")
-   public static int getMaxCount(Bag b, Collection candidates)
+   private static int getMaxCount(Bag b, Collection<ResidueId> candidates)
    {
+	   
       int result = 1, contender;
       if(b == null) return result;
 
@@ -528,6 +529,7 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
             result = contender;
          }
       }
+      
       return result;
    }
 

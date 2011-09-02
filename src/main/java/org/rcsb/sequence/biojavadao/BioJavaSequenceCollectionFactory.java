@@ -32,6 +32,7 @@ SequenceCollectionFactory {
 		params.setLoadChemCompInfo(true);
 		params.setHeaderOnly(false);
 		params.setParseSecStruc(true);
+		params.setUpdateRemediatedFiles(true);
 		
 		
 		cache.setFileParsingParams(params);		

@@ -3,12 +3,14 @@ package org.rcsb.sequence.core;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +19,7 @@ import org.apache.commons.collections.Predicate;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.Chain;
+import org.rcsb.sequence.model.ChainStatus;
 import org.rcsb.sequence.model.PolymerType;
 import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
@@ -53,11 +56,10 @@ public abstract class AbstractSequence implements Sequence, Serializable
 	 *  
 	 */
 	public void destroy(){
-	   
-		
+	   		
 		//PDBWW-1753
 	   
-	   Collection<AnnotationGroup<?>> annotations = getAvailableAnnotationGroups();
+	   Collection<AnnotationGroup<?>> annotations = getAnnotationGroupMap().values();
 	   for (AnnotationGroup<?> group: annotations){
 	      group.destroy();
 	   }
@@ -91,6 +93,21 @@ public abstract class AbstractSequence implements Sequence, Serializable
 		//System.out.println("AbstractSequence: getAvailableAnnotationGroups " + getAnnotationGroupMap().size());
 		
 		return Collections.unmodifiableCollection(getAnnotationGroupMap().values());
+	}
+	
+	public Collection<AnnotationGroup<?>> getLoadedAnnotationGroups() {
+		
+		//System.out.println("AbstractSequence: getAvailableAnnotationGroups " + getAnnotationGroupMap().size());
+		
+		List<AnnotationGroup<?>> loadedGroups = new ArrayList<AnnotationGroup<?>>();
+		for (AnnotationGroup<?> group : getAnnotationGroupMap().values()){
+			if ( group.getStatus().equals(ChainStatus.instantiated)){
+				loadedGroups.add(group);
+			}
+			
+		}
+		
+		return loadedGroups;
 	}
 
 	@SuppressWarnings("unchecked")
