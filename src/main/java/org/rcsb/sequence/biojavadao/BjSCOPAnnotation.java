@@ -69,11 +69,8 @@ public class BjSCOPAnnotation extends AbstractAnnotationGroup<String>implements 
 	{
 		// we do two queries and then loop through both lists of results because the hbm files haven't
 		// mapped the association between scop_protein_domain and scop_node. 
-
-	  
-		String cacheLocation = System.getProperty(AbstractUserArgumentProcessor.PDB_DIR);
 		
-	   ScopInstallation install = new ScopInstallation(cacheLocation);
+	   ScopInstallation install = new ScopInstallation();
 		
 	   List<ScopDomain> domains =install.getDomainsForPDB(chain.getStructureId());
 		

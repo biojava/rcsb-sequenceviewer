@@ -11,21 +11,10 @@ import org.rcsb.sequence.model.SequenceCollection;
 
 public class BioJavaSequenceCollectionFactory implements
 SequenceCollectionFactory {
-	private static final String lineSplit = System.getProperty("file.separator");
 
 	public SequenceCollection get(String structureId) {
 
-		String tmp = System.getProperty(AbstractUserArgumentProcessor.PDB_DIR);
-		if ( tmp == null){
-			String property = "java.io.tmpdir";
-
-			tmp = System.getProperty(property);
-		}
-		if ( !(tmp.endsWith(lineSplit) ) )
-			tmp = tmp + lineSplit;
-
-		System.out.println(tmp);
-		AtomCache cache = new AtomCache(tmp, true);
+		AtomCache cache = new AtomCache();
 
 		FileParsingParameters params = new FileParsingParameters();
 		params.setAlignSeqRes(true);
