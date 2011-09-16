@@ -440,8 +440,8 @@ extends AnnotationInformationImpl implements AnnotationGroup<T>, Serializable {
       }
 
       // then create a treemap from the bag
-      residuesPerAnnotationValue = new TreeMap<AnnotationValue<T>, Integer>();
-      annotationValueCount = new TreeMap<AnnotationValue<T>, Integer>();
+      residuesPerAnnotationValue = Collections.synchronizedMap(new TreeMap<AnnotationValue<T>, Integer>());
+      annotationValueCount = Collections.synchronizedMap(new TreeMap<AnnotationValue<T>, Integer>());
       AnnotationValue<T> av;
       for( Object o : rpavBag.uniqueSet() )
       {
