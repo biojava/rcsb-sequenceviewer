@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.biojava3.protmod.ProteinModification;
@@ -23,9 +23,11 @@ import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 
+import org.rcsb.sequence.core.AbstractAnnotationGroup;
 import org.rcsb.sequence.core.AnnotationDrawMapper;
 import org.rcsb.sequence.core.ProtModAnnotationGroup;
 
+import org.rcsb.sequence.model.Annotation;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SegmentedSequence;
 import org.rcsb.sequence.model.Sequence;
@@ -129,6 +131,9 @@ public class SequenceImage extends AbstractSequenceImage
 		boolean siteAnnotationsExists = false;
 		Class siteClass = null;
 		
+		boolean dsspSecStrucExists = false;
+		Class dsspClass = null;
+		String secStrucName = null;
 		for (Sequence s : sequences)
 		{
 
@@ -146,6 +151,10 @@ public class SequenceImage extends AbstractSequenceImage
 				} else if (an.getName().equals(AnnotationConstants.siteRecord) && annotationsToView.contains(an)){
 					siteAnnotationsExists = true;
 					siteClass = an.getAnnotationClass();
+				} else if ( (an.getName().equals(AnnotationConstants.DSSP) || ( an.getName().equals(AnnotationConstants.authorSecStruc))) && annotationsToView.contains(an)){
+					dsspSecStrucExists = true;
+					dsspClass = an.getAnnotationClass();
+					secStrucName = an.getName();
 				}
 
 				if (annotationsToView.contains(an))
@@ -197,6 +206,14 @@ public class SequenceImage extends AbstractSequenceImage
 			
 		}
 
+		
+		if ( dsspSecStrucExists){
+			
+			Set<String> secStruc = getDSSPSecStruc(dsspClass);
+			
+			SecStrucLegendDrawer secStrucLegendDrawer = new SecStrucLegendDrawer(getFont(), getImageWidth(), secStruc, secStrucName);
+			yOffset += addRenderable(secStrucLegendDrawer, AnnotationConstants.DSSP);
+		}
 		// we use the presence of a sequence drawer after going through the
 		// loop to determine whether it was successful.
 		if (sequenceDrawer != null)
@@ -225,6 +242,30 @@ public class SequenceImage extends AbstractSequenceImage
 
 	public boolean isBuilding(){
 		return building.get();
+	}
+	
+	private Set<String> getDSSPSecStruc(Class secStrucClass){
+		Set<String> secstrucs = new HashSet<String>();
+		for (Sequence s : sequences) {
+			@SuppressWarnings("unchecked")			
+			AbstractAnnotationGroup<String> clag =  (AbstractAnnotationGroup<String>) s.getAnnotationGroup(secStrucClass);
+			
+			if (clag == null )
+				continue;
+			
+			
+			SortedSet<Annotation<String>> annotations = clag.getAnnotations();
+			for (Annotation<String> a : annotations){
+				//System.out.println(a.getAnnotationValue().value() + " " + a.getAnnotationValue());
+				String v = a.getAnnotationValue().toString();
+				if ( ! secstrucs.contains(v))	
+					secstrucs.add(v);
+				//System.out.println(clag.getValueString());
+			}
+			
+			
+		}
+		return secstrucs;
 	}
 	
 	private Set<ProteinModification> getProtMods(Class protModClass) {

@@ -40,7 +40,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 	private SecondaryStructureType previousSsv = SecondaryStructureType.empty;
 	private boolean previousHelixEndedWithCurveGoingUp = false;
 	
-	protected static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
+	public static final float STROKE_TO_FONT_WIDTH_RATIO = (3.0F/8.0F); 
 	
 	
 	public SecondaryStructureDrawer(SequenceImage image, Sequence sequence, Class<? extends AnnotationGroup<String>> annotationGroupClass) {
@@ -130,7 +130,9 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 		if(! SecondaryStructureType.isHelical(ssv)) previousHelixEndedWithCurveGoingUp = false;      
 	}
 
-	protected void drawHelixFragment(Graphics2D g2,
+	
+	
+	protected  void drawHelixFragment(Graphics2D g2,
 			SecondaryStructureType ssv, int sequenceLength, 
 			int xMin, int yMin, int xMax, int yMax,
 			boolean startIsNotStart, boolean endIsNotEnd, boolean makeAbuttingHelicesLookContiguous)
@@ -186,6 +188,18 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 		// Initialize the first Bezier curve of the helix
 		//		  CubicCurve2D.Double helix  = new CubicCurve2D.Double(xStart, yStart, xStart + xPeriod/2, yMax + xPeriod, xStart + xPeriod/2, yMin - xPeriod, xStart + xPeriod, yStart);
 
+		curveGoesUp =  drawHelix(g2, strokeSize, xStart, xPeriod, yStart, yMin, yMax, yExtent, sequenceLength, ssv, fontWidth, curveGoesUp);
+
+		previousHelixEndedWithCurveGoingUp = !curveGoesUp;
+
+		// this line tidies up the capping at the end of a helix ... it's slightly hacky.
+		float bitOfStrokeWidth = strokeSize/3;
+		renderLine(g2, ssv, (int)(xStart - bitOfStrokeWidth), yMin, (int)(xStart + bitOfStrokeWidth), yMax);
+	}
+	
+	
+	public static boolean drawHelix(Graphics2D g2, float strokeSize, double xStart, double xPeriod, double yStart, int yMin, int yMax, double yExtent, int sequenceLength, 
+			SecondaryStructureType ssv, int fontWidth, boolean curveGoesUp){
 		g2.setStroke(new BasicStroke(strokeSize, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 
 		Color helixColor = SST_TO_COLOR_MAP.get(ssv);
@@ -209,15 +223,10 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 			xStart += fontWidth;
 			curveGoesUp = !curveGoesUp;
 		}
-
-		previousHelixEndedWithCurveGoingUp = !curveGoesUp;
-
-		// this line tidies up the capping at the end of a helix ... it's slightly hacky.
-		float bitOfStrokeWidth = strokeSize/3;
-		renderLine(g2, ssv, (int)(xStart - bitOfStrokeWidth), yMin, (int)(xStart + bitOfStrokeWidth), yMax);
+		return curveGoesUp;
 	}
 
-	protected void drawStrandFragment(Graphics2D g2,
+	public static void drawStrandFragment(Graphics2D g2,
 			SecondaryStructureType ssv,
 			int xMin, int yMin, int xMax, int yMax, boolean endIsNotEnd)
 	{      
@@ -285,6 +294,18 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 			drawNoSSFragment(g2, SecondaryStructureType.empty, xMin, yMin, xMax, yMax);
 			return;
 		}
+		
+		drawTurnFragment(g2, ssv, sequenceLength, xMin, yMin, xMax, yMax, startIsNotStart, endIsNotEnd, fontWidth);
+		
+	}
+	
+	public static void drawTurnFragment(Graphics2D g2, 
+			SecondaryStructureType ssv, int sequenceLength,
+			int xMin, int yMin, int xMax, int yMax,
+			boolean startIsNotStart, boolean endIsNotEnd, int fontWidth){
+		
+		
+		
 
 		// Change to default helix colors
 		g2.setColor(SST_TO_COLOR_MAP.get(ssv));
@@ -343,9 +364,19 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 		renderLine(g2, ssv, xMin, yMin, xMax, yMax);
 	}
 
-	private void renderLine(Graphics2D g2,
+	
+	protected void renderLine(Graphics2D g2,
 			SecondaryStructureType ssv,
 			int xMin, int yMin, int xMax, int yMax)
+	{
+		int yHeight = getImage().getFontWidth() / 4;
+		
+		renderLine(g2, ssv, xMin, yMin, xMax, yMax, yHeight);
+	}
+	
+	public static void renderLine(Graphics2D g2,
+			SecondaryStructureType ssv,
+			int xMin, int yMin, int xMax, int yMax, int yHeight)
 	{
 		Color c = SST_TO_COLOR_MAP.get(ssv);
 		if(c == null) c = Color.BLACK;
@@ -353,7 +384,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 		//    Change to default NoSS color
 		g2.setColor(c);
 
-		int yHeight = getImage().getFontWidth() / 4;
+	
 		int yStart = (yMax - yMin)/2 + yMin - yHeight/2;
 		int xWidth = xMax - xMin;
 
