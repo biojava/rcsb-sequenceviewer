@@ -54,6 +54,18 @@ public class ColorUtils
       }
    }
    
+   /** Returns a value between 0 and 255 where 0 is darkest adn 255 is brightest
+    * 
+    * @param c
+    * @return
+    */
+   public static int getBrightness(Color c) {
+	   return (int) Math.sqrt(
+			   c.getRed() * c.getRed() * .241 +
+			   c.getGreen() * c.getGreen() * .691 +
+			   c.getBlue() * c.getBlue() * .068 ) ;
+   }
+   
    public static Color rotateHue (Color color, float fraction) {
       
       float af[] = Color.RGBtoHSB(color.getRed(),color.getGreen(),color.getBlue(), null);
