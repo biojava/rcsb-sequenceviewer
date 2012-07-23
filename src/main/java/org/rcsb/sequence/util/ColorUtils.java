@@ -54,7 +54,7 @@ public class ColorUtils
       }
    }
    
-   /** Returns a value between 0 and 255 where 0 is darkest adn 255 is brightest
+   /** Returns a value between 0 and 255 where 0 is darkest and 255 is brightest
     * 
     * @param c
     * @return
