@@ -114,7 +114,7 @@ public class SequenceSummaryImage extends AbstractSequenceImage
       orderedRenderables.add(r);
       //todo: add check for ImageMapData == null
       System.err.println("check SequenceSummaryImage: addRenderable");
-      if (! key.equals(SPACER)) allMaps.put(key, r.getHtmlMapData());
+      if (! key.equals(SPACER)) allMaps.putOne(key, r.getHtmlMapData());
       return r.getImageHeightPx();
    }
 

@@ -309,7 +309,7 @@ public class SequenceImage extends AbstractSequenceImage
 				System.err.println("imageMapData == null !" + key);
 			}
 			else {
-				allMaps.put(key, imd);
+				allMaps.putOne(key, imd);
 			}
 		return r.getImageHeightPx();
 	}
