@@ -747,8 +747,15 @@ public final class ViewParameters implements Serializable, Cloneable {
 		
 		ViewParameters cloned = (ViewParameters) super.clone();
 
+		
+		try {	
 		//cloned.disabledAnnotations = new TreeSet<AnnotationName>(disabledAnnotations);
-		cloned.annotationsToView = new TreeSet<AnnotationName>(annotationsToView);
+			cloned.annotationsToView = new TreeSet<AnnotationName>(annotationsToView);
+		} catch (Exception e){
+			System.err.println("could not clone annotations to VIew in ViewParameters." );
+			e.printStackTrace();
+			cloned.annotationsToView = getDefaultAnnotations();
+		}
 		cloned.disabledAnnotations = null;
 		return cloned;
 	}
