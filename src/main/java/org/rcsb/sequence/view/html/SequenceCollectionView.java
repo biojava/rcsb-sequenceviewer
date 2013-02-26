@@ -73,7 +73,7 @@ public class SequenceCollectionView implements Serializable {
    {
 	   if ( DEBUG)
 		   System.out.println("SequenceCollectionView: init collection with parameters as argument");
-	 
+	   
 	   
 	   if ( sequenceCollection == null) {
 		   String message = "SequenceCollectionView got null for sequenceCollection." ;
@@ -552,7 +552,7 @@ public class SequenceCollectionView implements Serializable {
       ViewParameters result = null;
       try {
          result = (ViewParameters) newParams.clone();
-      } catch (CloneNotSupportedException e) {
+      } catch (Exception e) {
          System.err.println("Couldn't clone ViewParameters; creating a default one :("  + e.getMessage());
          e.printStackTrace();
          result = new ViewParameters();
