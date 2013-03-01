@@ -18,6 +18,9 @@ public class ResidueProvider {
 		factory = f;
 	}
 
+	public static ResidueInfoFactory getResidueInfoFactory(){
+		return factory;
+	}
 
 
 	
