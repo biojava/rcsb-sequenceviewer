@@ -1,7 +1,5 @@
-RCSB-Sequence Viewer
-===================
+RCSB - Sequence Viewer
 
-PDB Amino Acid Sequence Viewer
+This is the code base behind the [sequence page](http://www.rcsb.org/pdb/explore/remediatedSequence.do?structureId=4HHB) at the RCSB PDB web site.
 
-This is the code base for the Sequence report at the RCSB PDB web site. See http://www.rcsb.org/pdb/explore/remediatedSequence.do?structureId=4HHB for an example.
 
