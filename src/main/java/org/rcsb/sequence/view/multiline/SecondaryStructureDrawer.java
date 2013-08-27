@@ -419,7 +419,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
 		foo.put(SecondaryStructureType.T, ColorWheelUtil.pdbPURPLE);
 
 		foo.put(SecondaryStructureType.empty, Color.black);
-		foo.put(SecondaryStructureType.S, Color.black);
+		foo.put(SecondaryStructureType.S, Color.gray);
 
 		foo.put(SecondaryStructureType.error, Color.pink);
 		SST_TO_COLOR_MAP = Collections.unmodifiableMap(foo);
