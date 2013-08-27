@@ -4,4 +4,4 @@ This is the code base behind the [sequence page](http://www.rcsb.org/pdb/explore
 
 Build Status
 
-[![Build Status](https://travis-ci.org/biojava/biojava.png)](https://travis-ci.org/biojava/rcsb-sequenceviewer)
+[![Build Status](https://travis-ci.org/biojava/rcsb-sequenceviewer.png?branch=master)](https://travis-ci.org/biojava/rcsb-sequenceviewer)
