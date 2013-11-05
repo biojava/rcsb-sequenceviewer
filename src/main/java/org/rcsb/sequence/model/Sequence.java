@@ -72,7 +72,7 @@ public interface Sequence
     * Gets the sequence's PDB chain id.
     * @return the chain id
     */
-   public abstract Character getPdbChainId();
+   public abstract String getPdbChainId();
    
    /**
     * Gets the parent <tt>SequenceCollection</tt>.
