@@ -269,7 +269,7 @@ public class SegmentedSequenceImpl extends AbstractSequence implements Segmented
       return backingSequence.getDefaultResidueNumberScheme();
    }
 
-   public Character getPdbChainId() {
+   public String getPdbChainId() {
       return backingSequence.getPdbChainId();
    }
 

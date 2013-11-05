@@ -249,7 +249,7 @@ public class SequenceSegmentImpl extends AbstractSequence implements SequenceSeg
       return numFragments;
    }
 
-   public Character getPdbChainId() {
+   public String getPdbChainId() {
       return backingSequence.getPdbChainId();
    }
 

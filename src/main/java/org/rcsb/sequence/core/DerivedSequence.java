@@ -74,7 +74,7 @@ public class DerivedSequence extends AbstractSequence implements Serializable {
       return backingChain.getExternalDbName();
    }
 
-   public Character getPdbChainId() {
+   public String getPdbChainId() {
       return backingChain.getPdbChainId();
    }
 
