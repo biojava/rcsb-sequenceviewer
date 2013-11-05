@@ -417,8 +417,8 @@ public class BioJavaChainProxy  extends AbstractSequence implements Chain  {
 		return null;
 	}
 
-	public Character getPdbChainId() {
-		return bj.getName().charAt(0);
+	public String getPdbChainId() {
+		return bj.getChainID();
 	}
 
 	public PolymerType getPolymerType() {
