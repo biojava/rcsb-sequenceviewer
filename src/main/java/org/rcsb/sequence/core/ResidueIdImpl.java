@@ -431,7 +431,7 @@ public final class ResidueIdImpl implements ResidueId, Serializable, Comparable<
                 .append(this.chain.getStructureId())
                 .append(':')
                 .append(this.chain.getChainId());
-        if(!this.chain.getChainId().equals(this.chain.getPdbChainId().toString()))
+        if(!this.chain.getChainId().equals(this.chain.getPdbChainId()))
         {
            retValue.append('(')
                    .append(this.chain.getPdbChainId())
