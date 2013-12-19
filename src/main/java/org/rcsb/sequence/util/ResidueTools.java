@@ -118,7 +118,7 @@ public class ResidueTools {
 	      DNA_LOOKUP_1TO2 = Collections.unmodifiableMap(Collections.synchronizedMap(bar));
 
 	      RNA_MON_IDS=Arrays.asList(new String[] {
-	               "A","C","G","I","T","U"
+	               "A","C","G","I","U"
 	      });
 
 	      // initialise standard chemical components
