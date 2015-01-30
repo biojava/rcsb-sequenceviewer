@@ -4,5 +4,5 @@ import org.rcsb.sequence.model.SequenceCollection;
 
 public interface SequenceCollectionFactory {
 
-	public SequenceCollection get(String structureId);
+    public SequenceCollection get(String structureId);
 }

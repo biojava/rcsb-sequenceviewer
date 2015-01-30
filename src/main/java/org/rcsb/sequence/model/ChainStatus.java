@@ -5,11 +5,11 @@ import java.io.Serializable;
 
 /**
  * Enumerates the possible states of a {@link Chain}
- * @author mulvaney
  *
+ * @author mulvaney
  */
-public enum ChainStatus implements Serializable{
+public enum ChainStatus implements Serializable {
 
-   instantiated, building, residues, dbRef, done, destroyed;
-   
+    instantiated, building, residues, dbRef, done, destroyed;
+
 }

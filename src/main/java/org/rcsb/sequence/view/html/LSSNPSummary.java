@@ -1,5 +1,3 @@
-
-
 /*
  *                    BioJava development code
  *
@@ -25,54 +23,47 @@
  */
 
 package org.rcsb.sequence.view.html;
-import org.biojava3.protmod.ProteinModification;
-import org.biojava3.protmod.structure.ModifiedCompound;
 
-import org.rcsb.sequence.annotations.ProtModValue;
+import org.biojava.nbio.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
 
-import org.rcsb.sequence.util.ColorWheelUtil;
-import org.rcsb.sequence.view.multiline.ProtModDrawerUtil;
+
+public class LSSNPSummary extends AnnotationSummaryCell<ModifiedCompound> {
+
+    public LSSNPSummary(AnnotationGroup<ModifiedCompound> ag) {
+        super(ag);
+    }
+
+    @Override
+    protected void renderAnnotation(AnnotationValue<ModifiedCompound> av, HtmlElement el) {
 
 
+        String txt = "SNP annotation from LS-SNP";
 
-public class LSSNPSummary  extends AnnotationSummaryCell<ModifiedCompound> {
+        HtmlElement colouredDomId;
+        colouredDomId = new HtmlElement("span");
+        colouredDomId.addAttribute("style", "tooltip");
+        colouredDomId.addAttribute("title", "View in Jmol");
+        colouredDomId.addAttribute("onclick", Annotation2Jmol.getOnclick(ag, av));
+        colouredDomId.addAttribute("class", "clickableIfJmol");
+        colouredDomId.appendToContent("&nbsp;")
+                .appendToContent(av.value().getDescription())
+                .appendToContent("&nbsp;");
+        el.addChild(colouredDomId);
 
-	public LSSNPSummary(AnnotationGroup<ModifiedCompound> ag) {
-		super(ag);
-	}
-
-	@Override
-	protected void renderAnnotation(AnnotationValue<ModifiedCompound> av, HtmlElement el) {
-				
-		
-
-		String txt = "SNP annotation from LS-SNP";
-		
-		HtmlElement colouredDomId;
-		colouredDomId = new HtmlElement("span");
-		colouredDomId.addAttribute("style", "tooltip");
-		colouredDomId.addAttribute("title", "View in Jmol");		
-		colouredDomId.addAttribute("onclick", Annotation2Jmol.getOnclick(ag, av));
-		colouredDomId.addAttribute("class", "clickableIfJmol");
-		colouredDomId.appendToContent("&nbsp;")
-		.appendToContent(av.value().getDescription())
-		.appendToContent("&nbsp;");
-		el.addChild(colouredDomId);
-
-		//HtmlElement text = new HtmlElement("span");
+        //HtmlElement text = new HtmlElement("span");
 
 //		String protModLegend = txt;
 //		
 //		text.appendToContent(protModLegend).appendToContent("&nbsp;");
 //		
 //		el.addChild(text);
-		
-		//System.out.println(el.toString());
-		//el.replaceContent(protModLegend);
-	}
 
-	}
+        //System.out.println(el.toString());
+        //el.replaceContent(protModLegend);
+    }
+
+}
 

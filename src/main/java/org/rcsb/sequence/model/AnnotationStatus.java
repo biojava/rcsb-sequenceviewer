@@ -5,11 +5,11 @@ import java.io.Serializable;
 
 /**
  * Enumerates the possible states of an {@link AnnotationGroup}
- * @author mulvaney
  *
+ * @author mulvaney
  */
-public enum AnnotationStatus implements Serializable{
+public enum AnnotationStatus implements Serializable {
 
-   instantiated, underConstruction, populated, noData, destroyed;
-   
+    instantiated, underConstruction, populated, noData, destroyed;
+
 }

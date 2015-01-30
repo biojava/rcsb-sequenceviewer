@@ -13,219 +13,197 @@ import org.rcsb.sequence.model.SequenceSegment;
 
 public abstract class AbstractDrawer<T> implements Drawer {
 
-	private final SequenceImageIF image;
-	private final Sequence sequence;
-	private final int maxSeqLen;
+    private static final Color GREY = Color.GRAY;
+    private static final Pattern NON_WORD_PATTERN = Pattern.compile("\\W");
+    protected static int numInstances = 0;
+    private final SequenceImageIF image;
+    private final Sequence sequence;
+    private final int maxSeqLen;
+    protected ImageMapData mapData = null;
+    private int imageHeight = -1;
+    private int annotationHeight = -1; // ordinarily will be same as imageHeight
 
-	private int imageHeight = -1;
-	private int annotationHeight = -1; // ordinarily will be same as imageHeight
+    public AbstractDrawer(SequenceImageIF image, Sequence sequence) {
+        this.image = image;
 
-	protected ImageMapData mapData = null;
+        this.sequence = sequence;
 
-	private static final Color GREY = Color.GRAY;
-	
-	public void draw(Graphics2D g2, int yOffset) 
-	{
-		g2.setFont(image.getFont());
-		g2.setColor(Color.black);
+        //System.out.println("AbstractDrawer : " + sequence);
 
-		// pretty drawing...
-		g2.setRenderingHint(
-				RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2.setRenderingHint(
-				RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-	
-		//g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.8f));  
+        if (sequence instanceof SequenceSegment) {
 
-		drawData(g2, yOffset);
-		drawKey(g2, yOffset);
-	}
+            maxSeqLen = ((SequenceSegment) sequence).getMaxLength();
+            //System.out.println("AbstractDrawer SequenceSegment maxSeqLen: " + maxSeqLen + " " + sequence.getSequenceLength());
+            if (maxSeqLen > 0 && sequence.getSequenceLength() > maxSeqLen) {
+                System.err.println("AbstractDrawer: Sequence is too long! " + sequence.getStructureId() + " chain: " + sequence.getChainId());
+                //sequenceTooLong();
+            } else if (isTooShort(sequence)) {
+                System.err.println("AbstractDrawer: Sequence is too short! " + sequence.getStructureId() + " chain: " + sequence.getChainId());
+                //sequenceTooShort();
+            }
+        } else {
+            maxSeqLen = sequence.getSequenceLength();
+            //System.out.println(maxSeqLen);
+        }
 
-	protected void drawKey(final Graphics2D g2, final int yOffset) {
-		drawKey(g2, 0, yOffset, image.getImageWidthOffset() - 1, imageHeight + yOffset);
-	}
+        numInstances++;
+    }
 
-	protected void drawKey(Graphics2D g2, int xMin, int yMin, int xMax, int yMax) 
-	{
-		g2.clearRect(xMin, yMin, xMax-xMin, yMax-yMin); // secondary structure renderer oversteps its bounds by design... this wipes that problem out
+    public void draw(Graphics2D g2, int yOffset) {
+        g2.setFont(image.getFont());
+        g2.setColor(Color.black);
 
-		String key = shortenKey(getKey());
-		if(key == null || key.length() == 0) return;
+        // pretty drawing...
+        g2.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
-		FontMetrics fontMetrix = g2.getFontMetrics(image.getSmallFont());
-		
-		final int keyLenPx = fontMetrix.stringWidth(key);
-		// left border... image.getImageOffsetBuffer()
-		final int startXpos = Math.max(xMin, xMax - keyLenPx );
-		final int startYpos = yMin + image.getSmallFontAscent() + ((imageHeight - image.getSmallFontHeight()) / 2);
-		
-		Color tmpCol = g2.getColor();
-		Font tmpFont = g2.getFont();
-		
-		g2.setFont(image.getSmallFont());
-		g2.setColor(GREY);
-		
-		//System.out.println(" key:" + key + " startx: " + startXpos + " keylen: " + keyLenPx + " xMin:" + xMin + " xMax:" + xMax + " sum:" + (xMax - keyLenPx ) + " offset: " + image.getImageWidthOffset() + " buffer: " + image.getImageOffsetBuffer() );
-		
-		g2.drawString(key, startXpos, startYpos);
-		
-		g2.setColor(tmpCol);
-		g2.setFont(tmpFont);
-	}
+        //g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.8f));
 
-	
-	private static final Pattern NON_WORD_PATTERN = Pattern.compile("\\W");
+        drawData(g2, yOffset);
+        drawKey(g2, yOffset);
+    }
 
-	/** shorten the key that is displayed on the left side of the display
-	 * 
-	 * @param key
-	 * @return
-	 */
-	private String shortenKey(String key)
-	{
-		if(key == null) return null;
-		final int numCharsInKey = image.getNumCharsInKey();
+    protected void drawKey(final Graphics2D g2, final int yOffset) {
+        drawKey(g2, 0, yOffset, image.getImageWidthOffset() - 1, imageHeight + yOffset);
+    }
 
-		if(key.length() > numCharsInKey)
-		{
-			//System.err.println("Key string too long for available space: " + key);
-			String[] words = NON_WORD_PATTERN.split(key);
-			StringBuilder newKey = new StringBuilder(numCharsInKey);
-			if(words.length > 0)
-			{
-				int i = 0, keyLen, wordLen;
-				do
-				{
-					keyLen = newKey.length();
-					wordLen = words[i].length();
-					if(keyLen + wordLen + 1 > numCharsInKey)
-					{
-						if(keyLen == 0)
-						{
-							newKey.append(words[i].substring(0, Math.min(wordLen - 1, numCharsInKey - 3)))
-							.append("..");
-						}
-						break;
-					}
+    protected void drawKey(Graphics2D g2, int xMin, int yMin, int xMax, int yMax) {
+        g2.clearRect(xMin, yMin, xMax - xMin, yMax - yMin); // secondary structure renderer oversteps its bounds by design... this wipes that problem out
 
-					if(keyLen > 0) newKey.append(' ');
-					newKey.append(words[i]);
-				}
-				while(++i < words.length);
-			}
-			key = newKey.toString();
-		}
+        String key = shortenKey(getKey());
+        if (key == null || key.length() == 0) return;
 
-		return key;
-	}
+        FontMetrics fontMetrix = g2.getFontMetrics(image.getSmallFont());
 
-	protected abstract String getKey();
-	protected abstract void drawData(final Graphics2D g2, final int yOffset);
+        final int keyLenPx = fontMetrix.stringWidth(key);
+        // left border... image.getImageOffsetBuffer()
+        final int startXpos = Math.max(xMin, xMax - keyLenPx);
+        final int startYpos = yMin + image.getSmallFontAscent() + ((imageHeight - image.getSmallFontHeight()) / 2);
 
-	protected static int numInstances = 0;
-	public AbstractDrawer(SequenceImageIF image, Sequence sequence)
-	{
-		this.image = image;
+        Color tmpCol = g2.getColor();
+        Font tmpFont = g2.getFont();
 
-		this.sequence = sequence;
-		
-		//System.out.println("AbstractDrawer : " + sequence);
-		
-		if(sequence instanceof SequenceSegment)
-		{
-			
-			maxSeqLen = ((SequenceSegment)sequence).getMaxLength();
-			//System.out.println("AbstractDrawer SequenceSegment maxSeqLen: " + maxSeqLen + " " + sequence.getSequenceLength());
-			if(maxSeqLen > 0 && sequence.getSequenceLength() > maxSeqLen) 
-			{
-				System.err.println("AbstractDrawer: Sequence is too long! " + sequence.getStructureId() + " chain: " + sequence.getChainId());
-				//sequenceTooLong();
-			}
-			else if( isTooShort(sequence) )
-			{
-				System.err.println("AbstractDrawer: Sequence is too short! "  + sequence.getStructureId() + " chain: " + sequence.getChainId());
-				//sequenceTooShort();
-			}
-		}
-		else
-		{
-			maxSeqLen = sequence.getSequenceLength();
-			//System.out.println(maxSeqLen);
-		}
+        g2.setFont(image.getSmallFont());
+        g2.setColor(GREY);
 
-		numInstances++;
-	}
+        //System.out.println(" key:" + key + " startx: " + startXpos + " keylen: " + keyLenPx + " xMin:" + xMin + " xMax:" + xMax + " sum:" + (xMax - keyLenPx ) + " offset: " + image.getImageWidthOffset() + " buffer: " + image.getImageOffsetBuffer() );
 
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		numInstances--;
-	}
+        g2.drawString(key, startXpos, startYpos);
 
-	// a sequence is too short if it is a SequenceSegment that is shorter than the max length and is not the last segment
-	private boolean isTooShort(Sequence s)
-	{
-		boolean result = false;
-		if (s.getSequenceLength() < maxSeqLen && s instanceof SequenceSegment) {
-			SequenceSegment bs = (SequenceSegment) s;
-			
-			//System.out.println("AbstractDrawer is too short? " + bs.getFragmentIdx() + " num fragments: " + bs.getNumFragments());
-			if( bs.getFragmentIdx() < bs.getNumFragments() ) 
-			{
-				result = true;
-			}
-		}
-		return result;
-	}
+        g2.setColor(tmpCol);
+        g2.setFont(tmpFont);
+    }
 
-	public int getImageHeightPx() 
-	{
-		return imageHeight;
-	}
+    /**
+     * shorten the key that is displayed on the left side of the display
+     *
+     * @param key
+     * @return
+     */
+    private String shortenKey(String key) {
+        if (key == null) return null;
+        final int numCharsInKey = image.getNumCharsInKey();
 
-	public int getNumResidues() {
-		return sequence.getSequenceLength();
-	}
+        if (key.length() > numCharsInKey) {
+            //System.err.println("Key string too long for available space: " + key);
+            String[] words = NON_WORD_PATTERN.split(key);
+            StringBuilder newKey = new StringBuilder(numCharsInKey);
+            if (words.length > 0) {
+                int i = 0, keyLen, wordLen;
+                do {
+                    keyLen = newKey.length();
+                    wordLen = words[i].length();
+                    if (keyLen + wordLen + 1 > numCharsInKey) {
+                        if (keyLen == 0) {
+                            newKey.append(words[i].substring(0, Math.min(wordLen - 1, numCharsInKey - 3)))
+                                    .append("..");
+                        }
+                        break;
+                    }
 
-	public Sequence getSequence() {
-		return sequence;
-	}
+                    if (keyLen > 0) newKey.append(' ');
+                    newKey.append(words[i]);
+                }
+                while (++i < words.length);
+            }
+            key = newKey.toString();
+        }
 
-	public int getMaxSeqLen() {
-		return maxSeqLen;
-	}
+        return key;
+    }
 
-	// as usually throwing runtimeExceptions is evil and breaks displays on the website...
-	private void sequenceTooLong()
-	{
-		throw new RuntimeException("Sequence too long! Sequence is " + sequence.getSequenceLength() + " long but max is " + maxSeqLen);
-	}
-	// as usually throwing runtimeExceptions is evil and breaks displays on the website...
-	private void sequenceTooShort()
-	{
-		throw new RuntimeException("Sequence too short! Sequence is " + sequence.getSequenceLength() + " long but should be " + maxSeqLen);
-	}
+    protected abstract String getKey();
 
-	protected int getImageHeight() {
-		return imageHeight;
-	}
+    protected abstract void drawData(final Graphics2D g2, final int yOffset);
 
-	protected int getAnnotationHeight() {
-		return annotationHeight;
-	}
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        numInstances--;
+    }
 
-	protected void setAnnotationHeight(int annotationHeight) {
-		this.annotationHeight = annotationHeight;
-	}
+    // a sequence is too short if it is a SequenceSegment that is shorter than the max length and is not the last segment
+    private boolean isTooShort(Sequence s) {
+        boolean result = false;
+        if (s.getSequenceLength() < maxSeqLen && s instanceof SequenceSegment) {
+            SequenceSegment bs = (SequenceSegment) s;
 
-	protected void setImageHeight(int imageHeight) {
-		this.imageHeight = imageHeight;
-	}
+            //System.out.println("AbstractDrawer is too short? " + bs.getFragmentIdx() + " num fragments: " + bs.getNumFragments());
+            if (bs.getFragmentIdx() < bs.getNumFragments()) {
+                result = true;
+            }
+        }
+        return result;
+    }
 
-	protected SequenceImageIF getImage() {
-		return image;
-	}
+    public int getImageHeightPx() {
+        return imageHeight;
+    }
+
+    public int getNumResidues() {
+        return sequence.getSequenceLength();
+    }
+
+    public Sequence getSequence() {
+        return sequence;
+    }
+
+    public int getMaxSeqLen() {
+        return maxSeqLen;
+    }
+
+    // as usually throwing runtimeExceptions is evil and breaks displays on the website...
+    private void sequenceTooLong() {
+        throw new RuntimeException("Sequence too long! Sequence is " + sequence.getSequenceLength() + " long but max is " + maxSeqLen);
+    }
+
+    // as usually throwing runtimeExceptions is evil and breaks displays on the website...
+    private void sequenceTooShort() {
+        throw new RuntimeException("Sequence too short! Sequence is " + sequence.getSequenceLength() + " long but should be " + maxSeqLen);
+    }
+
+    protected int getImageHeight() {
+        return imageHeight;
+    }
+
+    protected void setImageHeight(int imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    protected int getAnnotationHeight() {
+        return annotationHeight;
+    }
+
+    protected void setAnnotationHeight(int annotationHeight) {
+        this.annotationHeight = annotationHeight;
+    }
+
+    protected SequenceImageIF getImage() {
+        return image;
+    }
 
 }

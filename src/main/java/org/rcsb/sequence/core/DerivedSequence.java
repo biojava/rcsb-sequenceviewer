@@ -13,76 +13,73 @@ import org.rcsb.sequence.model.SequenceCollection;
 
 public class DerivedSequence extends AbstractSequence implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private final Chain backingChain;
+    private final ResidueNumberScheme residueNumberScheme;
 
-   public DerivedSequence(ResidueId start, ResidueId end) {
-	   super(getSequenceString(ResidueUtils.getResidueIdsBetween(start, end)));
-      
-      ResidueUtils.ensureResiduesComparable(start, end);
-      if(start.isAfter(end))
-      {
-         throw new RuntimeException("Trying to add an annotation backwards is not allowed :" + start + " > " + end);
-      }
-      
-      this.backingChain = start.getChain();
-      this.residueNumberScheme = start.getResidueNumberScheme();
-      
-      ResidueUtils.initDerivedResidueIdMap(getResidueIdMaps(), start, end);
-   }
-   
-   public DerivedSequence(ResidueId theResidueId) {
-      this(theResidueId, theResidueId);
-   }
-   
-	private final Chain backingChain;
-   private final ResidueNumberScheme residueNumberScheme;
+    public DerivedSequence(ResidueId start, ResidueId end) {
+        super(getSequenceString(ResidueUtils.getResidueIdsBetween(start, end)));
 
-   public String getChainId() {
-      return backingChain.getChainId();
-   }
+        ResidueUtils.ensureResiduesComparable(start, end);
+        if (start.isAfter(end)) {
+            throw new RuntimeException("Trying to add an annotation backwards is not allowed :" + start + " > " + end);
+        }
 
-   public ResidueNumberScheme getDefaultResidueNumberScheme() {
-      return residueNumberScheme;
-   }
+        this.backingChain = start.getChain();
+        this.residueNumberScheme = start.getResidueNumberScheme();
 
-   public SequenceCollection getSequenceCollection() {
-      return backingChain.getSequenceCollection();
-   }
+        ResidueUtils.initDerivedResidueIdMap(getResidueIdMaps(), start, end);
+    }
+    public DerivedSequence(ResidueId theResidueId) {
+        this(theResidueId, theResidueId);
+    }
 
-   public void ensureAnnotated() {
-      // do nothing
-   }
+    public String getChainId() {
+        return backingChain.getChainId();
+    }
 
-   @Override
-   protected void ensureResiduesInstantiated() {
-      // do nothing
-   }
+    public ResidueNumberScheme getDefaultResidueNumberScheme() {
+        return residueNumberScheme;
+    }
 
-   public Chain getChain() {
-      return backingChain;
-   }
+    public SequenceCollection getSequenceCollection() {
+        return backingChain.getSequenceCollection();
+    }
 
-   public Collection<ResidueNumberScheme> getAvailableResidueNumberSchemes() {
-      return backingChain.getAvailableResidueNumberSchemes();
-   }
+    public void ensureAnnotated() {
+        // do nothing
+    }
 
-   public String getExternalDbCode() {
-      return backingChain.getExternalDbCode();
-   }
+    @Override
+    protected void ensureResiduesInstantiated() {
+        // do nothing
+    }
 
-   public String getExternalDbName() {
-      return backingChain.getExternalDbName();
-   }
+    public Chain getChain() {
+        return backingChain;
+    }
 
-   public String getPdbChainId() {
-      return backingChain.getPdbChainId();
-   }
+    public Collection<ResidueNumberScheme> getAvailableResidueNumberSchemes() {
+        return backingChain.getAvailableResidueNumberSchemes();
+    }
 
-   public PolymerType getPolymerType() {
-      return backingChain.getPolymerType();
-   }
+    public String getExternalDbCode() {
+        return backingChain.getExternalDbCode();
+    }
 
-   public String getStructureId() {
-      return backingChain.getStructureId();
-   }
+    public String getExternalDbName() {
+        return backingChain.getExternalDbName();
+    }
+
+    public String getPdbChainId() {
+        return backingChain.getPdbChainId();
+    }
+
+    public PolymerType getPolymerType() {
+        return backingChain.getPolymerType();
+    }
+
+    public String getStructureId() {
+        return backingChain.getStructureId();
+    }
 }

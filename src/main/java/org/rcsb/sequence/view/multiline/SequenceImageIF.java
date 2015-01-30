@@ -3,47 +3,47 @@ package org.rcsb.sequence.view.multiline;
 import java.awt.Font;
 import java.awt.FontMetrics;
 
-/** The interface for SequenceImage classes
- * 
+/**
+ * The interface for SequenceImage classes
+ * <p/>
  * Used by Drawer to access the data from the sequence image
- * 
- * @author Andreas Prlic
  *
+ * @author Andreas Prlic
  */
 public interface SequenceImageIF {
-	
-	public Font getFont();
-	
-	public int getFontSize();
-	
-	public int getImageHeight() ;
 
-	public int getImageWidth() ;
+    public Font getFont();
 
-	public FontMetrics getFontMetrics() ;
+    public int getFontSize();
 
-	public Font getSmallFont() ;
+    public int getImageHeight();
 
-	public FontMetrics getSmallFontMetrics();
+    public int getImageWidth();
 
-	public int getSmallFontSize() ;
+    public FontMetrics getFontMetrics();
 
-	public int getSmallFontHeight() ;
+    public Font getSmallFont();
 
-	public int getSmallFontAscent() ;
+    public FontMetrics getSmallFontMetrics();
 
-	public int getSmallFontWidth() ;
+    public int getSmallFontSize();
 
-	public int getFontHeight() ;
+    public int getSmallFontHeight();
 
-	public int getFontAscent() ;
+    public int getSmallFontAscent();
 
-	public int getFontWidth() ;
+    public int getSmallFontWidth();
 
-	public int getNumCharsInKey() ;
+    public int getFontHeight();
 
-	public int getImageWidthOffset() ;
+    public int getFontAscent();
 
-	public int getImageOffsetBuffer() ;
+    public int getFontWidth();
+
+    public int getNumCharsInKey();
+
+    public int getImageWidthOffset();
+
+    public int getImageOffsetBuffer();
 
 }

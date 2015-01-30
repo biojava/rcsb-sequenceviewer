@@ -27,11 +27,11 @@ package org.rcsb.sequence.core;
 
 import java.util.Set;
 
-import org.biojava3.protmod.structure.ModifiedCompound;
+import org.biojava.nbio.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.model.AnnotationGroup;
 
 
-public interface ProtModAnnotationGroup extends AnnotationGroup<ModifiedCompound>{
+public interface ProtModAnnotationGroup extends AnnotationGroup<ModifiedCompound> {
 
-	public Set<ModifiedCompound> getModCompounds();
+    public Set<ModifiedCompound> getModCompounds();
 }

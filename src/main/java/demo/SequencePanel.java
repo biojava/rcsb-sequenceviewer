@@ -1,27 +1,21 @@
 package demo;
 
 import java.awt.Graphics;
-
 import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
-
-
-
 
 import org.rcsb.sequence.biojavadao.BioJavaPubMedFactory;
 import org.rcsb.sequence.biojavadao.BioJavaResidueInfoFactory;
 import org.rcsb.sequence.biojavadao.BioJavaSequenceCollectionFactory;
-
 import org.rcsb.sequence.core.PubMedProvider;
 import org.rcsb.sequence.core.ResidueProvider;
 import org.rcsb.sequence.core.SequenceCollectionFactory;
 import org.rcsb.sequence.core.SequenceCollectionProvider;
 import org.rcsb.sequence.model.ResidueInfoFactory;
-
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.model.SequenceCollection;
-
 import org.rcsb.sequence.util.ImageWrapper;
 import org.rcsb.sequence.view.html.ViewParameters;
 import org.rcsb.sequence.view.multiline.SequenceImage;
@@ -29,13 +23,17 @@ import org.rcsb.sequence.view.oneline.Annotation2SingleLineDrawer;
 import org.rcsb.sequence.view.oneline.OneLineView;
 
 public class SequencePanel {
-	
-	JPanel imgpanel;
-	
-	public static void main(String[] args){
+
+    JPanel imgpanel;
+
+    public SequencePanel() {
+        initBioJavaView();
+    }
+
+    public static void main(String[] args) {
 
 
-		//String pdbId = "2B7N"; // crosslink2
+        //String pdbId = "2B7N"; // crosslink2
 
 //		String pdbId = "1A6L"; // crosslink3,4
 //		String pdbId = "1UIS"; // crosslink1
@@ -46,104 +44,91 @@ public class SequencePanel {
 //		String pdbId = "3NYH";
 //		String chainId = "A";
 
-		// missing in loader:
+        // missing in loader:
 //		String pdbId="1ibb";
-		
-		
-		// culprit: 1htr???
-		String pdbId ="5GDS";
-		String chainId = "H";
 
-		//String pdbId3 = "3KOB"; //
-		//String chainId3 = "B";
-		
-		// define where PDB files are stored...
-		//System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
-		//System.setProperty(InputStreamProvider.CACHE_PROPERTY, "true");
-		initBioJavaView();
-		ImageWrapper.showSeq(pdbId,chainId);
-		
-	
+
+        // culprit: 1htr???
+        String pdbId = "5GDS";
+        String chainId = "H";
+
+        //String pdbId3 = "3KOB"; //
+        //String chainId3 = "B";
+
+        // define where PDB files are stored...
+        //System.setProperty(AbstractUserArgumentProcessor.PDB_DIR,"/tmp/");
+        //System.setProperty(InputStreamProvider.CACHE_PROPERTY, "true");
+        initBioJavaView();
+        ImageWrapper.showSeq(pdbId, chainId);
+
 
 //		showSeq(panel, pdbId2,chainId2);
 //		showSeq(panel, pdbId3,chainId3);
-	}
-	
-	
-	
-	
-	
-	
-	
-	public BufferedImage viewOneLine(String pdbId, String chainId) {
+    }
 
-		SequenceCollection coll = SequenceCollectionProvider.get(pdbId);
+    /**
+     * provide a default view using BioJava.. could be done using some proper configuration managment...
+     */
+    public static void initBioJavaView() {
 
-		Sequence s = coll.getChainByPDBID(chainId);
-		s.ensureAnnotated();
-		
-		ViewParameters params = new ViewParameters();
-		
-		//params.setAnnotations(AnnotationRegistry.getAllAnnotations());
-		params.setDesiredTopRulerRns(ResidueNumberScheme.ATOM);
-		params.setDesiredBottomRulerRns(ResidueNumberScheme.SEQRES);
-		
-		
-		//ChainView view = new ChainView(s, params);
-		params.setFontSize(1);
-		OneLineView view = new OneLineView(s,params);
-		view.setAnnotationDrawMapper(new Annotation2SingleLineDrawer());
-		SequenceImage image = view.getSequenceImage();
+        // first the Residue Provider
+        ResidueInfoFactory refactory = new BioJavaResidueInfoFactory();
+        ResidueProvider.setResidueInfoFactory(refactory);
 
-		BufferedImage buf = image.getBufferedImage();
+        // next the SequenceCollection Provider
+        SequenceCollectionFactory sfactory = new BioJavaSequenceCollectionFactory();
+        SequenceCollectionProvider.setSequenceCollectionFactory(sfactory);
 
-		return buf;
+        BioJavaPubMedFactory pfactory = new BioJavaPubMedFactory();
+        PubMedProvider.setPubMedFactory(pfactory);
 
 
-	}
+    }
 
-	public SequencePanel(){
-		initBioJavaView();
-	}
+    public BufferedImage viewOneLine(String pdbId, String chainId) {
 
-	/** provide a default view using BioJava.. could be done using some proper configuration managment...
-	 * 
-	 */
-	public static void initBioJavaView(){
+        SequenceCollection coll = SequenceCollectionProvider.get(pdbId);
 
-		// first the Residue Provider
-		ResidueInfoFactory refactory = new BioJavaResidueInfoFactory();
-		ResidueProvider.setResidueInfoFactory(refactory);
+        Sequence s = coll.getChainByPDBID(chainId);
+        s.ensureAnnotated();
 
-		// next the SequenceCollection Provider
-		SequenceCollectionFactory sfactory = new BioJavaSequenceCollectionFactory();
-		SequenceCollectionProvider.setSequenceCollectionFactory(sfactory);
+        ViewParameters params = new ViewParameters();
 
-		BioJavaPubMedFactory pfactory = new BioJavaPubMedFactory();
-		PubMedProvider.setPubMedFactory(pfactory);
-		
-		
-	}
+        //params.setAnnotations(AnnotationRegistry.getAllAnnotations());
+        params.setDesiredTopRulerRns(ResidueNumberScheme.ATOM);
+        params.setDesiredBottomRulerRns(ResidueNumberScheme.SEQRES);
 
-	
-	
+
+        //ChainView view = new ChainView(s, params);
+        params.setFontSize(1);
+        OneLineView view = new OneLineView(s, params);
+        view.setAnnotationDrawMapper(new Annotation2SingleLineDrawer());
+        SequenceImage image = view.getSequenceImage();
+
+        BufferedImage buf = image.getBufferedImage();
+
+        return buf;
+
+
+    }
 
 
 }
 
 class ShowImage extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6604403623026935415L;
-	BufferedImage  image;
-	public ShowImage(BufferedImage img) {
-		image = img;
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6604403623026935415L;
+    BufferedImage image;
 
-	public void paint(Graphics g) {
-		g.drawImage( image, 0, 0, null);
-	}
+    public ShowImage(BufferedImage img) {
+        image = img;
+    }
+
+    public void paint(Graphics g) {
+        g.drawImage(image, 0, 0, null);
+    }
 
 
 }

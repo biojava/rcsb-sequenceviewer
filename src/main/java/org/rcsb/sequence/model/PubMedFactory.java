@@ -2,6 +2,6 @@ package org.rcsb.sequence.model;
 
 public interface PubMedFactory {
 
-	PubMed getPubMed(Long pubmedID);
+    PubMed getPubMed(Long pubmedID);
 
 }

@@ -19,311 +19,294 @@ import org.rcsb.sequence.model.SequenceSegment;
 
 
 public class SegmentedSequenceImpl extends AbstractSequence implements SegmentedSequence, Serializable {
-   
-   private static final long serialVersionUID = 1L;
-   
-   public static final int DEFAULT_FRAGMENT_LENGTH = 60;
-   
-   protected final List<SequenceSegment> sequenceSegments = new ArrayList<SequenceSegment>();
-   
-   protected int fragmentLength;
-   protected final Sequence  backingSequence;
-   protected final ResidueNumberScheme rns;
-   
-   boolean isDestroyed = false;
-   
-   public SegmentedSequenceImpl(Sequence sequence, ResidueNumberScheme residueNumberScheme, int fragmentLength)
-   {
-      super(sequence.getSequenceString());
-      //System.out.println("Segmenting " + sequence.getChainId() + " into frags of len " + fragmentLength);
-      if(sequence == null || residueNumberScheme == null)
-      {
-         throw new NullPointerException();
-      }
-      this.fragmentLength = fragmentLength;
-      this.rns = residueNumberScheme;
-      this.backingSequence = sequence;
-      
-      reInitFragmentLists();
-      //System.out.println("done segmenting " + sequence.getChainId() +" " +  fragmentLength);
-   }
-   
-   public void destroy(){
-      super.destroy();
-      
-      // avoid circular method calls from sub-sequences...
-      
-      if ( isDestroyed)
-         return;
-      
-      isDestroyed = true;
-      destroySequenceSegments();
-      backingSequence.destroy();
-      
-    
-      
-   }
-   
-   private void destroySequenceSegments(){
-      for (SequenceSegment s : sequenceSegments){
-         s.destroy();
-      }
-      sequenceSegments.clear();
-   }
-   
-   public String  toString(){
-      StringBuffer buf = new StringBuffer("SegmentedSequenceImpl: ");
-      buf.append(fragmentLength);
-      buf.append(" ");
-      buf.append(rns);
-      buf.append(" ");
-      buf.append(backingSequence);
-      buf.append(" ");
-      buf.append(getSequenceString());
-      return buf.toString();
-     
-   }
 
-   public String getChainId() {
-      return backingSequence.getChainId();
-   }
+    public static final int DEFAULT_FRAGMENT_LENGTH = 60;
+    private static final long serialVersionUID = 1L;
+    protected final List<SequenceSegment> sequenceSegments = new ArrayList<SequenceSegment>();
+    protected final Sequence backingSequence;
+    protected final ResidueNumberScheme rns;
+    protected int fragmentLength;
+    boolean isDestroyed = false;
 
-   public int getSegmentLength() {
-      return fragmentLength;
-   }
+    public SegmentedSequenceImpl(Sequence sequence, ResidueNumberScheme residueNumberScheme, int fragmentLength) {
+        super(sequence.getSequenceString());
+        //System.out.println("Segmenting " + sequence.getChainId() + " into frags of len " + fragmentLength);
+        if (sequence == null || residueNumberScheme == null) {
+            throw new NullPointerException();
+        }
+        this.fragmentLength = fragmentLength;
+        this.rns = residueNumberScheme;
+        this.backingSequence = sequence;
 
-   public void setSegmentLength(int fragmentLength) {
-      if(this.fragmentLength != fragmentLength)
-      {
-         this.fragmentLength = fragmentLength;
-         reInitFragmentLists();
-      }
-   }
+        reInitFragmentLists();
+        //System.out.println("done segmenting " + sequence.getChainId() +" " +  fragmentLength);
+    }
 
-   public List<SequenceSegment> getSequenceSegments() {
-      return sequenceSegments;
-   }
-   
-   // Regenerate fragment lists based on fragmentLength
-   protected void reInitFragmentLists() {
-      ensureResiduesInstantiated();
-      if(backingSequence == null || rns == null)
-      {
-         throw new NullPointerException();
-      }
-      
-      destroySequenceSegments();
-      
-      final int sequenceLength = backingSequence.getSequenceLength(rns);
-      assert sequenceLength > 0 : "Chain " + backingSequence + " has no residues!!";
-      final int numFragments   = ((sequenceLength - 1) / fragmentLength) + 1;
-      
-      ResidueId start = backingSequence.getFirstResidue(rns), end = start;
-      int counter = 1;
-      Iterator<ResidueId> residueIdIt = backingSequence.getResidueIds(rns).iterator();
-      while(residueIdIt.hasNext())
-      {
-         end = residueIdIt.next();
-         if(counter % fragmentLength == 0)
-         {
-            createFragment(start,end,fragmentLength, numFragments);
-            if(!end.getNext().isEndOfChainMarker()) // i don't like doing this
-            {
-               start = end.getNext(); // prepare for next fragment
+    public void destroy() {
+        super.destroy();
+
+        // avoid circular method calls from sub-sequences...
+
+        if (isDestroyed)
+            return;
+
+        isDestroyed = true;
+        destroySequenceSegments();
+        backingSequence.destroy();
+
+
+    }
+
+    private void destroySequenceSegments() {
+        for (SequenceSegment s : sequenceSegments) {
+            s.destroy();
+        }
+        sequenceSegments.clear();
+    }
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer("SegmentedSequenceImpl: ");
+        buf.append(fragmentLength);
+        buf.append(" ");
+        buf.append(rns);
+        buf.append(" ");
+        buf.append(backingSequence);
+        buf.append(" ");
+        buf.append(getSequenceString());
+        return buf.toString();
+
+    }
+
+    public String getChainId() {
+        return backingSequence.getChainId();
+    }
+
+    public int getSegmentLength() {
+        return fragmentLength;
+    }
+
+    public void setSegmentLength(int fragmentLength) {
+        if (this.fragmentLength != fragmentLength) {
+            this.fragmentLength = fragmentLength;
+            reInitFragmentLists();
+        }
+    }
+
+    public List<SequenceSegment> getSequenceSegments() {
+        return sequenceSegments;
+    }
+
+    // Regenerate fragment lists based on fragmentLength
+    protected void reInitFragmentLists() {
+        ensureResiduesInstantiated();
+        if (backingSequence == null || rns == null) {
+            throw new NullPointerException();
+        }
+
+        destroySequenceSegments();
+
+        final int sequenceLength = backingSequence.getSequenceLength(rns);
+        assert sequenceLength > 0 : "Chain " + backingSequence + " has no residues!!";
+        final int numFragments = ((sequenceLength - 1) / fragmentLength) + 1;
+
+        ResidueId start = backingSequence.getFirstResidue(rns), end = start;
+        int counter = 1;
+        Iterator<ResidueId> residueIdIt = backingSequence.getResidueIds(rns).iterator();
+        while (residueIdIt.hasNext()) {
+            end = residueIdIt.next();
+            if (counter % fragmentLength == 0) {
+                createFragment(start, end, fragmentLength, numFragments);
+                if (!end.getNext().isEndOfChainMarker()) // i don't like doing this
+                {
+                    start = end.getNext(); // prepare for next fragment
+                } else {
+                    assert !residueIdIt.hasNext() : "We should have reached the end of a chain";
+                }
             }
-            else
-            {
-               assert !residueIdIt.hasNext() : "We should have reached the end of a chain";
-            }
-         }
-         counter++;
-      }
-      if(sequenceLength % fragmentLength != 0)
-      {
-         createFragment(start, end, fragmentLength, numFragments);
-      }
-      
-      assert sequenceSegments.size() == numFragments;
-      
-   }
-   
-   private void createFragment(ResidueId start, ResidueId end, int maxLength, int numFragments)
-   {
-      int fragmentIdx = sequenceSegments.size() + 1;
-      SequenceSegment aFragment = new SequenceSegmentImpl(this, start, end, fragmentIdx, maxLength, numFragments);
-      sequenceSegments.add(aFragment);
-   }
-   
-   public ResidueNumberScheme getResidueNumberScheme() 
-   {
-      return rns;
-   }
+            counter++;
+        }
+        if (sequenceLength % fragmentLength != 0) {
+            createFragment(start, end, fragmentLength, numFragments);
+        }
 
-   @Override
-   public <T extends AnnotationGroup<?>> T getAnnotationGroup(Class<T> object) {
-      return backingSequence.getAnnotationGroup(object);
-   }
+        assert sequenceSegments.size() == numFragments;
 
-   public Collection<ResidueNumberScheme> getAvailableResidueNumberSchemes() {
-      return backingSequence.getAvailableResidueNumberSchemes();
-   }
+    }
 
-   public ResidueId getFirstResidue(ResidueNumberScheme aRns) {
-      return backingSequence.getFirstResidue(aRns);
-   }
+    private void createFragment(ResidueId start, ResidueId end, int maxLength, int numFragments) {
+        int fragmentIdx = sequenceSegments.size() + 1;
+        SequenceSegment aFragment = new SequenceSegmentImpl(this, start, end, fragmentIdx, maxLength, numFragments);
+        sequenceSegments.add(aFragment);
+    }
 
-   @Override
-   public Collection<ResidueId> getIdsForResidue(ResidueInfo r, ResidueNumberScheme aRns) {
-      return backingSequence.getIdsForResidue(r, aRns);
-   }
+    public ResidueNumberScheme getResidueNumberScheme() {
+        return rns;
+    }
 
-   @Override
-   public ResidueId getLastResidue(ResidueNumberScheme aRns) {
-      return backingSequence.getLastResidue(aRns);
-   }
+    @Override
+    public <T extends AnnotationGroup<?>> T getAnnotationGroup(Class<T> object) {
+        return backingSequence.getAnnotationGroup(object);
+    }
 
-   public PolymerType getPolymerType() {
-      return backingSequence.getPolymerType();
-   }
+    public Collection<ResidueNumberScheme> getAvailableResidueNumberSchemes() {
+        return backingSequence.getAvailableResidueNumberSchemes();
+    }
 
-   @Override
-   public ResidueId getResidueId(ResidueNumberScheme aRns, String idAsString) {
-      return backingSequence.getResidueId(aRns, idAsString);
-   }
+    public ResidueId getFirstResidue(ResidueNumberScheme aRns) {
+        return backingSequence.getFirstResidue(aRns);
+    }
 
-   @Override
-   public ResidueId getResidueId(ResidueNumberScheme aRns, Integer id) {
-      return backingSequence.getResidueId(aRns, id);
-   }
+    @Override
+    public Collection<ResidueId> getIdsForResidue(ResidueInfo r, ResidueNumberScheme aRns) {
+        return backingSequence.getIdsForResidue(r, aRns);
+    }
 
-   @Override
-   public ResidueId getResidueId(ResidueNumberScheme aRns, Integer id, Character insertionCode) {
-      return backingSequence.getResidueId(aRns, id, insertionCode);
-   }
+    @Override
+    public ResidueId getLastResidue(ResidueNumberScheme aRns) {
+        return backingSequence.getLastResidue(aRns);
+    }
 
-   @Override
-   public Collection<ResidueId> getResidueIds(ResidueNumberScheme aRns) {
-      return backingSequence.getResidueIds(aRns);
-   }
+    public PolymerType getPolymerType() {
+        return backingSequence.getPolymerType();
+    }
 
-   @Override
-   public Collection<ResidueId> getResidueIdsBetween(ResidueId start, ResidueId end) {
-      return backingSequence.getResidueIdsBetween(start, end);
-   }
+    @Override
+    public ResidueId getResidueId(ResidueNumberScheme aRns, String idAsString) {
+        return backingSequence.getResidueId(aRns, idAsString);
+    }
 
-   public int getSequenceLength() {
-      return backingSequence.getSequenceLength();
-   }
+    @Override
+    public ResidueId getResidueId(ResidueNumberScheme aRns, Integer id) {
+        return backingSequence.getResidueId(aRns, id);
+    }
 
-   public int getSequenceLength(ResidueNumberScheme aRns) {
-      return backingSequence.getSequenceLength(aRns);
-   }
+    @Override
+    public ResidueId getResidueId(ResidueNumberScheme aRns, Integer id, Character insertionCode) {
+        return backingSequence.getResidueId(aRns, id, insertionCode);
+    }
 
-   public String getSequenceString() {
-      return backingSequence.getSequenceString();
-   }
+    @Override
+    public Collection<ResidueId> getResidueIds(ResidueNumberScheme aRns) {
+        return backingSequence.getResidueIds(aRns);
+    }
 
-   public String getSequenceString(ResidueNumberScheme aRns) {
-      return backingSequence.getSequenceString(aRns);
-   }
+    @Override
+    public Collection<ResidueId> getResidueIdsBetween(ResidueId start, ResidueId end) {
+        return backingSequence.getResidueIdsBetween(start, end);
+    }
 
-   public String getStructureId() {
-      return backingSequence.getStructureId();
-   }
+    public int getSequenceLength() {
+        return backingSequence.getSequenceLength();
+    }
+
+    public int getSequenceLength(ResidueNumberScheme aRns) {
+        return backingSequence.getSequenceLength(aRns);
+    }
+
+    public String getSequenceString() {
+        return backingSequence.getSequenceString();
+    }
+
+    public String getSequenceString(ResidueNumberScheme aRns) {
+        return backingSequence.getSequenceString(aRns);
+    }
+
+    public String getStructureId() {
+        return backingSequence.getStructureId();
+    }
 
 //   @Override
 //   public boolean hasAnnotationGroup(AnnotationName object) {
 //      return chain.hasAnnotationGroup(object);
 //   }
 
-   @Override
-   public boolean hasResiduesIndexedBy(ResidueNumberScheme residueNumberScheme) {
-      return backingSequence.hasResiduesIndexedBy(residueNumberScheme);
-   }
+    @Override
+    public boolean hasResiduesIndexedBy(ResidueNumberScheme residueNumberScheme) {
+        return backingSequence.hasResiduesIndexedBy(residueNumberScheme);
+    }
 //
 //   public boolean isAnnotated() {
 //      return chain.getStatus() == ChainStatus.done;
 //   }
 
-   @Override
-   public Collection<AnnotationGroup<?>> getAnnotationGroupsWithData() {
-      return backingSequence.getAnnotationGroupsWithData();
-   }
+    @Override
+    public Collection<AnnotationGroup<?>> getAnnotationGroupsWithData() {
+        return backingSequence.getAnnotationGroupsWithData();
+    }
 
-   @Override
-   public Collection<AnnotationGroup<?>> getAvailableAnnotationGroups() {
-      return backingSequence.getAvailableAnnotationGroups();
-   }
+    @Override
+    public Collection<AnnotationGroup<?>> getAvailableAnnotationGroups() {
+        return backingSequence.getAvailableAnnotationGroups();
+    }
 
-   public void ensureAnnotated() {
-      backingSequence.ensureAnnotated();
-   }
-   
-   @Override
-   protected void ensureResiduesInstantiated()
-   {
-      // do nothing
-   }
+    public void ensureAnnotated() {
+        backingSequence.ensureAnnotated();
+    }
 
-   public ResidueNumberScheme getDefaultResidueNumberScheme() {
-      return backingSequence.getDefaultResidueNumberScheme();
-   }
+    @Override
+    protected void ensureResiduesInstantiated() {
+        // do nothing
+    }
 
-   public String getPdbChainId() {
-      return backingSequence.getPdbChainId();
-   }
+    public ResidueNumberScheme getDefaultResidueNumberScheme() {
+        return backingSequence.getDefaultResidueNumberScheme();
+    }
 
-   public String getExternalDbCode() {
-      return backingSequence.getExternalDbCode();
-   }
+    public String getPdbChainId() {
+        return backingSequence.getPdbChainId();
+    }
 
-   public String getExternalDbName() {
-      return backingSequence.getExternalDbName();
-   }
+    public String getExternalDbCode() {
+        return backingSequence.getExternalDbCode();
+    }
 
-   public SequenceCollection getSequenceCollection() {
-      return backingSequence.getSequenceCollection();
-   }
+    public String getExternalDbName() {
+        return backingSequence.getExternalDbName();
+    }
 
-   public Sequence getOriginalSequence() {
-      return backingSequence;
-   }
+    public SequenceCollection getSequenceCollection() {
+        return backingSequence.getSequenceCollection();
+    }
 
-   public int getSegmentCount() {
-      return sequenceSegments.size();
-   }
+    public Sequence getOriginalSequence() {
+        return backingSequence;
+    }
 
-   @Override
-   public int hashCode() {
-      final int PRIME = 31;
-      int result = super.hashCode();
-      result = PRIME * result + fragmentLength;
-      result = PRIME * result + ((rns == null) ? 0 : rns.hashCode());
-      return result;
-   }
+    public int getSegmentCount() {
+        return sequenceSegments.size();
+    }
 
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj)
-         return true;
-      if (!super.equals(obj))
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      final SegmentedSequenceImpl other = (SegmentedSequenceImpl) obj;
-      if (fragmentLength != other.fragmentLength)
-         return false;
-      if (rns == null) {
-         if (other.rns != null)
+    @Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = super.hashCode();
+        result = PRIME * result + fragmentLength;
+        result = PRIME * result + ((rns == null) ? 0 : rns.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
             return false;
-      } else if (!rns.equals(other.rns))
-         return false;
-      return true;
-   }
+        if (getClass() != obj.getClass())
+            return false;
+        final SegmentedSequenceImpl other = (SegmentedSequenceImpl) obj;
+        if (fragmentLength != other.fragmentLength)
+            return false;
+        if (rns == null) {
+            if (other.rns != null)
+                return false;
+        } else if (!rns.equals(other.rns))
+            return false;
+        return true;
+    }
 
-   public Chain getChain() {
-      return backingSequence.getChain();
-   }
-   
-   
+    public Chain getChain() {
+        return backingSequence.getChain();
+    }
+
+
 }

@@ -8,89 +8,86 @@ import org.rcsb.sequence.model.Sequence;
 
 public class SpacerDrawer implements Drawer {
 
-   private final int spacerHeightPx;
-   private final ImageMapData mapData;
+    private final int spacerHeightPx;
+    private final ImageMapData mapData;
 
-   public SpacerDrawer(final int spacerHeightPx)
-   {
-      this.spacerHeightPx = spacerHeightPx;
-      this.mapData = new ImageMapData("spacer", spacerHeightPx)
-      {
-         private static final long serialVersionUID = 1L;
+    public SpacerDrawer(final int spacerHeightPx) {
+        this.spacerHeightPx = spacerHeightPx;
+        this.mapData = new ImageMapData("spacer", spacerHeightPx) {
+            private static final long serialVersionUID = 1L;
 
-         @Override
-         public void populateImageMapData() {
-            // do nothing
-         }
-      };
-   }
-   
-   public boolean canRenderAnnotation(AnnotationName annotationName) {
-      unsupported();
-      return false;
-   }
+            @Override
+            public void populateImageMapData() {
+                // do nothing
+            }
+        };
+    }
 
-   public void generateDataForHtml() {
-      unsupported();
-   }
+    public boolean canRenderAnnotation(AnnotationName annotationName) {
+        unsupported();
+        return false;
+    }
 
-   public void draw(Graphics2D g2, int offset) {
-      // do nothing
-   }
+    public void generateDataForHtml() {
+        unsupported();
+    }
 
-   public int getFontSize() {
-      unsupported();
-      return 0;
-   }
-   
-   public ImageMapData getHtmlMapData() {
-      return mapData;
-   }
+    public void draw(Graphics2D g2, int offset) {
+        // do nothing
+    }
 
-   public int getImageHeightPx() {
-      return spacerHeightPx;
-   }
+    public int getFontSize() {
+        unsupported();
+        return 0;
+    }
 
-   public int getImageWidthPx() {
-      unsupported();
-      return 0;
-   }
+    public void setFontSize(int size) {
+        unsupported();
+    }
 
-   public int getNumResidues() {
-      unsupported();
-      return -1;
-   }
+    public ImageMapData getHtmlMapData() {
+        return mapData;
+    }
 
-   public ResidueNumberScheme getResidueNumberScheme() {
-      unsupported();
-      return null;
-   }
+    public int getImageHeightPx() {
+        return spacerHeightPx;
+    }
 
-   public int getResidueWidthPx() {
-      unsupported();
-      return -1;
-   }
+    public int getImageWidthPx() {
+        unsupported();
+        return 0;
+    }
 
-   public Sequence getSequence() {
-      unsupported();
-      return null;
-   }
+    public int getNumResidues() {
+        unsupported();
+        return -1;
+    }
 
-   public void setFontSize(int size) {
-      unsupported();
-   }
+    public ResidueNumberScheme getResidueNumberScheme() {
+        unsupported();
+        return null;
+    }
 
-   public void setResidueNumberScheme(ResidueNumberScheme rns) {
-      unsupported();
-   }
+    public void setResidueNumberScheme(ResidueNumberScheme rns) {
+        unsupported();
+    }
 
-   public void setSequence(Sequence sequence) {
-      unsupported();
-   }
-   
-   private void unsupported()
-   {
-      throw new UnsupportedOperationException("This instance of Renderable is a spacer -- never rendered. Adding any properties to it is not supported.");
-   }
+    public int getResidueWidthPx() {
+        unsupported();
+        return -1;
+    }
+
+    public Sequence getSequence() {
+        unsupported();
+        return null;
+    }
+
+    public void setSequence(Sequence sequence) {
+        unsupported();
+    }
+
+    private void unsupported() {
+        throw new UnsupportedOperationException("This instance of Renderable is a spacer -- never rendered. Adding any properties to it is not supported.");
+    }
 
 }
