@@ -24,27 +24,19 @@
 
 package org.rcsb.sequence.view.multiline;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import org.biojava.nbio.protmod.ModificationCategory;
+import org.biojava.nbio.protmod.ProteinModification;
+import org.rcsb.sequence.util.AnnotationConstants;
+
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.biojava.nbio.protmod.ModificationCategory;
-import org.biojava.nbio.protmod.ProteinModification;
-import org.rcsb.sequence.util.AnnotationConstants;
 
 
 public class ProtModLegendDrawer implements Drawer {
@@ -167,8 +159,19 @@ public class ProtModLegendDrawer implements Drawer {
         multiLineText = new HashMap<ProteinModification, List<TextLayout>>(protmods.size());
 
         for (ProteinModification mod : protmods) {
-            AttributedString attributedString = new AttributedString(mod.getDescription());
 
+            StringBuffer b = new StringBuffer();
+
+            b.append(mod.getPdbccName());
+            if(mod.getResidName() != null && !mod.getResidName().equals("")){
+                if(b.length() > 0) b.append(" - ");
+                b.append(mod.getResidName());
+            }else if(mod.getPsimodName() != null && !mod.getPsimodName().equals("")) {
+                if(b.length() > 0) b.append(" - ");
+                b.append(mod.getPsimodName());
+            }
+
+            AttributedString attributedString = new AttributedString(b.toString());
 
             AttributedCharacterIterator characterIterator = attributedString.getIterator();
             FontRenderContext fontRenderContext = g2.getFontRenderContext();

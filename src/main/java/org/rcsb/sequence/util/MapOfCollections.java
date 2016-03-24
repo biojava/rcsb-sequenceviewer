@@ -238,7 +238,7 @@ public class MapOfCollections<K, V> implements Map<K, Collection<V>>, Serializab
         return theMap.remove(key);
     }
 
-    public boolean remove(K key, V value) {
+/*    public boolean remove(K key, V value) {
         Collection<V> c = theMap.get(key);
         boolean removed = false;
         if (c != null) {
@@ -246,7 +246,7 @@ public class MapOfCollections<K, V> implements Map<K, Collection<V>>, Serializab
             if (c.size() == 0) remove(key); // if the collection is now empty go ahead and remove it from the map
         }
         return removed;
-    }
+    }*/
 
     public Iterator<V> iterator(K key) {
         Collection<V> col = get(key);
@@ -334,16 +334,24 @@ public class MapOfCollections<K, V> implements Map<K, Collection<V>>, Serializab
     }
 
     public Collection<V> getCollectionInstance() {
-        Collection<V> c;
+        Collection<V> c = null;
         try {
             if (comparator != null) {
-                c = collectionClass.getConstructor(INSTANTIATE_SORTED_SET).newInstance(comparator);
-            } else {
-                c = collectionClass.newInstance();
+                Object obj = collectionClass.getConstructor(INSTANTIATE_SORTED_SET).newInstance(comparator);
+                if(obj instanceof Collection){
+                    c = (Collection<V>)obj;
+                }
             }
+
+            if(c == null){
+                c = collectionClass.newInstance();
+
+            }
+
         } catch (Exception e) {
             throw new RuntimeException("Could not instantiate Collection implementation " + collectionClass.getCanonicalName());
         }
+
         return c;
     }
 
