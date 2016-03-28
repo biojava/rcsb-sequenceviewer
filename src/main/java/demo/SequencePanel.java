@@ -1,10 +1,5 @@
 package demo;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JPanel;
-
 import org.rcsb.sequence.biojavadao.BioJavaPubMedFactory;
 import org.rcsb.sequence.biojavadao.BioJavaResidueInfoFactory;
 import org.rcsb.sequence.biojavadao.BioJavaSequenceCollectionFactory;
@@ -21,6 +16,10 @@ import org.rcsb.sequence.view.html.ViewParameters;
 import org.rcsb.sequence.view.multiline.SequenceImage;
 import org.rcsb.sequence.view.oneline.Annotation2SingleLineDrawer;
 import org.rcsb.sequence.view.oneline.OneLineView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class SequencePanel {
 
@@ -51,6 +50,9 @@ public class SequencePanel {
         // culprit: 1htr???
         String pdbId = "5GDS";
         String chainId = "H";
+
+        //String pdbId = "4D3C";
+        //String chainId = "A";
 
         //String pdbId3 = "3KOB"; //
         //String chainId3 = "B";
