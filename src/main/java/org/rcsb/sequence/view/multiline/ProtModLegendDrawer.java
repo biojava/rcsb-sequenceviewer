@@ -24,6 +24,7 @@
 
 package org.rcsb.sequence.view.multiline;
 
+import org.apache.commons.lang3.StringUtils;
 import org.biojava.nbio.protmod.ModificationCategory;
 import org.biojava.nbio.protmod.ProteinModification;
 import org.rcsb.sequence.util.AnnotationConstants;
@@ -162,12 +163,12 @@ public class ProtModLegendDrawer implements Drawer {
 
             StringBuffer b = new StringBuffer();
 
-            if(mod.getPdbccName() != null && !mod.getPdbccName().equals("")) b.append(mod.getPdbccName());
+            if(StringUtils.isNotBlank(mod.getPdbccName())) b.append(mod.getPdbccName());
 
-            if(mod.getResidName() != null && !mod.getResidName().equals("")){
+            if(StringUtils.isNotBlank(mod.getResidName())){
                 if(b.length() > 0) b.append(" - ");
                 b.append(mod.getResidName());
-            }else if(mod.getPsimodName() != null && !mod.getPsimodName().equals("")) {
+            }else if(StringUtils.isNotBlank(mod.getPsimodName())) {
                 if(b.length() > 0) b.append(" - ");
                 b.append(mod.getPsimodName());
             }

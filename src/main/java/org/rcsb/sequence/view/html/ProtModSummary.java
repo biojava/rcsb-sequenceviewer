@@ -24,6 +24,7 @@
 
 package org.rcsb.sequence.view.html;
 
+import org.apache.commons.lang3.StringUtils;
 import org.biojava.nbio.protmod.ProteinModification;
 import org.biojava.nbio.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.annotations.ProtModValue;
@@ -80,23 +81,31 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
 
         ProteinModification mod = mc.getModification();
 
-        b.append(mod.getDescription());
+        if(StringUtils.isNotBlank(mod.getPdbccName())) b.append(mod.getPdbccName());
 
-        if (mod.getResidId() != null) {
+        if(StringUtils.isNotBlank(mod.getResidName())){
+            if(b.length() > 0) b.append(" - ");
+            b.append(mod.getResidName());
+        }else if(StringUtils.isNotBlank(mod.getPsimodName())) {
+            if(b.length() > 0) b.append(" - ");
+            b.append(mod.getPsimodName());
+        }
+
+        if (StringUtils.isNotBlank(mod.getResidId())) {
             b.append(" <i>RESID</i>:<a target=\"_blank\" href=\"http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?&#45;newId&#43;[RESID:'");
             b.append(mod.getResidId());
             b.append("']&#43;&#45;view&#43;ResidEntry&#43;&#45;page&#43;qResult\">");
             b.append(mod.getResidId());
             b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></span></a>");
         }
-        if (mod.getPsimodId() != null) {
+        if (StringUtils.isNotBlank(mod.getPsimodId())) {
             b.append(" <i>PSI-MOD</i>:<a target=\"_blank\" href=\"http://www.ebi.ac.uk/ontology-lookup/?termId=");
             b.append(mod.getPsimodId());
             b.append("\">");
             b.append(mod.getPsimodId());
             b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></span></a>");
         }
-        if (mod.getPdbccId() != null) {
+        if (StringUtils.isNotBlank(mod.getPdbccId())) {
             b.append(" <i>PDB</i>:<a href=\"http://www.pdb.org/pdb/ligand/ligandsummary.do?hetId=");
             b.append(mod.getPdbccId());
             b.append("\">");
