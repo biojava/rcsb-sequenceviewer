@@ -92,15 +92,15 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
         }
 
         if (StringUtils.isNotBlank(mod.getResidId())) {
-            b.append(" <i>RESID</i>:<a target=\"_blank\" href=\"http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?&#45;newId&#43;[RESID:'");
+            b.append(" <i>RESID</i>:<a target=\"_blank\" href=\"http://pir.georgetown.edu/cgi-bin/resid?id=");
             b.append(mod.getResidId());
-            b.append("']&#43;&#45;view&#43;ResidEntry&#43;&#45;page&#43;qResult\">");
+            b.append("\">");
             b.append(mod.getResidId());
             b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></span></a>");
         }
         if (StringUtils.isNotBlank(mod.getPsimodId())) {
-            b.append(" <i>PSI-MOD</i>:<a target=\"_blank\" href=\"http://www.ebi.ac.uk/ontology-lookup/?termId=");
-            b.append(mod.getPsimodId());
+            b.append(" <i>PSI-MOD</i>:<a target=\"_blank\" href=\"http://www.ebi.ac.uk/ols/ontologies/mod/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F");
+            b.append(mod.getPsimodId().replace(":", "_"));
             b.append("\">");
             b.append(mod.getPsimodId());
             b.append("<span title=\"external link\" class=\"iconSet-main icon-external\"></span></a>");
