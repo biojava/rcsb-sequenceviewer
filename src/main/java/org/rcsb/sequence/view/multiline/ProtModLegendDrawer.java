@@ -94,8 +94,15 @@ public class ProtModLegendDrawer implements Drawer {
 
             List<TextLayout> textLayouts = multiLineText.get(mod);
 
-            float lineHeight = textLayouts.get(0).getAscent()
-                    + textLayouts.get(0).getDescent() + textLayouts.get(0).getLeading();
+            float lineHeight = 15;
+
+            if ( textLayouts != null) {
+
+                lineHeight = textLayouts.get(0).getAscent()
+                        + textLayouts.get(0).getDescent() + textLayouts.get(0).getLeading();
+
+            }
+
             int yMid = yOffset + height + (int) lineHeight / 2;
 
             modDrawerUtil.drawProtMod(g2, mod, 2 * fontSize,
@@ -118,6 +125,9 @@ public class ProtModLegendDrawer implements Drawer {
             }
 
 
+            if ( textLayouts == null)
+                continue;
+
             height += drawMultiLineText(g2, textLayouts, some_factor * fontSize, yOffset + height);
         }
 
@@ -134,6 +144,10 @@ public class ProtModLegendDrawer implements Drawer {
         Color c = g2.getColor();
         g2.setColor(Color.black);
         for (TextLayout textLayout : textLayouts) {
+
+            if ( textLayout == null)
+                continue;
+
             deltaY += textLayout.getAscent();
             textLayout.draw(g2, xOffset, yOffset + deltaY);
             deltaY += textLayout.getDescent() + textLayout.getLeading();
@@ -153,9 +167,15 @@ public class ProtModLegendDrawer implements Drawer {
         int xOffset = some_factor * font.getSize();
 
         if (protmods == null) {
+
+            /// probably a site record ??
             System.err.println("!! ProtModLegendDrawer: protMods == null");
             protmods = new TreeSet<ProteinModification>();
+
+
         }
+
+
 
         multiLineText = new HashMap<ProteinModification, List<TextLayout>>(protmods.size());
 

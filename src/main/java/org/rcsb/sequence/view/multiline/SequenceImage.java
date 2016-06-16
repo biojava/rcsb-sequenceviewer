@@ -187,6 +187,9 @@ public class SequenceImage extends AbstractSequenceImage {
             if (modDrawerUtil == null)
                 modDrawerUtil = new ProtModDrawerUtil();
             Set<ProteinModification> protMods = getProtMods(siteClass);
+
+           // System.out.println(protMods);
+
             ProtModLegendDrawer modLegendDrawer = new ProtModLegendDrawer(modDrawerUtil, getFont(), getImageWidth(), protMods, AnnotationConstants.siteRecord);
             yOffset += addRenderable(modLegendDrawer, AnnotationConstants.siteRecord);
 
