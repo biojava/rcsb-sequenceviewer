@@ -48,11 +48,11 @@ public class SequencePanel {
 
 
         // culprit: 1htr???
-        String pdbId = "5GDS";
-        String chainId = "H";
+//        String pdbId = "4JNA";
+//        String chainId = "H";
 
-        //String pdbId = "4D3C";
-        //String chainId = "A";
+        String pdbId = "4D3C";
+        String chainId = "A";
 
         //String pdbId3 = "3KOB"; //
         //String chainId3 = "B";

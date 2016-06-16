@@ -44,7 +44,7 @@ public class ImageWrapper {
 
         JFrame frame = new JFrame("Display image " + pdbId + "." + chainId);
 
-        JMenuBar menu = MenuCreator.getAlignmentTextMenu(frame, panel, null);
+        JMenuBar menu = MenuCreator.getAlignmentTextMenu(frame, panel, null,null);
         frame.setJMenuBar(menu);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(scroll);
@@ -82,7 +82,7 @@ public class ImageWrapper {
         params.setAnnotations(newAnnos);
 
 //		view.setAnnotationDrawMapper(a2h);
-        System.out.println("seq: " + s.getSequenceLength());
+       // System.out.println("seq: " + s.getSequenceLength());
 
 
         ChainView view = new ChainView(s, params);

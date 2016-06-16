@@ -173,6 +173,9 @@ public class ProtModLegendDrawer implements Drawer {
                 b.append(mod.getPsimodName());
             }
 
+            if ( b.length() == 0)
+                continue;
+
             AttributedString attributedString = new AttributedString(b.toString());
 
             AttributedCharacterIterator characterIterator = attributedString.getIterator();

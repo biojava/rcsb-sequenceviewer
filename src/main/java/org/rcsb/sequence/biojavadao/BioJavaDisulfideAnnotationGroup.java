@@ -3,10 +3,11 @@ package org.rcsb.sequence.biojavadao;
 import static org.rcsb.sequence.conf.AnnotationClassification.strdom;
 import static org.rcsb.sequence.model.ResidueNumberScheme.SEQRES;
 
-import java.util.List;
 
+import org.biojava.nbio.structure.Bond;
 import org.biojava.nbio.structure.Chain;
-import org.biojava.nbio.structure.SSBond;
+import org.biojava.nbio.structure.ResidueNumber;
+import org.biojava.nbio.structure.io.SSBondImpl;
 import org.rcsb.sequence.annotations.DisulphideValue;
 import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
@@ -17,6 +18,8 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.model.SequenceCollection;
 import org.rcsb.sequence.util.AnnotationConstants;
+
+import java.util.List;
 
 public class BioJavaDisulfideAnnotationGroup
         extends AbstractAnnotationGroup<ResidueId> implements DisulfideAnnotationGroup {
@@ -49,17 +52,27 @@ public class BioJavaDisulfideAnnotationGroup
         ResidueId rid1, rid2;
         Chain bj = proxy.getBJChain();
 
-        List<SSBond> ssbonds = bj.getParent().getSSBonds();
-        for (SSBond bond : ssbonds) {
-            if (bond.getChainID1().equals(bj.getChainID()) || bond.getChainID2().equals(bj.getChainID())) {
+        List<Bond> ssbonds = bj.getStructure().getSSBonds();
+        for (Bond bond : ssbonds) {
 
-                // have to add one since the internal coord sys is starting at 1
-                int seqId1 = proxy.getSeqPosition(bond.getResnum1(), bond.getInsCode1()) + 1;
-                int seqId2 = proxy.getSeqPosition(bond.getResnum2(), bond.getInsCode2()) + 1;
+            String chainID1 = bond.getAtomA().getGroup().getChain().getChainID();
+            String chainID2 = bond.getAtomB().getGroup().getChain().getChainID();
 
+            if (chainID1.equals(bj.getChainID()) || chainID2.equals(bj.getChainID())) {
 
-                rid1 = getResidueId(null, bond.getChainID1(), seqId1);
-                rid2 = getResidueId(null, bond.getChainID2(), seqId2);
+                // have to add 1 since the internal coord sys is starting at 1
+
+                ResidueNumber res1 = bond.getAtomA().getGroup().getResidueNumber();
+                ResidueNumber res2 = bond.getAtomB().getGroup().getResidueNumber();
+
+                //int seqId1 = proxy.getSeqPosition(Integer.toString(res1.getSeqNum()), Character.toString(res1.getInsCode())) + 1;
+                //int seqId2 = proxy.getSeqPosition(Integer.toString(res2.getSeqNum()), Character.toString(res2.getInsCode())) + 1;
+
+                int seqId1 = res1.getSeqNum()+1;
+                int seqId2 = res2.getSeqNum()+1;
+
+                rid1 = getResidueId(null, chainID1, seqId1);
+                rid2 = getResidueId(null, chainID2, seqId2);
 
                 maybeAddAnnotation(rid1, rid2, -99f);
                 maybeAddAnnotation(rid2, rid1, -99f);

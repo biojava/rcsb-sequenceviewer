@@ -16,7 +16,7 @@ public class BioJavaSequenceCollectionFactory implements
 
         FileParsingParameters params = new FileParsingParameters();
         params.setAlignSeqRes(true);
-        params.setLoadChemCompInfo(true);
+        //params.setLoadChemCompInfo(true);
         params.setHeaderOnly(false);
         params.setParseSecStruc(true);
         params.setUpdateRemediatedFiles(true);

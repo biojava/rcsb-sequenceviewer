@@ -9,6 +9,8 @@ import org.biojava.nbio.structure.AminoAcid;
 import org.biojava.nbio.structure.AminoAcidImpl;
 import org.biojava.nbio.structure.Group;
 import org.biojava.nbio.structure.io.PDBFileParser;
+import org.biojava.nbio.structure.secstruc.SecStrucInfo;
+import org.biojava.nbio.structure.secstruc.SecStrucType;
 import org.rcsb.sequence.annotations.SecondaryStructureType;
 import org.rcsb.sequence.annotations.SecondaryStructureValue;
 import org.rcsb.sequence.conf.AnnotationClassification;
@@ -59,12 +61,13 @@ public class BioJavaSecStrucAnnotationGroup
 
                 if (!aa.getAtoms().isEmpty()) {
                     currPos = g.getResidueNumber().getSeqNum();
-                    Map<String, String> secStruc = aa.getSecStruc();
 
+                    if ( g.getProperty(Group.SEC_STRUC)  != null ){
 
-                    s = secStruc.get(PDBFileParser.PDB_AUTHOR_ASSIGNMENT);
-                    if (s == null)
-                        s = " ";
+                        SecStrucInfo ss = (SecStrucInfo) g.getProperty(Group.SEC_STRUC);
+
+                        s = ss.getAssignment();
+                    }
                 }
 
                 if (prevSecStr == null) {
@@ -98,9 +101,9 @@ public class BioJavaSecStrucAnnotationGroup
         if (prevSecStr.equals(" "))
             addAnnotation(new SecondaryStructureValue(SecondaryStructureType.empty), start, end);
         else {
-            if (prevSecStr.equals(PDBFileParser.STRAND)) {
+            if (prevSecStr.equals(SecStrucType.extended)) {
                 addAnnotation(new SecondaryStructureValue(SecondaryStructureType.E), start, end);
-            } else if (prevSecStr.equals(PDBFileParser.HELIX)) {
+            } else if (prevSecStr.equals(SecStrucType.helix4)) {
                 addAnnotation(new SecondaryStructureValue(SecondaryStructureType.H), start, end);
             }
         }

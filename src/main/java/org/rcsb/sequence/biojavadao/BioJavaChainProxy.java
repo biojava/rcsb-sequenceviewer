@@ -87,7 +87,7 @@ public class BioJavaChainProxy extends AbstractSequence implements Chain {
         for (Group g : groups) {
             i++;
             if (g.getResidueNumber() != null) {
-                if (g.getResidueNumber().equals(code)) {
+                if (g.getResidueNumber().toString().equals(code)) {
                     return i;
                 }
             }

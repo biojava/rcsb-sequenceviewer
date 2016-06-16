@@ -24,11 +24,11 @@
 
 
     <properties>
-        <jdk.version>1.6</jdk.version>
+        <jdk.version>1.7</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
         <maxmem>512M</maxmem>
-        <biojava.version>4.0.0</biojava.version>
+        <biojava.version>4.2.2</biojava.version>
     </properties>
 
 	<dependencies>

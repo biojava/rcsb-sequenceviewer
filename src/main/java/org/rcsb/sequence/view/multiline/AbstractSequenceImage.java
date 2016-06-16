@@ -18,6 +18,9 @@ import org.rcsb.sequence.util.ResourceManager;
 
 
 public abstract class AbstractSequenceImage implements SequenceImageIF {
+
+    public static final Integer MINIMUM_IMG_WIDTH = 250;
+
     public static final String SEQUENCE = "sequence";
     public static final String LOWER_RULER = "lowerRuler";
     public static final String UPPER_RULER = "upperRuler";
@@ -92,7 +95,6 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
         this.fontHeight = fontMetrics.getHeight();
         this.fontAscent = fontMetrics.getAscent();
         this.fontWidth = fontMetrics.charWidth('W') - 1;
-        //this.fontWidth   = fontMetrics.getMaxAdvance();
 
         this.smallFontSize = (int) (fontSize * 0.75);
 
@@ -104,19 +106,18 @@ public abstract class AbstractSequenceImage implements SequenceImageIF {
         this.smallFontWidth = smallFontMetrics.charWidth('A');
 
         this.numCharsInKey = numCharsInKey;
-        //System.out.println("fontsize: " + fontSize + " "  + fontWidth + " test: " + fontWidth * numCharsInKey / 2);
-        //this.imageWidthOffset = 100;
-        this.imageWidthOffset = fontWidth * numCharsInKey / 2;
-        //this.imageWidthOffset  = (FOR_FONT_METRICS.getFontMetrics(smallFont).charWidth('W')+1) * numCharsInKey;
 
-        //System.out.println("setting imageWidthOffset " + imageWidthOffset  + " numCharks: " + numCharsInKey);
+        this.imageWidthOffset = fontWidth * numCharsInKey / 2;
         this.imageOffsetBuffer = 0;
 
-        // imageWidth = space for the key + font width in pixels * maximum number of residues
-        if (sequences.size() > 0) {
+         if (sequences.size() > 0) {
             this.imageWidth = imageWidthOffset + fontWidth * sequences.get(0).getSequenceLength();
         } else {
             this.imageWidth = imageWidthOffset + fontWidth;
+        }
+
+        if ( this.imageWidth < MINIMUM_IMG_WIDTH) {
+            this.imageWidth = MINIMUM_IMG_WIDTH;
         }
 
 
