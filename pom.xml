@@ -8,20 +8,12 @@
 
 	<url>http://www.rcsb.org</url>
 	<scm>
-		<connection>scm:svn:svn://code.open-bio.org/biojava/RCSB_SequenceViewer/trunk</connection>
-		<developerConnection>scm:svn:svn+ssh://dev.open-bio.org/home/svn-repositories/biojava/RCSB_SequenceViewer/trunk</developerConnection>
-		<url>http://code.open-bio.org/svnweb/index.cgi/biojava/browse/RCSB_SequenceViewer/trunk</url>
-	</scm>
-	<distributionManagement>		
-		<downloadUrl>http://www.biojava.org/download/maven/</downloadUrl>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>biojava-maven-repo</id>
-			<name>BioJava Maven Repository</name>
-			<url>scp://cloudportal.open-bio.org/home/websites/biojava.org/html/static/download/maven/</url>
-		</repository>
-	</distributionManagement>
+		<connection>scm:git:git://github.com/rcsb/rcsb-sequenceviewer.git</connection>
+		<developerConnection>scm:git:git@github.com:rcsb/rcsb-sequenceviewer.git</developerConnection>
+		<url>https://github.com/rcsb/rcsb-sequenceviewer</url>
 
+		<tag>HEAD</tag>
+	</scm>
 
     <properties>
         <jdk.version>1.7</jdk.version>
@@ -106,7 +98,6 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.1</version>
 					<configuration>
-						<tagBase>svn+ssh://dev.open-bio.org/home/svn-repositories/biojava/RCSB_SequenceViewer/tags</tagBase>
 						<remoteTagging>true</remoteTagging>
 						<preparationGoals>clean install</preparationGoals>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
