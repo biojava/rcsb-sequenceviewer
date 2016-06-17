@@ -1,15 +1,9 @@
 package org.rcsb.sequence.biojavadao;
 
-
-import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
-
-import java.util.Map;
-
-import org.biojava.nbio.structure.AminoAcid;
-import org.biojava.nbio.structure.AminoAcidImpl;
-import org.biojava.nbio.structure.Group;
-import org.biojava.nbio.structure.io.PDBFileParser;
+import org.biojava.nbio.structure.*;
+import org.biojava.nbio.structure.secstruc.SecStrucCalc;
 import org.biojava.nbio.structure.secstruc.SecStrucInfo;
+import org.biojava.nbio.structure.secstruc.SecStrucTools;
 import org.biojava.nbio.structure.secstruc.SecStrucType;
 import org.rcsb.sequence.annotations.SecondaryStructureType;
 import org.rcsb.sequence.annotations.SecondaryStructureValue;
@@ -22,34 +16,48 @@ import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.util.AnnotationConstants;
 
-public class BioJavaSecStrucAnnotationGroup
-        extends AbstractAnnotationGroup<String> {
+import java.util.List;
 
-    public static final String annotationName = AnnotationConstants.authorSecStruc;
+import static org.rcsb.sequence.model.ResidueNumberScheme.ATOM;
+
+/**
+ * Created by ap3 on 17/06/2016.
+ */
+public class BioJavaDsspAnnotationGroup extends AbstractAnnotationGroup<String> {
+
+    public static final String annotationName = AnnotationConstants.DSSP;
     /**
      *
      */
     private static final long serialVersionUID = -1698453992883973704L;
     BioJavaChainProxy proxy;
 
-    public BioJavaSecStrucAnnotationGroup(Sequence chain) {
+    public BioJavaDsspAnnotationGroup(Sequence chain) {
         super(AnnotationClassification.secstr, AnnotationRegistry.getAnnotationByName(annotationName), ResidueNumberScheme.SEQRES, chain);
     }
 
-    public BioJavaSecStrucAnnotationGroup(BioJavaChainProxy chain, AnnotationClassification ac, AnnotationName name) {
+    public BioJavaDsspAnnotationGroup(BioJavaChainProxy chain, AnnotationClassification ac, AnnotationName name) {
 
         super(ac, name, ResidueNumberScheme.SEQRES, chain);
         this.proxy = chain;
     }
 
+
     @Override
     protected void constructAnnotationsImpl() throws Exception {
+
+        Structure structure  = proxy.getBJChain().getStructure();
+
+        SecStrucCalc calc = new SecStrucCalc();
+
+        calc.calculate(structure,true);
 
         SecStrucType prevSecStr = null;
         int prevStart = -1;
         int prevEnd = -1;
         int currPos = -1;
-        for (Group g : proxy.getBJChain().getSeqResGroups()) {
+
+        for (Group g : proxy.getBJChain().getAtomGroups()) {
 
 //			currPos++;
 
@@ -98,15 +106,17 @@ public class BioJavaSecStrucAnnotationGroup
 
         ResidueId start = getResidueId(prevStart);
         ResidueId end = getResidueId(prevEnd);
-        if (prevSecStr.equals(" "))
+
+        if (prevSecStr.equals(SecStrucType.coil) )
             addAnnotation(new SecondaryStructureValue(SecondaryStructureType.empty), start, end);
-        else {
-            if (prevSecStr.equals(SecStrucType.extended)) {
+        else if (prevSecStr.equals(SecStrucType.extended)) {
                 addAnnotation(new SecondaryStructureValue(SecondaryStructureType.E), start, end);
-            } else if (prevSecStr.equals(SecStrucType.helix4)) {
+        } else if (prevSecStr.equals(SecStrucType.helix4)) {
                 addAnnotation(new SecondaryStructureValue(SecondaryStructureType.H), start, end);
-            }
+        } else if ( prevSecStr.equals(SecStrucType.bend)){
+                addAnnotation(new SecondaryStructureValue(SecondaryStructureType.B), start, end);
         }
+
         //System.out.println(" now got " + annotations.size()  + " annotations " + getAnnotationCount() + " " + getAnnotationValueCount());
     }
 

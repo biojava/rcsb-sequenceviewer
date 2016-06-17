@@ -20,7 +20,10 @@ public class BioJavaSequenceCollectionFactory implements
         params.setHeaderOnly(false);
         params.setParseSecStruc(true);
         params.setUpdateRemediatedFiles(true);
-        params.setParseSecStruc(true);
+
+        cache.setUseMmCif(false);
+
+
 
 
 

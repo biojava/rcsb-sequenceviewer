@@ -37,6 +37,7 @@ import org.rcsb.sequence.model.ResidueId;
 import org.rcsb.sequence.model.ResidueInfo;
 import org.rcsb.sequence.model.ResidueNumberScheme;
 import org.rcsb.sequence.model.SequenceCollection;
+import org.rcsb.sequence.util.AnnotationConstants;
 
 //import org.biojava.bio.structure.StructureTools;
 
@@ -249,28 +250,13 @@ public class BioJavaChainProxy extends AbstractSequence implements Chain {
 
         // build up annotation groups for
 
-        // secondary structure
-        // TODO...
 
-        AnnotationClassification cla = AnnotationClassification.secstr;
-        //Reference ssref1 = new Reference(-1L);
-        List<Reference> authorRef = new ArrayList<Reference>();
-        AnnotationName secName = new AnnotationName(
-                cla,
-                BioJavaSecStrucAnnotationGroup.annotationName,
-                "Author",
-                authorRef,
-                BioJavaSecStrucAnnotationGroup.class,
-                PolymerType.PROTEIN_ONLY);
 
-        AnnotationRegistry.registerAnnotation(secName);
-        BioJavaSecStrucAnnotationGroup secanno = new BioJavaSecStrucAnnotationGroup(this, cla, secName);
-        try {
-            secanno.constructAnnotations();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        addAnnotationGroup(secanno);
+
+
+        ///
+
+
 
 
         List<Reference> scopRefs = new ArrayList<Reference>();
@@ -353,10 +339,61 @@ public class BioJavaChainProxy extends AbstractSequence implements Chain {
         }
         addAnnotationGroup(siteG);
 
-//		// disulfid bridges..
+//		// DSSP as assigned by BioJava
 //
-//		AnnotationClassification ac = AnnotationClassification.structuralFeature;
-//		Reference ssref = new Reference(-1L);
+        AnnotationClassification dsscac = AnnotationClassification.secstr;
+		Reference ssref = new Reference(-1L);
+        List<Reference> dsspRef = new ArrayList<Reference>();
+        dsspRef.add(ssref);
+
+        AnnotationName secStrucDssp = new AnnotationName(
+                dsscac,
+                AnnotationConstants.DSSP,
+                "DSSP",
+                dsspRef,
+                BioJavaDsspAnnotationGroup.class,
+                PolymerType.PROTEIN_ONLY);
+
+
+        AnnotationRegistry.registerAnnotation(secStrucDssp);
+
+        BioJavaDsspAnnotationGroup secdsspanno = new BioJavaDsspAnnotationGroup(this, dsscac, secStrucDssp);
+        try {
+            secdsspanno.constructAnnotations();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        addAnnotationGroup(secdsspanno);
+
+        // author assigned secondary structure
+
+        // disabled for now
+        if ( false) {
+        AnnotationClassification cla = AnnotationClassification.secstr;
+        //Reference ssref1 = new Reference(-1L);
+        List<Reference> authorRef = new ArrayList<Reference>();
+        AnnotationName secName = new AnnotationName(
+                cla,
+                BioJavaSecStrucAnnotationGroup.annotationName,
+                "Author",
+                authorRef,
+                BioJavaSecStrucAnnotationGroup.class,
+                PolymerType.PROTEIN_ONLY);
+
+
+        AnnotationRegistry.registerAnnotation(secName);
+        BioJavaSecStrucAnnotationGroup secanno = new BioJavaSecStrucAnnotationGroup(this, cla, secName);
+        try {
+            secanno.constructAnnotations();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        addAnnotationGroup(secanno);
+        }
+
+
+
 //
 //		AnnotationName ssName = new AnnotationName(
 //				ac,
