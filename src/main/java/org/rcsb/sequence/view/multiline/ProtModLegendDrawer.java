@@ -184,7 +184,7 @@ public class ProtModLegendDrawer implements Drawer {
 
             StringBuffer b = new StringBuffer();
 
-            if(mod instanceof SimpleSiteModification){
+            if(annotationName.equals(AnnotationConstants.siteRecord)){
                 b.append(mod.getDescription());
 
             }else {

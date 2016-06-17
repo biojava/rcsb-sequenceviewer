@@ -78,7 +78,7 @@ public class ImageWrapper {
             newAnnos.add(anno);
         }
 
-        newAnnos.add(AnnotationRegistry.getAnnotationByName("SITE record"));
+        newAnnos.add(AnnotationRegistry.getAnnotationByName(AnnotationConstants.siteRecord));
         params.setAnnotations(newAnnos);
 
 //		view.setAnnotationDrawMapper(a2h);

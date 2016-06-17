@@ -16,6 +16,7 @@ import org.rcsb.sequence.core.SequenceCollectionProvider;
 import org.rcsb.sequence.model.ResidueInfoFactory;
 import org.rcsb.sequence.model.Sequence;
 import org.rcsb.sequence.model.SequenceCollection;
+import org.rcsb.sequence.util.AnnotationConstants;
 import org.rcsb.sequence.view.html.ChainView;
 import org.rcsb.sequence.view.html.PageView;
 import org.rcsb.sequence.view.html.ViewParameters;
@@ -24,7 +25,7 @@ public class DemoJson {
 
     public static void main(String[] args) {
 
-        String pdbId = "1cdg";
+        String pdbId = "1BMA";
         String chainId = "A";
 
         DemoJson demo = new DemoJson();
@@ -48,7 +49,7 @@ public class DemoJson {
             newAnnos.add(anno);
         }
 
-        newAnnos.add(AnnotationRegistry.getAnnotationByName("SITE record"));
+        newAnnos.add(AnnotationRegistry.getAnnotationByName(AnnotationConstants.siteRecord));
         params.setAnnotations(newAnnos);
 
         PageView pv = new PageView(0, params);

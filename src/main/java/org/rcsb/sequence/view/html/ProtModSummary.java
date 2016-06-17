@@ -32,6 +32,7 @@ import org.rcsb.sequence.annotations.SimpleSiteModification;
 import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
+import org.rcsb.sequence.util.AnnotationConstants;
 import org.rcsb.sequence.util.ColorWheelUtil;
 import org.rcsb.sequence.view.multiline.ProtModDrawerUtil;
 
@@ -82,9 +83,8 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
 
         ProteinModification mod = mc.getModification();
 
-        if(mod instanceof SimpleSiteModification){
+        if ( ag.getName().equals(AnnotationConstants.siteRecord)) {
             b.append(mod.getDescription());
-
         }else {
             if(StringUtils.isNotBlank(mod.getPdbccName())) b.append(mod.getPdbccName());
 
@@ -120,7 +120,7 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
             b.append("</a>");
 
         }
-        System.out.println("summary: " + b.toString());
+        //System.out.println("summary: " + b.toString());
         return b.toString();
     }
 }
