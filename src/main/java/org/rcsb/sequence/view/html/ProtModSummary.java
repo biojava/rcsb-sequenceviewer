@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.biojava.nbio.protmod.ProteinModification;
 import org.biojava.nbio.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.annotations.ProtModValue;
+import org.rcsb.sequence.annotations.SimpleSiteModification;
 import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
@@ -81,15 +82,21 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
 
         ProteinModification mod = mc.getModification();
 
-        if(StringUtils.isNotBlank(mod.getPdbccName())) b.append(mod.getPdbccName());
+        if(mod instanceof SimpleSiteModification){
+            b.append(mod.getDescription());
 
-        if(StringUtils.isNotBlank(mod.getResidName())){
-            if(b.length() > 0) b.append(" - ");
-            b.append(mod.getResidName());
-        }else if(StringUtils.isNotBlank(mod.getPsimodName())) {
-            if(b.length() > 0) b.append(" - ");
-            b.append(mod.getPsimodName());
+        }else {
+            if(StringUtils.isNotBlank(mod.getPdbccName())) b.append(mod.getPdbccName());
+
+            if(StringUtils.isNotBlank(mod.getResidName())){
+                if(b.length() > 0) b.append(" - ");
+                b.append(mod.getResidName());
+            }else if(StringUtils.isNotBlank(mod.getPsimodName())) {
+                if(b.length() > 0) b.append(" - ");
+                b.append(mod.getPsimodName());
+            }
         }
+
 
         if (StringUtils.isNotBlank(mod.getResidId())) {
             b.append(" <i>RESID</i>:<a target=\"_blank\" href=\"http://pir.georgetown.edu/cgi-bin/resid?id=");
@@ -113,6 +120,7 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
             b.append("</a>");
 
         }
+        System.out.println("summary: " + b.toString());
         return b.toString();
     }
 }
