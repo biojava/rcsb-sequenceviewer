@@ -3,7 +3,7 @@
 	<groupId>org.biojava</groupId>
 	<artifactId>sequenceui</artifactId>
 	<name>protein-sequence-gui</name>
-	<version>2016.06.16.01-SNAPSHOT</version>
+	<version>2016.06.17.01-SNAPSHOT</version>
 	<description>A GUI for showing protein sequences</description>
 
 	<url>http://www.rcsb.org</url>
