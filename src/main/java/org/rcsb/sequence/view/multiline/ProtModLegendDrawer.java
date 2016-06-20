@@ -27,7 +27,7 @@ package org.rcsb.sequence.view.multiline;
 import org.apache.commons.lang3.StringUtils;
 import org.biojava.nbio.protmod.ModificationCategory;
 import org.biojava.nbio.protmod.ProteinModification;
-import org.rcsb.sequence.annotations.SimpleSiteModification;
+
 import org.rcsb.sequence.util.AnnotationConstants;
 
 import java.awt.*;

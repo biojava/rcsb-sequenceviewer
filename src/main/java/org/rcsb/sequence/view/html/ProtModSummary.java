@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.biojava.nbio.protmod.ProteinModification;
 import org.biojava.nbio.protmod.structure.ModifiedCompound;
 import org.rcsb.sequence.annotations.ProtModValue;
-import org.rcsb.sequence.annotations.SimpleSiteModification;
 import org.rcsb.sequence.conf.Annotation2Jmol;
 import org.rcsb.sequence.model.AnnotationGroup;
 import org.rcsb.sequence.model.AnnotationValue;
@@ -76,16 +75,15 @@ public class ProtModSummary extends AnnotationSummaryCell<ModifiedCompound> {
         //el.replaceContent(protModLegend);
     }
 
-    private String buildHTMLLegend(ModifiedCompound mc) {
+    public String buildHTMLLegend(ModifiedCompound mc) {
         StringBuilder b = new StringBuilder();
-        //b.append(mc.toString());
-
 
         ProteinModification mod = mc.getModification();
 
-        if ( ag.getName().equals(AnnotationConstants.siteRecord)) {
+        if ( ag.getName().getName().equals(AnnotationConstants.siteRecord)) {
+
             b.append(mod.getDescription());
-        }else {
+        } else {
             if(StringUtils.isNotBlank(mod.getPdbccName())) b.append(mod.getPdbccName());
 
             if(StringUtils.isNotBlank(mod.getResidName())){
