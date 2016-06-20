@@ -41,11 +41,12 @@ import org.biojava.nbio.core.util.SoftHashMap;
 import org.biojava.nbio.protmod.ModificationCategory;
 import org.biojava.nbio.protmod.ProteinModification;
 import org.rcsb.sequence.util.ColorUtils;
+import org.rcsb.sequence.util.ColorWheelUtil;
 
 public class ProtModDrawerUtil {
 
 
-    public static final Color[] colors = ColorUtils.colorWheel;
+    public static final Color[] colors = ColorWheelUtil.COLORS;
     static SoftHashMap<ProteinModification, Color> cache = new SoftHashMap<ProteinModification, Color>(0);
     private static int colorCount = -1;
     private float relativeThickness;
@@ -94,7 +95,7 @@ public class ProtModDrawerUtil {
             Set<String> kws = mymod.getKeywords();
             for (String kw : kws) {
                 if (kw.startsWith("disulfide")) {
-                    c = ColorUtils.orange;
+                    c = ColorWheelUtil.pdbYELLOW;
                     cache.put(mymod, c);
                     return c;
                 }

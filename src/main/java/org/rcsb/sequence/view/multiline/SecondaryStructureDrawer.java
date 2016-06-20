@@ -32,17 +32,17 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
     public static final Map<SecondaryStructureType, Color> SST_TO_COLOR_MAP;
     static {
         Map<SecondaryStructureType, Color> foo = new HashMap<SecondaryStructureType, Color>();
-        foo.put(SecondaryStructureType.G, ColorWheelUtil.pdbRED.brighter().brighter());
+        foo.put(SecondaryStructureType.G, ColorWheelUtil.pdbRED2);
         foo.put(SecondaryStructureType.H, ColorWheelUtil.pdbRED);
-        foo.put(SecondaryStructureType.I, Color.red.darker().darker());
+        foo.put(SecondaryStructureType.I, ColorWheelUtil.pdbPURPLE);
 
         foo.put(SecondaryStructureType.E, ColorWheelUtil.pdbYELLOW);
-        foo.put(SecondaryStructureType.B, ColorWheelUtil.pdbYELLOW.darker().darker());
+        foo.put(SecondaryStructureType.B, ColorWheelUtil.pdbYELLOW.darker());
 
-        foo.put(SecondaryStructureType.T, ColorWheelUtil.pdbPURPLE);
+        foo.put(SecondaryStructureType.T, ColorWheelUtil.pdbGREEN);
 
         foo.put(SecondaryStructureType.empty, Color.black);
-        foo.put(SecondaryStructureType.S, Color.blue);
+        foo.put(SecondaryStructureType.S, ColorWheelUtil.pdbGREEN2);
 
         foo.put(SecondaryStructureType.error, Color.pink);
         SST_TO_COLOR_MAP = Collections.unmodifiableMap(foo);
@@ -131,7 +131,7 @@ public class SecondaryStructureDrawer extends AbstractAnnotationDrawer<String> {
         arrowHead.addPoint(xMax, yCenter);
         arrowHead.addPoint(xMax - fontWidth, yCenter - yHeight);
 
-        Color light = ColorUtils.lighter(ssColor, 0.7);
+        Color light = ColorUtils.lighter(ssColor, 0.2);
         int lineHeight = yMax - yMin;
         Paint origPaint = g2.getPaint();
         GradientPaint gradient = new GradientPaint(0, yMin, ssColor, 0, yMax - lineHeight / 2, light, true);
