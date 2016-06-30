@@ -75,6 +75,8 @@ public abstract class AnnotationSummaryCell<T> {
                             "reference for " + ag.getName().getName(),
                             "reference");
                     links.addChild(refLink);
+                    //add only one reference link
+                    break;
                 }
             }
 

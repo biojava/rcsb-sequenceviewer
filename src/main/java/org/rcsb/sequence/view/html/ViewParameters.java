@@ -12,6 +12,7 @@ import org.rcsb.sequence.conf.AnnotationClassification;
 import org.rcsb.sequence.conf.AnnotationName;
 import org.rcsb.sequence.conf.AnnotationRegistry;
 import org.rcsb.sequence.model.ResidueNumberScheme;
+import org.rcsb.sequence.util.AnnotationConstants;
 import org.rcsb.sequence.view.html.SequenceCollectionView.ChainEntityStrategy;
 import org.rcsb.sequence.view.html.SequenceCollectionView.ChainSortStrategy;
 import org.rcsb.sequence.view.html.SequenceCollectionView.ChainViewStrategy;
@@ -120,6 +121,10 @@ public final class ViewParameters implements Serializable, Cloneable {
             } else {
                 System.out.println("Unknown default annotation for  " + ac);
             }
+        }
+
+        if(AnnotationRegistry.getAnnotationByName(AnnotationConstants.proteinModification) != null) {
+            foo.add(AnnotationRegistry.getAnnotationByName(AnnotationConstants.proteinModification));
         }
 
         return Collections.unmodifiableCollection(foo);
